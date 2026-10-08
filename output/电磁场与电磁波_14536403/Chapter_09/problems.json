@@ -1,0 +1,281 @@
+[
+  {
+    "problem_id": "9.1",
+    "text": "天线有哪些功能？天线的电参数有哪些？按极化方式划分，天线有\n\n哪几种？",
+    "page": 246,
+    "boxes": [
+      [
+        246,
+        276,
+        352,
+        0,
+        1216
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "9.2",
+    "text": "从接收角度讲，对天线的方向性有哪些要求？",
+    "page": 246,
+    "boxes": [
+      [
+        246,
+        353,
+        392,
+        0,
+        1216
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "9.3",
+    "text": "天线的近区场和辐射场是如何划分的？",
+    "page": 246,
+    "boxes": [
+      [
+        246,
+        392,
+        430,
+        0,
+        1216
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "9.4",
+    "text": "在距电基本振子 $100\\text{ km}$ 处的最大辐射方向上，假设它所产生的电\n\n场强度的振幅为 $1\\text{ mV/m}$，求电基本振子辐射的功率。",
+    "page": 246,
+    "boxes": [
+      [
+        246,
+        430,
+        507,
+        0,
+        1216
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "9.5",
+    "text": "计算长度为 $0.1\\lambda$ 的电基本振子的辐射电阻。",
+    "page": 246,
+    "boxes": [
+      [
+        246,
+        508,
+        546,
+        0,
+        1216
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "9.6",
+    "text": "设电基本振子的轴线按东西方向放置，在远方有一移动电台在正\n\n南方向接收到最大电场强度，如题 9.6 图所示【见原图】。当接收电台沿以电基本振子\n\n为中心的圆周上移动时，接收到的电场强度逐渐减小。试问当电场强度减少\n\n到最大值的 $1/\\sqrt{2}$ 时，接收电台的位置偏离正南方向多少度？",
+    "page": 246,
+    "boxes": [
+      [
+        246,
+        547,
+        708,
+        0,
+        1216
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": true
+  },
+  {
+    "problem_id": "9.7",
+    "text": "已知某天线的辐射功率为 $100\\text{ W}$，方向系数 $D=3$。\n\n(1) 求 $r=10\\text{ km}$ 处，最大辐射方向的电场强度幅值；\n\n(2) 若保持辐射功率不变，要使 $r=20\\text{ km}$ 处的场强等于原来 $r=10\\text{ km}$\n\n处的场强，问此时天线的方向系数应为多少？",
+    "page": 246,
+    "boxes": [
+      [
+        246,
+        708,
+        862,
+        0,
+        1216
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "9.8",
+    "text": "已知某天线的方向函数分别为\n\n$$\n\n(1)\\quad F(\\theta)=\\cos\\left[\\frac{\\pi}{4}(\\cos\\theta-1)\\right];\n\n$$\n\n$$\n\n(2)\\quad F(\\theta)=\\frac{\\cos\\left(\\frac{\\pi\\cos\\theta}{2}\\right)}{\\sin\\theta}\\cos\\left[\\frac{\\pi}{4}(\\cos\\theta-1)\\right]。\n\n$$\n\n试画出其方向图。",
+    "page": 246,
+    "boxes": [
+      [
+        246,
+        862,
+        1102,
+        0,
+        1216
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "9.9",
+    "text": "有一长度为 $2h=\\lambda/2$ 沿 $z$ 轴放置的振子天线，中心馈电，假设其上\n\n电流分布为 $I(z)=I_m\\cos kz$，式中 $k=2\\pi/\\lambda$，试求：\n\n(1) 振子天线的远区的电场和磁场；\n\n(2) 振子天线的坡印廷矢量；\n\n(3) 当 $\\int_0^{\\pi/2}\\frac{\\cos^2\\left(\\frac{\\pi\\cos\\theta}{2}\\right)}{\\sin\\theta}\\text{ d}\\theta=0.609$ 时的辐射\n\n电阻；\n\n(4) 方向系数；\n\n(5) 有效长度（归于输入电流）。",
+    "page": 246,
+    "boxes": [
+      [
+        246,
+        1102,
+        1469,
+        0,
+        1216
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "9.10",
+    "text": "有一个位于 $xOy$ 平面的很细的矩形小环，\n\n环的中心与坐标原点重合，环的两边尺寸分别为 $a$ 和 $b$，\n\n并与 $x$ 轴和 $y$ 轴平行，环上电流为 $i(t)=I_0\\cos\\omega t$。假设\n\n$a\\ll\\lambda$、$b\\ll\\lambda$，试求：\n\n(1) 小环的辐射电场；\n\n(2) 两主平面方向图。",
+    "page": 246,
+    "boxes": [
+      [
+        246,
+        1469,
+        1668,
+        0,
+        1216
+      ],
+      [
+        247,
+        143,
+        179,
+        155,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "9.11",
+    "text": "有一长度为 $\\text{d}l$ 的电基本振子，载有振幅为 $I_0$、沿 $+y$ 轴方向的时\n\n谐电流，试求辐射电场表达式，并分别画出在 $xOy$ 面、$xOz$ 面、$yOz$ 面的方\n\n向图。",
+    "page": 247,
+    "boxes": [
+      [
+        247,
+        181,
+        296,
+        155,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "9.12",
+    "text": "有一长度为 $2h=\\lambda/2$ 的半波振子天线，中心馈电，其上电流分布为\n\n$I(z)=I_m\\sin k(h-|z|)$，若电流振幅为 $1\\text{ A}$，求离开天线 $r=10\\text{ km}$ 处最大幅\n\n射方向上的电场场强。",
+    "page": 247,
+    "boxes": [
+      [
+        247,
+        297,
+        413,
+        155,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "9.13",
+    "text": "长度 $2h=\\lambda$ 的振子天线称为全波振子，求其 $E$ 面方向图。",
+    "page": 247,
+    "boxes": [
+      [
+        247,
+        413,
+        450,
+        155,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "9.14",
+    "text": "自由空间中半波振子接收天线沿 $z$ 轴放置，入射到振子上的电场\n\n为 $\\boldsymbol{E}_i=\\boldsymbol{a}_\\theta E_0$，其中 $E_0=5\\ \\mu\\text{V/m}$，入射方向为 $\\theta_i=60^\\circ$，如题 9.14 图所示【见原图】。已\n\n知 $\\lambda=10\\text{ cm}$，求半波振子天线的接收电动势。",
+    "page": 247,
+    "boxes": [
+      [
+        247,
+        451,
+        566,
+        155,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": true
+  },
+  {
+    "problem_id": "9.15",
+    "text": "在如题 9.15 图所示【见原图】的微波中继线路中，中继站的距离为 $R=$\n\n$50\\text{ km}$，接收机的系统噪声温度为 $1000\\text{ K}$。该系统的带宽为 $\\Delta f=100\\text{ MHz}$，\n\n工作波长 $\\lambda=3\\text{ cm}$，发射机和接收机天线的增益均为 $40\\text{ dB}$。设阻抗和极化均\n\n处于最佳匹配状态，试求信噪比为 $40\\text{ dB}$ 时发射机的功率。",
+    "page": 247,
+    "boxes": [
+      [
+        247,
+        567,
+        1093,
+        155,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": true
+  },
+  {
+    "problem_id": "9.16",
+    "text": "有两个平行于 $z$ 轴并沿 $x$ 轴方向排列的半波振子，若\n\n(1) $d=\\lambda/4$，$\\zeta=\\pi/2$；\n\n(2) $d=\\lambda/4$，$\\zeta=0$；\n\n(3) $d=3\\lambda/4$，$\\zeta=0$；\n\n(4) $d=3\\lambda/4$，$\\zeta=\\pi$。\n\n试求其 $E$ 面和 $H$ 面方向函数，并画出方向图。",
+    "page": 247,
+    "boxes": [
+      [
+        247,
+        1103,
+        1338,
+        155,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  }
+]

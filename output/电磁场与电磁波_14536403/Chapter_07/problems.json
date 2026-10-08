@@ -1,0 +1,366 @@
+[
+  {
+    "problem_id": "7.1",
+    "text": "设一特性阻抗为 $50\\ \\Omega$ 的均匀传输线终端接负载 $R_L=100\\ \\Omega$，求负\n\n载反射系数 $\\varGamma_L$，在离负载 $0.2\\lambda$、$0.25\\lambda$ 及 $0.5\\lambda$ 处的输入阻抗及反射系数分别\n\n为多少？",
+    "page": 195,
+    "boxes": [
+      [
+        195,
+        1534,
+        1658,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "7.2",
+    "text": "求内外导体直径分别为 $0.25\\text{ cm}$ 和 $0.75\\text{ cm}$ 的空气同轴线的特性\n\n阻抗；若在两导体间填充介电常数 $\\varepsilon_r=2.25$ 的介质，求其特性阻抗及 $300$\n\n$\\text{MHz}$ 时的波长。",
+    "page": 196,
+    "boxes": [
+      [
+        196,
+        161,
+        277,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "7.3",
+    "text": "设特性阻抗为 $Z_0$ 的无耗传输线的驻波比为 $\\rho$，第一个电压波节点\n\n离负载的距离为 $l_{\\min 1}$，试证明此时终端负载应为\n\n$$\n\nZ_L=Z_0\\frac{1-\\text{j}\\rho\\tan\\beta l_{\\min 1}}{\\rho-\\text{j}\\tan\\beta l_{\\min 1}}\n\n$$",
+    "page": 196,
+    "boxes": [
+      [
+        196,
+        278,
+        428,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "7.4",
+    "text": "有一特性阻抗为 $Z_0=50\\ \\Omega$ 的无耗均匀传输线，导体间的媒质参数\n\n为 $\\varepsilon_r=2.25$，$\\mu_r=1$，终端接有 $R_L=1\\ \\Omega$ 的负载。当 $f=100\\text{ MHz}$ 时，其线长\n\n度为 $\\lambda/4$。试求：\n\n(1) 传输线的实际长度；\n\n(2) 负载终端的反射系数；\n\n(3) 输入端的反射系数；\n\n(4) 输入端的阻抗。",
+    "page": 196,
+    "boxes": [
+      [
+        196,
+        428,
+        697,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "7.5",
+    "text": "试证明无耗传输线上任意相距 $\\lambda/4$ 的两点处的阻抗的乘积等于传\n\n输线的特性阻抗的平方。",
+    "page": 196,
+    "boxes": [
+      [
+        196,
+        697,
+        774,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "7.6",
+    "text": "设某一均匀无耗传输线特性阻抗 $Z_0=50\\ \\Omega$，终端接有未知负载\n\n$Z_L$，现在传输线上测得电压最大值和最小值分别为 $100\\text{ mV}$ 和 $20\\text{ mV}$，第一\n\n个电压波节的位置离负载 $l_{\\min 1}=\\lambda/3$，试求该负载阻抗 $Z_L$。",
+    "page": 196,
+    "boxes": [
+      [
+        196,
+        774,
+        890,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "7.7",
+    "text": "设某传输系统如题 7.7 图所示【见原图】，画出 $\\text{AB}$ 段及 $\\text{BC}$ 段沿线各点电\n\n压、电流的振幅分布图，并求出电压的最大值和最小值（图中 $R=900\\ \\Omega$）。",
+    "page": 196,
+    "boxes": [
+      [
+        196,
+        890,
+        1272,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": true
+  },
+  {
+    "problem_id": "7.8",
+    "text": "特性阻抗 $Z_0=100\\ \\Omega$，长度为 $\\lambda/8$ 的均匀无耗传输线，终端接有负\n\n载 $Z_L=(200+\\text{j}300)\\ \\Omega$，始端接有电压为 $500\\angle 0^\\circ\\text{ V}$，内阻 $R_g=100\\ \\Omega$ 的电\n\n源。求：\n\n(1) 传输线始端的电压；\n\n(2) 负载吸收的平均功率；\n\n(3) 终端的电压。",
+    "page": 196,
+    "boxes": [
+      [
+        196,
+        1273,
+        1509,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "7.9",
+    "text": "已知传输线的特性阻抗为 $Z_0=50\\ \\Omega$，测得传输线上反射系数的模\n\n$|\\varGamma|=0.2$，求线上电压波腹点和波节点的输入阻抗。",
+    "page": 196,
+    "boxes": [
+      [
+        196,
+        1509,
+        1588,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "7.10",
+    "text": "传输线长 $1.2\\text{ m}$，工作波长为 $0.5\\text{ m}$。当终端短路和开路时，试判\n\n断其输入阻抗的性质（感性和容性）。若该传输线的特性阻抗为 $Z_0=50\\ \\Omega$，试\n\n问当终端接负载阻抗 $Z_L=100\\ \\Omega$、$20\\ \\Omega$ 和 $50\\ \\Omega$ 时，输入阻抗的性质。",
+    "page": 196,
+    "boxes": [
+      [
+        196,
+        1588,
+        1668,
+        0,
+        1241
+      ],
+      [
+        197,
+        145,
+        184,
+        153,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "7.11",
+    "text": "无耗传输线的特性阻抗 $Z_0=100\\ \\Omega$，负载阻抗 $Z_L=50-\\text{j}50\\ \\Omega$，求\n\n离负载 $0.15\\lambda$ 处的输入阻抗（用阻抗圆图求解）。",
+    "page": 197,
+    "boxes": [
+      [
+        197,
+        184,
+        260,
+        153,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "7.12",
+    "text": "特性阻抗为 $300\\ \\Omega$ 的短路线，要求其与推挽功率放大器的输出电\n\n容 $5\\text{ pF}$ 谐振，谐振频率为 $300\\text{ MHz}$，求所需短路线的长度。",
+    "page": 197,
+    "boxes": [
+      [
+        197,
+        260,
+        339,
+        153,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "7.13",
+    "text": "空气绝缘的同轴线外导体的内半径 $b=20\\text{ mm}$，求同轴线耐压最\n\n高，传输功率最大或衰减最小时，同轴线内导体的半径 $a$。",
+    "page": 197,
+    "boxes": [
+      [
+        197,
+        339,
+        415,
+        153,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "7.14",
+    "text": "微带工作在什么模式？其相速和光速、带内波长及空间波长分别\n\n有什么关系？",
+    "page": 197,
+    "boxes": [
+      [
+        197,
+        416,
+        492,
+        153,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "7.15",
+    "text": "已知某微带的导带宽度为 $w=2\\text{ mm}$，厚度 $t\\to 0$，介质基片厚度\n\n$h=1\\text{ mm}$，相对介电常数 $\\varepsilon_r=9$，求此微带的有效填充因子 $q$ 和有效介电常数\n\n$\\varepsilon_e$ 及特性阻抗 $Z_0$（设空气微带特性阻抗 $Z_0^a=88\\ \\Omega$）。",
+    "page": 197,
+    "boxes": [
+      [
+        197,
+        493,
+        611,
+        153,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "7.16",
+    "text": "已知微带线的特性阻抗 $Z_0=50\\ \\Omega$，基片为相对介电常数 $\\varepsilon_r=9.6$\n\n的氧化铝陶瓷，设损耗角正切 $\\tan\\delta=0.2\\times 10^{-3}$，工作频率 $f=10\\text{ GHz}$，微带\n\n的有效填充因子 $q=0.5$，求介质衰减常数 $\\alpha_d$。",
+    "page": 197,
+    "boxes": [
+      [
+        197,
+        611,
+        729,
+        153,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "7.17",
+    "text": "在 $h=1\\text{ mm}$ 的陶瓷基片上（$\\varepsilon_r=9.6$）制作 $\\lambda_g/4$ 的 $50\\ \\Omega$、$20\\ \\Omega$、\n\n$100\\ \\Omega$ 的微带线，分别求它们的导体带宽度和长度。设工作频率为 $6\\text{ GHz}$，\n\n导带厚度 $t\\approx 0$。",
+    "page": 197,
+    "boxes": [
+      [
+        197,
+        729,
+        844,
+        153,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "7.18",
+    "text": "已知某微带线，介质为空气时特性阻抗为 $Z_0^a=40\\ \\Omega$，实际介质\n\n$\\varepsilon_r=10$ 时的填充因子 $q=0.4$，试求介质部分填充微带线的特性阻抗、相速和\n\n波导波长。",
+    "page": 197,
+    "boxes": [
+      [
+        197,
+        844,
+        959,
+        153,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "7.19",
+    "text": "特性阻抗 $Z_0=150\\ \\Omega$ 的均匀无耗传输线，终端接有负载 $Z_L=(250$\n\n$+\\text{j}100)\\ \\Omega$，用 $\\lambda/4$ 阻抗变换器实现阻抗匹配，如题 7.19 图所示【见原图】，试求 $\\lambda/4$ 阻\n\n抗变换器的特性阻抗 $Z_{01}$ 及离终端的距离。",
+    "page": 197,
+    "boxes": [
+      [
+        197,
+        960,
+        1315,
+        153,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": true
+  },
+  {
+    "problem_id": "7.20",
+    "text": "试画出四级同轴型低通滤波器的平面结构示意图，并定性说明其\n\n工作原理。",
+    "page": 197,
+    "boxes": [
+      [
+        197,
+        1316,
+        1392,
+        153,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "7.21",
+    "text": "简述微波滤波器实现的方法。",
+    "page": 197,
+    "boxes": [
+      [
+        197,
+        1394,
+        1435,
+        153,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  }
+]

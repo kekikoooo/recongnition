@@ -1,0 +1,215 @@
+{
+  "pdf": "电磁场与电磁波_14536403.pdf",
+  "dpi": 150,
+  "chapters": {
+    "1": {
+      "count": 25,
+      "last_index": 25,
+      "missing": [],
+      "first_page": 32,
+      "last_page": 35,
+      "flagged": {
+        "1.2": [
+          "stitched"
+        ],
+        "1.12": [
+          "stitched"
+        ]
+      }
+    },
+    "2": {
+      "count": 20,
+      "last_index": 20,
+      "missing": [],
+      "first_page": 67,
+      "last_page": 70,
+      "flagged": {
+        "2.1": [
+          "stitched"
+        ],
+        "2.10": [
+          "stitched"
+        ],
+        "2.16": [
+          "stitched"
+        ]
+      }
+    },
+    "3": {
+      "count": 17,
+      "last_index": 17,
+      "missing": [],
+      "first_page": 97,
+      "last_page": 100,
+      "flagged": {
+        "3.3": [
+          "stitched"
+        ],
+        "3.14": [
+          "stitched"
+        ]
+      }
+    },
+    "4": {
+      "count": 18,
+      "last_index": 18,
+      "missing": [],
+      "first_page": 117,
+      "last_page": 120,
+      "flagged": {
+        "4.1": [
+          "stitched"
+        ],
+        "4.14": [
+          "stitched"
+        ]
+      }
+    },
+    "5": {
+      "count": 16,
+      "last_index": 16,
+      "missing": [],
+      "first_page": 136,
+      "last_page": 139,
+      "flagged": {
+        "5.1": [
+          "stitched"
+        ],
+        "5.7": [
+          "stitched"
+        ],
+        "5.13": [
+          "stitched"
+        ]
+      }
+    },
+    "6": {
+      "count": 18,
+      "last_index": 18,
+      "missing": [],
+      "first_page": 166,
+      "last_page": 169,
+      "flagged": {
+        "6.4": [
+          "stitched"
+        ],
+        "6.8": [
+          "stitched"
+        ],
+        "6.14": [
+          "stitched"
+        ]
+      }
+    },
+    "7": {
+      "count": 21,
+      "last_index": 21,
+      "missing": [],
+      "first_page": 195,
+      "last_page": 197,
+      "flagged": {
+        "7.10": [
+          "stitched"
+        ]
+      }
+    },
+    "8": {
+      "count": 16,
+      "last_index": 16,
+      "missing": [],
+      "first_page": 217,
+      "last_page": 218,
+      "flagged": {
+        "8.1": [
+          "slice_too_short"
+        ]
+      }
+    },
+    "9": {
+      "count": 16,
+      "last_index": 16,
+      "missing": [],
+      "first_page": 246,
+      "last_page": 247,
+      "flagged": {
+        "9.10": [
+          "stitched"
+        ]
+      }
+    },
+    "10": {
+      "count": 15,
+      "last_index": 15,
+      "missing": [],
+      "first_page": 276,
+      "last_page": 276,
+      "flagged": {}
+    }
+  },
+  "layout": {
+    "profile": {
+      "margin": 36,
+      "parity": {
+        "0": {
+          "ink_l": 271,
+          "ink_r": 1128,
+          "samples": 8
+        },
+        "1": {
+          "ink_l": 120,
+          "ink_r": 980,
+          "samples": 8
+        }
+      }
+    },
+    "margin": 116,
+    "edge_check": [
+      {
+        "margin": 36,
+        "edge_touching": [
+          "6.4"
+        ]
+      },
+      {
+        "margin": 76,
+        "edge_touching": [
+          "6.4"
+        ]
+      },
+      {
+        "margin": 116,
+        "edge_touching": [
+          "6.8"
+        ]
+      }
+    ],
+    "llm_judge_advisory": {
+      "results": [
+        {
+          "slice": "problem_1.3_slice.png",
+          "truncated": false,
+          "extra": false,
+          "detail": "无"
+        },
+        {
+          "slice": "problem_1.1_slice.png",
+          "truncated": false,
+          "extra": false,
+          "detail": "无"
+        },
+        {
+          "slice": "problem_1.2_slice.png",
+          "truncated": false,
+          "extra": false,
+          "detail": "无"
+        },
+        {
+          "slice": "problem_6.17_slice.png",
+          "truncated": false,
+          "extra": true,
+          "detail": "混入了上一题的插图（题 6.16 图）"
+        }
+      ]
+    }
+  }
+}

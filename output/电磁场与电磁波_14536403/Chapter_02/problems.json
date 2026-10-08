@@ -1,0 +1,363 @@
+[
+  {
+    "problem_id": "2.1",
+    "text": "两点电荷 $q_1=8\\text{ C}$，位于 $x$ 轴上 $x=4$ 处，$q_2=-4\\text{ C}$，位于 $y$ 轴上\n\n$y=4$ 处，求 $z$ 轴上点 $(0, 0, 4)$ 处的电场强度。",
+    "page": 67,
+    "boxes": [
+      [
+        67,
+        1618,
+        1660,
+        7,
+        1241
+      ],
+      [
+        68,
+        164,
+        202,
+        3,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "2.2",
+    "text": "一个半径为 $a$ 的半圆上均匀分布着线电荷密度 $\\rho_l$，求垂直于圆平面\n\n的轴线上 $z=a$ 处的电场强度。",
+    "page": 68,
+    "boxes": [
+      [
+        68,
+        203,
+        279,
+        3,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "2.3",
+    "text": "一个点电荷 $+q$ 位于 $(-a, 0, 0)$ 处，另一个点电荷 $-2q$ 位于\n\n$(a, 0, 0)$ 处，求电位等于零的面；问空间中有电场强度等于零的点吗？",
+    "page": 68,
+    "boxes": [
+      [
+        68,
+        281,
+        359,
+        3,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "2.4",
+    "text": "真空中一个球心在原点的半径为 $a$ 的球面，在点 $(0, 0, a)$ 和\n\n$(0, 0, -a)$ 处分别放置点电荷 $+q$ 和 $-q$，试计算球赤道圆平面上电通密度的\n\n通量。",
+    "page": 68,
+    "boxes": [
+      [
+        68,
+        359,
+        474,
+        3,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "2.5",
+    "text": "试求半径为 $a$、带电量为 $Q$ 的均匀带电球体的电场。",
+    "page": 68,
+    "boxes": [
+      [
+        68,
+        474,
+        512,
+        3,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "2.6",
+    "text": "两无限长的同轴圆柱导体，半径分别为 $a$ 和 $b(a<b)$，内外导体间\n\n为空气，如题 2.6 图所示【见原图】。设同轴圆柱导体内、外导体上的电荷均匀分布，其\n\n电荷密度分别为 $\\rho_{S_1}$ 和 $\\rho_{S_2}$，求：\n\n(1) 空间各处的电场强度；\n\n(2) 两导体间的电压；\n\n(3) 要使 $\\rho>b$ 区域内的电场强度等于零，则 $\\rho_{S_1}$ 和 $\\rho_{S_2}$ 应满足什么关系？",
+    "page": 68,
+    "boxes": [
+      [
+        68,
+        513,
+        1084,
+        3,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": true
+  },
+  {
+    "problem_id": "2.7",
+    "text": "半径分别为 $a$ 和 $b(a>b)$，球心距离为 $c(c<a-b)$ 的两球面间均匀\n\n分布有体密度为 $\\rho_V$ 的电荷，如题 2.7 图所示【见原图】。求空间各区域的电通量密度。",
+    "page": 68,
+    "boxes": [
+      [
+        68,
+        1097,
+        1176,
+        3,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": true
+  },
+  {
+    "problem_id": "2.8",
+    "text": "长度为 $2l$ 的线电荷，电荷的线密度为 $\\rho_l$，求：\n\n(1) 空间任一点的电位函数 $\\phi$；\n\n(2) 线电荷平分面上的电位函数。",
+    "page": 68,
+    "boxes": [
+      [
+        68,
+        1176,
+        1291,
+        3,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "2.9",
+    "text": "一半径为 $a$ 的薄导体球壳，在其内表面涂覆了一层薄的绝缘膜，球\n\n内充满总电量为 $Q$ 的电荷，球壳上又另充了电量为 $Q$ 的电荷，已知内部的电\n\n场为 $\\boldsymbol{E}=\\boldsymbol{a}_r\\left(\\frac{r}{a}\\right)^4$，计算：\n\n(1) 球内的电荷分布；\n\n(2) 球的外表面的电荷分布；\n\n(3) 球壳的电位；\n\n(4) 球心的电位。",
+    "page": 68,
+    "boxes": [
+      [
+        68,
+        1291,
+        1590,
+        3,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "2.10",
+    "text": "电场中有一半径为 $a$ 的圆柱体，已知圆柱内、外的电位为\n\n$$\n\n\\begin{cases}\n\n\\phi=0, & r\\leqslant a \\\\\n\n\\phi=A\\left(r-\\frac{a^2}{r}\\right)\\cos\\varphi, & r>a\n\n\\end{cases}\n\n$$\n\n(1) 求圆柱体内、外的电场强度；\n\n(2) 这个圆柱是由什么材料制成的？表面有电荷吗？试求之。",
+    "page": 68,
+    "boxes": [
+      [
+        68,
+        1590,
+        1629,
+        3,
+        1241
+      ],
+      [
+        69,
+        149,
+        329,
+        155,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "2.11",
+    "text": "电场中一半径为 $a$ 的介质球，已知球内、外的电位函数分别为\n\n$$\n\n\\begin{cases}\n\n\\phi_1=-E_0 r\\cos\\theta+\\frac{\\varepsilon-\\varepsilon_0}{\\varepsilon+2\\varepsilon_0}a^3 E_0\\frac{\\cos\\theta}{r^2}, & r>a \\\\\n\n\\phi_2=-\\frac{3\\varepsilon_0}{\\varepsilon+2\\varepsilon_0}E_0 r\\cos\\theta, & r\\leqslant a\n\n\\end{cases}\n\n$$\n\n此介质球表面的边界条件如何？计算球表面的电荷密度。",
+    "page": 69,
+    "boxes": [
+      [
+        69,
+        329,
+        552,
+        155,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "2.12",
+    "text": "设 $z=0$ 为两电介质的分界面，在 $z>0$ 的区域 1 中充满相对介电\n\n常数为 $\\varepsilon_{r1}=2$ 的介质，而在 $z<0$ 的区域 2 中充满相对介电常数为 $\\varepsilon_{r2}=3$ 的介\n\n质。已知区域 1 中的电通量密度为\n\n$$\n\n\\boldsymbol{D}_1=\\boldsymbol{a}_x 2y-\\boldsymbol{a}_y 2x+\\boldsymbol{a}_z(2+z)\n\n$$\n\n我们能求出区域 2 中哪些地方的 $\\boldsymbol{E}_2$ 和 $\\boldsymbol{D}_2$？能求出区域 2 中任意点处的 $\\boldsymbol{E}_2$ 和\n\n$\\boldsymbol{D}_2$ 吗？",
+    "page": 69,
+    "boxes": [
+      [
+        69,
+        552,
+        781,
+        155,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "2.13",
+    "text": "一平行板电容器的板长为 $a$，宽为 $b$，板间距为 $d$。设 $x=d$ 处的极\n\n板上所带的电荷为 $Q$，如题 2.13 图所示【见原图】。求极板间的电位分布。",
+    "page": 69,
+    "boxes": [
+      [
+        69,
+        782,
+        1105,
+        155,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": true
+  },
+  {
+    "problem_id": "2.14",
+    "text": "无限大空气平行板电容器的电容量为 $C_0$，将相对介电常数为 $\\varepsilon_r=$\n\n$4$ 的一块平板平行地插入两极板之间，如题 2.14 图所示【见原图】。\n\n(1) 在保持电荷一定的条件下，使该电容器的电容值升为原值的 $2$ 倍，\n\n问所插入板的厚度 $d_1$ 与电容器两板之间的距离 $d$ 的比值为多少？\n\n(2) 若插入板的厚度 $d_1=\\frac{2}{3}d$，在保持电容器电压不变的条件下，电容器\n\n的电容量将变为多少？",
+    "page": 69,
+    "boxes": [
+      [
+        69,
+        1118,
+        1377,
+        155,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": true
+  },
+  {
+    "problem_id": "2.15",
+    "text": "同轴电容器的内导体半径为 $a$，外导体内直径为 $b$，在 $a<r<b'$ 部\n\n分填充介电常数为 $\\varepsilon$ 的电介质，求：\n\n(1) 单位长度的电容；\n\n(2) 若 $a=5\\text{ mm}$，$b=10\\text{ mm}$，$b'=8\\text{ mm}$，内外导体间所加电压为 $10\\ 000$\n\n$\\text{V}$，介质的相对介电常数为 $\\varepsilon_r=5$，空气的击穿场强为 $3\\times 10^6\\text{ V/m}$，介质的击\n\n穿场强为 $20\\times 10^6\\text{ V/m}$，问电介质是否会被击穿？",
+    "page": 69,
+    "boxes": [
+      [
+        69,
+        1377,
+        1611,
+        155,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "2.16",
+    "text": "在介电常数为 $\\varepsilon$ 的无限大均匀介质中，开有如下空腔：\n\n(1) 平行于 $\\boldsymbol{E}$ 的针形空腔；\n\n(2) 底面垂直于 $\\boldsymbol{E}$ 的薄盘形空腔；\n\n求各空腔中的 $\\boldsymbol{E}$ 和 $\\boldsymbol{D}$。",
+    "page": 69,
+    "boxes": [
+      [
+        69,
+        1612,
+        1653,
+        155,
+        1241
+      ],
+      [
+        70,
+        165,
+        279,
+        4,
+        1096
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "2.17",
+    "text": "一个有两层介质 $(\\varepsilon_1,\\,\\varepsilon_2)$ 的平行板电容器，两种介质的电导率分别\n\n为 $\\sigma_1$ 和 $\\sigma_2$，电容器极板的面积为 $S$，如题 2.17 图所示【见原图】。当外加电压为 $U$\n\n时，求：\n\n(1) 电容器的电场强度；\n\n(2) 两种介质分界面上表面的自由电荷密度；\n\n(3) 电容器的漏电导；\n\n(4) 当满足参数 $\\sigma_1\\varepsilon_2=\\sigma_2\\varepsilon_1$ 时，问 $G/C=?$（$C$ 为电容器电容）",
+    "page": 70,
+    "boxes": [
+      [
+        70,
+        281,
+        551,
+        4,
+        1096
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": true
+  },
+  {
+    "problem_id": "2.18",
+    "text": "半球形电极位置靠近一直而深的陡壁，如题 2.18 图所示【见原图】。若 $a=$\n\n$0.3\\text{ m}$，$h=10\\text{ m}$，土壤的电导率 $\\sigma=10^{-2}\\text{ S/m}$，求接地电阻。",
+    "page": 70,
+    "boxes": [
+      [
+        70,
+        551,
+        951,
+        4,
+        1096
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": true
+  },
+  {
+    "problem_id": "2.19",
+    "text": "已知在所研究的区域没有电荷，问下列标量函数中哪些可能是电\n\n位函数的解？\n\n(1) $r^{-n}\\cos(n\\varphi)$ 圆柱坐标系；\n\n(2) $r^{-2}\\cos\\varphi$ 球坐标系；\n\n(3) $\\exp(-\\sqrt{2}y)\\,\\sin x\\,\\cos x$ 直角坐标系。",
+    "page": 70,
+    "boxes": [
+      [
+        70,
+        962,
+        1163,
+        4,
+        1096
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "2.20",
+    "text": "半径为 $R_1$ 和 $R_2\\,(R_1<R_2)$ 的两个同心球面之间充满了电导率为\n\n$\\sigma=\\sigma_0\\left(\\frac{1+K}{r}\\right)$ 的材料（$K$ 为常数），试求两理想导体球面间的电阻。",
+    "page": 70,
+    "boxes": [
+      [
+        70,
+        1163,
+        1264,
+        4,
+        1096
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  }
+]

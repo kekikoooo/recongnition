@@ -1,0 +1,281 @@
+[
+  {
+    "problem_id": "9.1",
+    "text": "",
+    "page": 275,
+    "boxes": [
+      [
+        275,
+        1059,
+        1112,
+        325,
+        2024
+      ]
+    ],
+    "masks": [],
+    "text_source": "none"
+  },
+  {
+    "problem_id": "9.2",
+    "text": "",
+    "page": 275,
+    "boxes": [
+      [
+        275,
+        1116,
+        1168,
+        325,
+        2024
+      ]
+    ],
+    "masks": [],
+    "text_source": "none"
+  },
+  {
+    "problem_id": "9.3",
+    "text": "",
+    "page": 275,
+    "boxes": [
+      [
+        275,
+        1170,
+        1222,
+        325,
+        2024
+      ]
+    ],
+    "masks": [],
+    "text_source": "none"
+  },
+  {
+    "problem_id": "9.4",
+    "text": "",
+    "page": 275,
+    "boxes": [
+      [
+        275,
+        1227,
+        1335,
+        325,
+        2024
+      ]
+    ],
+    "masks": [],
+    "text_source": "none"
+  },
+  {
+    "problem_id": "9.5",
+    "text": "",
+    "page": 275,
+    "boxes": [
+      [
+        275,
+        1339,
+        1502,
+        325,
+        2024
+      ]
+    ],
+    "masks": [],
+    "text_source": "none"
+  },
+  {
+    "problem_id": "9.6",
+    "text": "",
+    "page": 275,
+    "boxes": [
+      [
+        275,
+        1506,
+        1671,
+        325,
+        2024
+      ]
+    ],
+    "masks": [],
+    "text_source": "none"
+  },
+  {
+    "problem_id": "9.7",
+    "text": "",
+    "page": 275,
+    "boxes": [
+      [
+        275,
+        1674,
+        1782,
+        325,
+        2024
+      ]
+    ],
+    "masks": [],
+    "text_source": "none"
+  },
+  {
+    "problem_id": "9.8",
+    "text": "",
+    "page": 275,
+    "boxes": [
+      [
+        275,
+        1786,
+        1838,
+        325,
+        2024
+      ]
+    ],
+    "masks": [],
+    "text_source": "none"
+  },
+  {
+    "problem_id": "9.9",
+    "text": "",
+    "page": 275,
+    "boxes": [
+      [
+        275,
+        1842,
+        1895,
+        325,
+        2024
+      ]
+    ],
+    "masks": [],
+    "text_source": "none"
+  },
+  {
+    "problem_id": "9.10",
+    "text": "",
+    "page": 275,
+    "boxes": [
+      [
+        275,
+        1899,
+        1951,
+        325,
+        2024
+      ]
+    ],
+    "masks": [],
+    "text_source": "none"
+  },
+  {
+    "problem_id": "9.11",
+    "text": "",
+    "page": 275,
+    "boxes": [
+      [
+        275,
+        1954,
+        2064,
+        325,
+        2024
+      ]
+    ],
+    "masks": [],
+    "text_source": "none"
+  },
+  {
+    "problem_id": "9.12",
+    "text": "",
+    "page": 275,
+    "boxes": [
+      [
+        275,
+        2066,
+        2118,
+        325,
+        2024
+      ]
+    ],
+    "masks": [],
+    "text_source": "none"
+  },
+  {
+    "problem_id": "9.13",
+    "text": "",
+    "page": 275,
+    "boxes": [
+      [
+        275,
+        2123,
+        2174,
+        325,
+        2024
+      ]
+    ],
+    "masks": [],
+    "text_source": "none"
+  },
+  {
+    "problem_id": "9.14",
+    "text": "",
+    "page": 275,
+    "boxes": [
+      [
+        275,
+        2177,
+        2229,
+        325,
+        2024
+      ]
+    ],
+    "masks": [],
+    "text_source": "none"
+  },
+  {
+    "problem_id": "9.15",
+    "text": "",
+    "page": 275,
+    "boxes": [
+      [
+        275,
+        2233,
+        2285,
+        325,
+        2024
+      ]
+    ],
+    "masks": [],
+    "text_source": "none"
+  },
+  {
+    "problem_id": "9.16",
+    "text": "",
+    "page": 275,
+    "boxes": [
+      [
+        275,
+        2289,
+        2397,
+        325,
+        2024
+      ]
+    ],
+    "masks": [],
+    "text_source": "none"
+  },
+  {
+    "problem_id": "9.17",
+    "text": "",
+    "page": 275,
+    "boxes": [
+      [
+        275,
+        2402,
+        2555,
+        325,
+        2024
+      ],
+      [
+        276,
+        343,
+        2706,
+        202,
+        1892
+      ]
+    ],
+    "masks": [],
+    "text_source": "none"
+  }
+]

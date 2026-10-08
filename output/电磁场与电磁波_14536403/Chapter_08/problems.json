@@ -1,0 +1,274 @@
+[
+  {
+    "problem_id": "8.1",
+    "text": "试说明为什么规则金属波导内不能传播 TEM 波？",
+    "page": 217,
+    "boxes": [
+      [
+        217,
+        1276,
+        1277,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "8.2",
+    "text": "矩形波导的横截面尺寸 $a=22.86\\text{ mm}$，$b=10.16\\text{ mm}$，将自由空间\n\n波长为 $2\\text{ cm}$、$3\\text{ cm}$ 和 $5\\text{ cm}$ 的信号接入此波导，问能否传输？若能，会出现哪\n\n些模式？",
+    "page": 217,
+    "boxes": [
+      [
+        217,
+        1293,
+        1453,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "8.3",
+    "text": "矩形波导截面尺寸 $a\\times b=23\\text{ mm}\\times 10\\text{ mm}$，波导内充满空气，信号\n\n源频率为 $10\\text{ GHz}$，试求：\n\n(1) 波导中可以传播的模式；\n\n(2) 该模式的截止波长 $\\lambda_c$、相移常数 $\\beta$、波导波长 $\\lambda_g$ 及相速 $v_p$。",
+    "page": 217,
+    "boxes": [
+      [
+        217,
+        1453,
+        1613,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "8.4",
+    "text": "试证明工作波长 $\\lambda$，波导波长 $\\lambda_g$ 和截止波长 $\\lambda_c$ 满足以下关系：\n\n$$\n\n\\lambda=\\frac{\\lambda_g\\lambda_c}{\\sqrt{\\lambda_g^2+\\lambda_c^2}}\n\n$$",
+    "page": 217,
+    "boxes": [
+      [
+        217,
+        1613,
+        1653,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "8.5",
+    "text": "设矩形波导 $a=2b$，工作在 $\\text{TE}_{10}$ 模式，求此模式中衰减最小时的工\n\n作频率 $f$。",
+    "page": 218,
+    "boxes": [
+      [
+        218,
+        247,
+        320,
+        0,
+        1096
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "8.6",
+    "text": "设矩形波导尺寸 $a\\times b=6\\text{ cm}\\times 3\\text{ cm}$，内充空气，工作频率为\n\n$3\\text{ GHz}$，工作在主模，求该波导能承受的最大功率为多少？",
+    "page": 218,
+    "boxes": [
+      [
+        218,
+        320,
+        395,
+        0,
+        1096
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "8.7",
+    "text": "已知圆波导的直径为 $5\\text{ cm}$，填充空气介质。试求：\n\n(1) $\\text{TE}_{11}$、$\\text{TE}_{01}$、$\\text{TM}_{01}$ 三种模式的截止波长。\n\n(2) 当工作波长分别为 $7\\text{ cm}$、$6\\text{ cm}$、$3\\text{ cm}$ 时，波导中出现上述哪些模式？\n\n(3) 当工作波长为 $\\lambda=7\\text{ cm}$ 时，求最低次模的波导波长 $\\lambda_g$。",
+    "page": 218,
+    "boxes": [
+      [
+        218,
+        395,
+        543,
+        0,
+        1096
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "8.8",
+    "text": "已知工作波长为 $8\\text{ mm}$，信号通过尺寸 $a\\times b=7.112\\text{ mm}\\times$\n\n$3.556\\text{ mm}$ 的矩形波导，现转换到圆波导 $\\text{TE}_{01}$ 模传输，要求圆波导与上述矩\n\n形波导相速相等，试求圆波导的直径；若过渡到圆波导后要求传输 $\\text{TE}_{11}$ 模且\n\n相速一样，再求圆波导的直径。",
+    "page": 218,
+    "boxes": [
+      [
+        218,
+        543,
+        693,
+        0,
+        1096
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "8.9",
+    "text": "已知矩形波导的尺寸 $a\\times b=23\\text{ mm}\\times 10\\text{ mm}$，试求传输模的单模工\n\n作频带。",
+    "page": 218,
+    "boxes": [
+      [
+        218,
+        693,
+        766,
+        0,
+        1096
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "8.10",
+    "text": "已知工作波长 $\\lambda=5\\text{ mm}$，要求单模传输，试确定圆波导的半径，\n\n并指出是什么模式。",
+    "page": 218,
+    "boxes": [
+      [
+        218,
+        766,
+        842,
+        0,
+        1096
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "8.11",
+    "text": "什么叫模式简并？矩形波导和圆形波导中模式简并有何异同？",
+    "page": 218,
+    "boxes": [
+      [
+        218,
+        842,
+        879,
+        0,
+        1096
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "8.12",
+    "text": "为什么一般矩形（主模工作条件下）测量线探针开槽开在波导宽壁\n\n的中心线上？",
+    "page": 218,
+    "boxes": [
+      [
+        218,
+        879,
+        953,
+        0,
+        1096
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "8.13",
+    "text": "在波导激励中常用哪三种激励方式？",
+    "page": 218,
+    "boxes": [
+      [
+        218,
+        953,
+        990,
+        0,
+        1096
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "8.14",
+    "text": "设矩形波导宽边 $a=2.5\\text{ cm}$，工\n\n作频率 $f=10\\text{ GHz}$，用 $\\lambda_g/4$ 阻抗变换器匹\n\n配一段空气波导和一段 $\\varepsilon_r=2.56$ 的波导，如\n\n题 8.14 图所示【见原图】，求匹配介质的相对介电常\n\n数 $\\varepsilon_r'$ 及变换器的长度。",
+    "page": 218,
+    "boxes": [
+      [
+        218,
+        990,
+        1182,
+        0,
+        1096
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": true
+  },
+  {
+    "problem_id": "8.15",
+    "text": "当圆极化波输入到线圆极化转换\n\n器时，输出端将变换成线极化波，试分析其\n\n工作原理。",
+    "page": 218,
+    "boxes": [
+      [
+        218,
+        1182,
+        1295,
+        0,
+        1096
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "8.16",
+    "text": "设矩形谐振腔的尺寸 $a=5\\text{ cm}$、$b=3\\text{ cm}$、$l=6\\text{ cm}$，试求 $\\text{TE}_{101}$ 模\n\n式的谐振波长和无载品质因数 $Q_0$ 的值。",
+    "page": 218,
+    "boxes": [
+      [
+        218,
+        1295,
+        1372,
+        0,
+        1096
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  }
+]

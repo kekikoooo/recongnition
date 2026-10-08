@@ -1,0 +1,19 @@
+# Python 字节码与缓存
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyd
+
+# 临时测试与预览文件
+temp_*
+test_*
+_test_*
+preview_*
+
+# 归档与历史隐藏
+.archive/
+
+# 系统环境与临时文件
+.DS_Store
+Thumbs.db
+*.tmp

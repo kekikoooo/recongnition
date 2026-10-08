@@ -1,0 +1,257 @@
+[
+  {
+    "problem_id": "10.1",
+    "text": "什么是衰落？简述引起衰落的原因。",
+    "page": 276,
+    "boxes": [
+      [
+        276,
+        618,
+        657,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "10.2",
+    "text": "什么是传输失真？简述引起失真的原因。",
+    "page": 276,
+    "boxes": [
+      [
+        276,
+        657,
+        695,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "10.3",
+    "text": "某无线移动信道中，发射机发射功率为 $1\\text{ kW}$，发射天线的增益为 $6\\text{ dB}$，载波中心频率为 $900\\text{ MHz}$，接收天线的增益为 $1.5\\text{ dB}$，收发距离为 $10\\text{ km}$，求输入到接收机的功率。",
+    "page": 276,
+    "boxes": [
+      [
+        276,
+        695,
+        811,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "10.4",
+    "text": "什么是视距传播？简述视距传播的特点。",
+    "page": 276,
+    "boxes": [
+      [
+        276,
+        811,
+        849,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "10.5",
+    "text": "某无线视距传播信道中，发射天线的高度为 $225\\text{ m}$，接收天线的高度为 $16\\text{ m}$，该信道的极限传播距离为多少？",
+    "page": 276,
+    "boxes": [
+      [
+        276,
+        849,
+        927,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "10.6",
+    "text": "什么是天波传播？简述天波传播的特点。",
+    "page": 276,
+    "boxes": [
+      [
+        276,
+        927,
+        965,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "10.7",
+    "text": "设电离层最大密度 $N_{\\max}=10^{12}\\text{ 个/m}^3$，入射角 $\\theta_0=45^\\circ$，求此时的最高可用频率。",
+    "page": 276,
+    "boxes": [
+      [
+        276,
+        965,
+        1042,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "10.8",
+    "text": "何谓天波传播的静区？",
+    "page": 276,
+    "boxes": [
+      [
+        276,
+        1042,
+        1081,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "10.9",
+    "text": "试分析夜晚听到的电台数目多且杂音大的原因。",
+    "page": 276,
+    "boxes": [
+      [
+        276,
+        1081,
+        1119,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "10.10",
+    "text": "什么是地面波传播？简述地面波的波前倾斜现象。",
+    "page": 276,
+    "boxes": [
+      [
+        276,
+        1119,
+        1158,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "10.11",
+    "text": "不均匀信道传播方式主要有哪些？简述对流层散射传播的原理。",
+    "page": 276,
+    "boxes": [
+      [
+        276,
+        1158,
+        1197,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "10.12",
+    "text": "电磁干扰主要有哪些来源？",
+    "page": 276,
+    "boxes": [
+      [
+        276,
+        1197,
+        1236,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "10.13",
+    "text": "电磁干扰的主要传播途径有哪些？",
+    "page": 276,
+    "boxes": [
+      [
+        276,
+        1236,
+        1275,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "10.14",
+    "text": "何谓电磁兼容？提高电磁兼容能力的措施有哪些？",
+    "page": 276,
+    "boxes": [
+      [
+        276,
+        1275,
+        1313,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "10.15",
+    "text": "电磁辐射会产生哪些危害？",
+    "page": 276,
+    "boxes": [
+      [
+        276,
+        1313,
+        1354,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  }
+]

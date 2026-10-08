@@ -1,0 +1,78 @@
+{
+  "book": {
+    "id": "__________________",
+    "title": "通信电子电路（第三版） (于洪珍)",
+    "subtitle": "专业核心课教材",
+    "author": "教材编委会",
+    "doc_type": "book",
+    "subject": "general",
+    "pdf_candidates": [
+      "通信电子电路（第三版） (于洪珍) .pdf",
+      "output/通信电子电路（第三版） (于洪珍)/通信电子电路（第三版） (于洪珍) .pdf"
+    ],
+    "dpi": 150
+  },
+  "chapters_dir": "chapters",
+  "chapters": {
+    "1": {
+      "name": "第1章 绪论",
+      "start_page": 7,
+      "end_page": 7,
+      "problem_count": 5
+    },
+    "2": {
+      "name": "第2章 小信号调谐放大器",
+      "start_page": 52,
+      "end_page": 56,
+      "problem_count": 30
+    },
+    "3": {
+      "name": "第3章 高频调谐功率放大器",
+      "start_page": 88,
+      "end_page": 90,
+      "problem_count": 28
+    },
+    "4": {
+      "name": "第4章 正弦波振荡器",
+      "start_page": 122,
+      "end_page": 123,
+      "problem_count": 16
+    },
+    "5": {
+      "name": "第5章 振幅调制与解调",
+      "start_page": 161,
+      "end_page": 164,
+      "problem_count": 31
+    },
+    "6": {
+      "name": "第6章 角度调制与解调",
+      "start_page": 213,
+      "end_page": 215,
+      "problem_count": 23
+    },
+    "7": {
+      "name": "第7章 变频器",
+      "start_page": 230,
+      "end_page": 231,
+      "problem_count": 19
+    },
+    "8": {
+      "name": "第8章 锁相环路及其他反馈控制电路",
+      "start_page": 255,
+      "end_page": 256,
+      "problem_count": 15
+    },
+    "9": {
+      "name": "第9章 电噪声及其抑制",
+      "start_page": 275,
+      "end_page": 276,
+      "problem_count": 17
+    }
+  },
+  "ai": {
+    "model": "gemini-3.8-flash",
+    "project_id": "citric-biplane-358313",
+    "location": "global",
+    "temperature": 0.2
+  }
+}

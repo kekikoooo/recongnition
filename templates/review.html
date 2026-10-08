@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>切题检查</title>
+<style>
+  :root { --bg:#f8fafc; --card:#fff; --line:#e2e8f0; --text:#0f172a; --muted:#64748b; --accent:#4f46e5;
+          --amber-bg:#fef3c7; --amber:#92400e; --sky-bg:#e0f2fe; --sky:#075985; --rose-bg:#ffe4e6; --rose:#9f1239; }
+  * { box-sizing:border-box; }
+  html, body { height:100%; }
+  body { margin:0; background:var(--bg); color:var(--text); font-family: system-ui, "Microsoft YaHei", sans-serif; font-size:14px;
+         display:flex; flex-direction:column; }
+  header { background:var(--card); border-bottom:1px solid var(--line); padding:8px 16px; display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+  h1 { font-size:16px; margin:0 8px 0 0; }
+  .brand { display:flex; align-items:center; gap:10px; margin-right:10px; }
+  .brand .logo { width:34px; height:34px; border-radius:10px; background:linear-gradient(135deg,#6366f1,#4338ca); color:#fff;
+                 display:flex; align-items:center; justify-content:center; font-size:18px; box-shadow:0 2px 8px rgba(79,70,229,.35); }
+  .brand h1 { margin:0; font-size:17px; font-weight:800; letter-spacing:.5px; line-height:1.1; }
+  .brand small { display:block; font-size:10.5px; font-weight:500; color:var(--muted); letter-spacing:1px; margin-top:2px; }
+  #btn-up { margin-left:auto; background:linear-gradient(135deg,#6366f1,#4f46e5); color:#fff; border:0; padding:6px 14px; font-weight:600;
+            box-shadow:0 2px 8px rgba(79,70,229,.3); }
+  #btn-up:disabled { opacity:.6; cursor:wait; }
+  select, button { font:inherit; font-size:13px; padding:3px 10px; border:1px solid var(--line); border-radius:8px; background:#fff; cursor:pointer; }
+  button.on { background:var(--accent); color:#fff; border-color:var(--accent); }
+  .stat { color:var(--muted); font-size:12px; }
+  .wrap { flex:1; min-height:0; display:flex; }
+  /* 左栏：原 PDF 页 */
+  .left { width:50%; border-right:1px solid var(--line); display:flex; flex-direction:column; min-width:0; }
+  .pagebar { padding:6px 12px; display:flex; gap:8px; align-items:center; border-bottom:1px solid var(--line); background:var(--card); }
+  .pageview { flex:1; overflow:auto; padding:12px; }
+  .page { position:relative; margin:0 auto; background:#fff; }   /* 各页首尾直接相接，靠书页上印的页码区分 */
+  .pageview .page:first-child { border-top:1px solid var(--line); }
+  .page img { display:block; width:100%; height:auto; }
+  .box { position:absolute; border:2px solid rgba(79,70,229,.35); background:rgba(79,70,229,.04); cursor:pointer; }
+  .box span { position:absolute; left:-2px; top:-18px; font-size:11px; padding:0 5px; border-radius:4px; background:rgba(79,70,229,.55); color:#fff; white-space:nowrap; }
+  .box.active { border-color:#e11d48; background:rgba(225,29,72,.07); z-index:2; }
+  .box.active span { background:#e11d48; }
+  .picking, .picking * { cursor:crosshair !important; }
+  .picking .box.edit { pointer-events:none; }
+  .box.pv { border:2px dashed #e11d48; background:rgba(225,29,72,.10); pointer-events:none; z-index:6; }
+  .pdot { position:absolute; width:12px; height:12px; margin:-6px 0 0 -6px; border-radius:50%; background:#e11d48; z-index:7; pointer-events:none; }
+  .box.mask { border:2px dashed #e11d48; background:repeating-linear-gradient(45deg, rgba(225,29,72,.18) 0 6px, rgba(255,255,255,.55) 6px 12px); z-index:4; cursor:pointer; }
+  .box.mask span { background:#e11d48; }
+  .box.dim { opacity:.35; pointer-events:none; }
+  .box.edit { border:2px solid #16a34a; background:rgba(22,163,74,.08); cursor:move; z-index:3; touch-action:none; }
+  .box.edit span { background:#16a34a; }
+  .box.edit.sel { border-style:dashed; box-shadow:0 0 0 2px rgba(22,163,74,.35); }
+  /* 手柄：可见部分小，但外面套一圈透明的大点击区，方便点中 */
+  .h { position:absolute; background:#16a34a; border-radius:3px; z-index:5; }
+  .h::after { content:""; position:absolute; inset:-9px; }
+  .h:hover { background:#e11d48; }
+  .h.n, .h.s { left:50%; width:64px; height:10px; margin-left:-32px; cursor:ns-resize; }
+  .h.e, .h.w { top:50%; height:64px; width:10px; margin-top:-32px; cursor:ew-resize; }
+  .h.n { top:-6px; } .h.s { bottom:-6px; } .h.e { right:-6px; } .h.w { left:-6px; }
+  .editbar { position:sticky; top:-12px; z-index:10; display:none; gap:6px; flex-wrap:wrap; align-items:center; padding:6px 8px;
+             margin:-12px -12px 8px; background:#f0fdf4; border-bottom:1px solid #bbf7d0; font-size:12px; color:#166534; }
+  .editbar.on { display:flex; }
+  .editbar button { font-size:12px; padding:2px 8px; }
+  .editbar .save { background:#16a34a; color:#fff; border-color:#16a34a; }
+  .mi { display:block; width:100%; text-align:left; border:0; border-radius:8px; padding:8px 10px; background:#fff; }
+  .mi:hover { background:#fff1f2; }
+  .mi .sub { white-space:nowrap; font-size:11px; color:var(--muted); margin-top:2px; }
+  .btn-edit { font-size:11px; padding:1px 8px; border-radius:6px; border:1px solid #bbf7d0; background:#f0fdf4; color:#166534; cursor:pointer; }
+  /* 右栏：切片 */
+  .right { width:50%; overflow:auto; padding:12px 16px; display:flex; flex-direction:column; gap:10px; min-width:0; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:8px 10px; cursor:pointer; }
+  .card.active { border-color:#e11d48; box-shadow:0 0 0 2px rgba(225,29,72,.15); }
+  .head { display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-bottom:6px; }
+  .pid { font-weight:700; font-size:15px; margin-right:4px; }
+  .tag { font-size:11px; padding:1px 7px; border-radius:999px; }
+  .t-stitch { background:var(--sky-bg); color:var(--sky); }
+  .t-fig { background:var(--amber-bg); color:var(--amber); }
+  .t-warn { background:var(--rose-bg); color:var(--rose); }
+  .t-ok { background:#dcfce7; color:#166534; }
+  .meta { color:var(--muted); font-size:12px; margin-left:auto; }
+  .card img { display:block; max-width:100%; height:auto; border:1px solid var(--line); border-radius:6px; background:#fff; }
+  .chapter { font-weight:700; color:var(--muted); margin-top:4px; }
+  .empty { color:var(--muted); padding:24px; text-align:center; }
+  a { color:var(--accent); }
+  @media (max-width: 760px) { .wrap { flex-direction:column; } .left, .right { width:100%; } .left { height:55vh; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><div class="logo">✂</div><div><h1>切题检查</h1><small>QUESTION CROPPER</small></div></div>
+  <select id="proj" onchange="switchProj()"></select>
+    <div style="position:relative">
+    <button id="btn-ai" onclick="toggleAiMenu()" style="background:#fff1f2;border-color:#fecdd3;color:#9f1239">🤖 AI 一键修复 ▾</button>
+    <div id="ai-menu" style="display:none;position:absolute;left:0;top:34px;width:340px;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.12);padding:6px;z-index:20">
+      <button class="mi" onclick="startCheck()"><b>🔎 AI 检查切题</b><div class="sub">逐页对照原书，标出可疑切片</div></button>
+      <button class="mi" onclick="startFix()"><b>🛠 AI 一键修复</b><div class="sub">自动调整标出的题，复杂版式留给手动</div></button>
+      <button class="mi" id="mi-edit" onclick="toggleEditMode()"><b>✏️ 调整当前题切片</b><div class="sub">开启后点右边任意题，左边自动出绿框</div></button>
+    </div>
+  </div>
+  <select id="flt" onchange="setFilter(this.value)">
+    <option value="all">全部</option>
+    <option value="stitch">跨页拼接</option>
+    <option value="fig">插图归位</option>
+    <option value="warn">有异常标记</option>
+    <option value="ai">AI 标出的问题</option>
+  </select>
+  <button id="btn-up" onclick="document.getElementById('up-file').click()">⬆ 上传 PDF</button>
+  <input type="file" id="up-file" accept=".pdf,application/pdf" style="display:none" onchange="uploadPdf(this)">
+</header>
+<div id="notes" style="display:none;background:#fef3c7;color:#92400e;border-bottom:1px solid #fcd34d;padding:6px 16px;font-size:12px"></div>
+<div id="ingest" style="display:none;background:#4f46e5;color:#fff;padding:6px 16px;font-size:12px">
+  <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span id="ingest-text"></span><span id="ingest-pct"></span></div>
+  <div style="height:6px;background:rgba(255,255,255,.3);border-radius:4px;overflow:hidden"><div id="ingest-bar" style="height:100%;width:0;background:#fff;transition:width .4s"></div></div>
+</div>
+<div id="progress" style="display:none;background:#fff1f2;border-bottom:1px solid #fecdd3;padding:6px 16px;font-size:12px;color:#9f1239">
+  <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span id="prog-text"></span><span id="prog-pct"></span></div>
+  <div style="height:6px;background:#fecdd3;border-radius:4px;overflow:hidden"><div id="prog-bar" style="height:100%;width:0;background:#e11d48;transition:width .4s"></div></div>
+</div>
+<div class="wrap">
+  <section class="left">
+    <div class="pageview" id="pageview"></div>
+  </section>
+  <section class="right" id="list"></section>
+</div>
+<script>
+let items = [], pages = {}, filter = 'all', curPid = null, curPage = null, aiInfo = '', firstLoad = true, cropRunning = '';
+const FLAG = {
+  stitched: ['跨页拼接', 't-stitch'], stitch_mid_page: ['跨多页拼接', 't-stitch'], stitched_tail: ['跨页拼接(章末)', 't-stitch'],
+  slice_too_short: ['切片过矮', 't-warn'], slice_too_tall: ['切片过高', 't-warn'], slice_empty: ['空切片', 't-warn'],
+  low_ocr_confidence: ['题号识别置信度低', 't-warn'],
+};
+function flagTag(f) {
+  if (FLAG[f]) return FLAG[f];
+  let m;
+  if ((m = f.match(/^figure_from_(.+)/))) return [`补入插图（原在 ${m[1]}）`, 't-fig'];
+  if ((m = f.match(/^figure_moved_to_(.+)/))) return [`插图移给 ${m[1]}`, 't-fig'];
+  if ((m = f.match(/^figure_copied_to_(.+)/))) return [`插图复制给 ${m[1]}`, 't-fig'];
+  if ((m = f.match(/^figure_unresolved_(.+)/))) return [`${m[1]} 的插图未能分开`, 't-warn'];
+  return [f, 't-warn'];
+}
+function ask(msg, okText) {
+  // 页内确认框（浏览器自带弹窗常被拦截）；返回 Promise<boolean>
+  return new Promise(res => {
+    const d = document.getElementById('dlg');
+    document.getElementById('dlg-msg').innerText = msg;
+    const ok = document.getElementById('dlg-ok'), no = document.getElementById('dlg-no');
+    ok.innerText = okText || '继续'; no.style.display = 'inline-block'; d.style.display = 'flex';
+    const done = v => { d.style.display = 'none'; ok.onclick = no.onclick = null; res(v); };
+    ok.onclick = () => done(true); no.onclick = () => done(false);
+  });
+}
+function say(msg) {
+  const d = document.getElementById('dlg');
+  document.getElementById('dlg-msg').innerText = msg;
+  const ok = document.getElementById('dlg-ok'); ok.innerText = '知道了';
+  document.getElementById('dlg-no').style.display = 'none'; d.style.display = 'flex';
+  ok.onclick = () => { d.style.display = 'none'; ok.onclick = null; };
+}
+function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function setFilter(v) {
+  filter = v;
+  document.getElementById('flt').value = v;
+  renderList();
+}
+function match(it) {
+  const f = it.flags || [];
+  if (filter === 'stitch') return f.some(x => x.startsWith('stitch'));
+  if (filter === 'fig') return f.some(x => x.startsWith('figure'));
+  if (filter === 'warn') return f.some(x => flagTag(x)[1] === 't-warn') || (it.issues || []).length > 0;
+  if (filter === 'ai') return it.ai && !it.ai.ok;
+  return true;
+}
+function pagesOf(it) { return [...new Set((it.boxes || []).map(b => b[0]))]; }
+function renderList() {
+  const shown = items.filter(match);
+  let lastCh = null, html = '';
+  for (const it of shown) {
+    if (it.chapter !== lastCh) { html += `<div class="chapter">${esc(it.chapter_name || ('第 ' + it.chapter + ' 部分'))}</div>`; lastCh = it.chapter; }
+    const tags = (it.flags || []).map(f => { const [t, c] = flagTag(f); return `<span class="tag ${c}">${esc(t)}</span>`; }).join('');
+    const issues = (it.issues || []).map(x => `<span class="tag t-warn">${esc(x)}</span>`).join('');
+    const ai = !it.ai ? '' : (it.ai.ok ? '<span class="tag t-ok">AI：没问题</span>' :
+      it.ai.problems.map(x => `<span class="tag t-warn">AI：${esc(x.type)}${x.detail ? '（' + esc(x.detail) + '）' : ''}</span>`).join(''));
+    const pg = pagesOf(it);
+    html += `<div class="card" id="card-${esc(it.problem_id)}" data-pid="${esc(it.problem_id)}" onclick="select('${esc(it.problem_id)}')">
+      <div class="head"><span class="pid">${esc(it.problem_id)}</span>${tags}${issues}${ai}
+      <button class="btn-edit" onclick="event.stopPropagation(); startEdit('${esc(it.problem_id)}')">✏️ 调整切片</button>
+      <span class="meta">原书第 ${esc((pg.length ? pg : [it.page]).join('、'))} 页</span></div>
+      ${it.img ? `<img loading="lazy" src="${esc(it.img)}" alt="${esc(it.problem_id)} 切片">` : '<span class="tag t-warn">没有切片图</span>'}</div>`;
+  }
+  document.getElementById('list').innerHTML = html || (cropRunning && !items.length
+    ? `<div class="empty">正在切题，题目切出来后自动显示在这里（不用刷新）。<br>${esc(cropRunning)}</div>` : '<div class="empty">没有符合条件的题</div>');
+  if (shown.length && !shown.some(x => x.problem_id === curPid)) select(shown[0].problem_id);
+  else if (curPid) select(curPid);
+  observe();
+}
+const savedSet = new Set(), staleSet = new Set();
+function markSaved(pid, solved) { savedSet.add(pid); if (solved) staleSet.add(pid); updateSaveHint(); }
+function updateSaveHint() {
+  const h = document.getElementById('savehint');
+  if (!h) return;
+  h.innerText = savedSet.size ? `　✓ 已保存 ${savedSet.size} 题（${[...savedSet].join('、')}）` +
+    (staleSet.size ? `；其中 ${staleSet.size} 题已有解答，回工作台“重解本题”` : '') : '';
+}
+let editPid = null, editBoxes = [], editMasks = [], selBox = -1, editMode = false;
+function renderPages() {
+  // 左栏：原书各页从上到下连续排列，每页上画出各题切下来的区域；调整切片时当前题的框可拖动
+  const view = document.getElementById('pageview');
+  const nums = Object.keys(pages).map(Number).sort((a, b) => a - b);
+  if (!nums.length) {
+    view.innerHTML = cropRunning ? `<div class="empty">正在切题：${esc(cropRunning)}<br>切完后原书页和切割框会自动出现在这里。</div>`
+      : (items.length ? '<div class="empty">这本书切题较早，没有记录切割位置；重新切题后即可对照原页。</div>' : '<div class="empty">这本书还没有切题结果。</div>');
+    return;
+  }
+  const keep = view.scrollTop;
+  let html = `<div class="editbar ${editMode ? 'on' : ''}" id="editbar"><b>调整模式：${esc(editPid || '')}</b>　拖动绿框的边或整块移动；点右边别的题可切换；
+    <button onclick="startPick('cut')">✂ 点两点扣除一块</button><button onclick="addBox()">＋ 在当前页加一块</button><button onclick="delBox()">删除选中的块</button><span id="pickhint" style="font-weight:700;color:#e11d48"></span><span id="savehint" style="color:#166534"></span>
+    <button class="save" onclick="saveEdit()">保存并重新切图</button><button onclick="cancelEdit()">退出调整</button></div>`;
+  for (const pno of nums) {
+    const info = pages[String(pno)];
+    let boxes = '';
+    const pct = b => `left:${b[3] / info.w * 100}%;top:${b[1] / info.h * 100}%;width:${(b[4] - b[3]) / info.w * 100}%;height:${(b[2] - b[1]) / info.h * 100}%`;
+    for (const it of items) {
+      if (it.problem_id === editPid) continue;
+      (it.boxes || []).forEach(b => {
+        if (b[0] !== pno) return;
+        boxes += `<div class="box ${editPid ? 'dim' : ''}" data-pid="${esc(it.problem_id)}" style="${pct(b)}" onclick="select('${esc(it.problem_id)}', true)"><span>${esc(it.problem_id)}</span></div>`;
+      });
+    }
+    if (editPid) {
+      editMasks.forEach((m, k) => {
+        if (m[0] !== pno) return;
+        boxes += `<div class="box mask" style="${pct(m)}" title="已扣除，点一下恢复" onclick="delMask(${k})"><span>✂ 扣除（点此恢复）</span></div>`;
+      });
+      editBoxes.forEach((b, k) => {
+        if (b[0] !== pno) return;
+        boxes += `<div class="box edit ${k === selBox ? 'sel' : ''}" data-k="${k}" style="${pct(b)}" onpointerdown="dragStart(event, ${k}, 'm')">` +
+          `<span>${esc(editPid)}</span><i class="h n" onpointerdown="dragStart(event, ${k}, 'n')"></i><i class="h s" onpointerdown="dragStart(event, ${k}, 's')"></i>` +
+          `<i class="h e" onpointerdown="dragStart(event, ${k}, 'e')"></i><i class="h w" onpointerdown="dragStart(event, ${k}, 'w')"></i></div>`;
+      });
+    }
+    html += `<div class="page" data-pno="${pno}" style="aspect-ratio:${info.w}/${info.h}"><img loading="lazy" src="${esc(info.url)}" alt="原书第 ${pno} 页" draggable="false">${boxes}</div>`;
+  }
+  view.innerHTML = html;
+  view.scrollTop = keep;
+  updateSaveHint();
+  if (curPid && !editPid) document.querySelectorAll('.box').forEach(b => b.classList.toggle('active', b.dataset.pid === curPid));
+}
+function startEdit(pid) {
+  const it = items.find(x => x.problem_id === pid);
+  editMode = true; updateEditMenu();
+  if (!it || !(it.boxes || []).length) {   // 没有切割记录的题：保持调整模式，只提示一次
+    editPid = null; editBoxes = []; renderPages(); select(pid, false, true);
+    document.getElementById('editbar').className = 'editbar on'; document.getElementById('editbar').innerText = pid + ' 没有记录切割位置，无法调整（重新切题后可用）';
+    return;
+  }
+  editPid = pid; editBoxes = it.boxes.map(b => b.slice()); editMasks = (it.masks || []).map(m => m.slice()); selBox = 0;
+  renderPages();
+  select(pid, false, true);
+  scrollToEditBox(0);
+}
+function toggleEditMode() {
+  toggleAiMenu(false);
+  if (editMode) { cancelEdit(); return; }
+  const pid = curPid || (items[0] && items[0].problem_id);
+  if (!pid) { say('请先在右边选一道题'); return; }
+  startEdit(pid);
+}
+function updateEditMenu() {
+  const m = document.getElementById('mi-edit');
+  if (m) m.innerHTML = editMode ? '<b>✅ 调整模式已开（点此关闭）</b><div class="sub">点右边任意题，左边自动出绿框</div>'
+                               : '<b>✏️ 调整当前题切片</b><div class="sub">开启后点右边任意题，左边自动出绿框</div>';
+}
+function scrollToEditBox(k) {
+  const view = document.getElementById('pageview');
+  const el = view.querySelector(`.box.edit[data-k="${k}"]`);
+  if (el) view.scrollTo({top: Math.max(0, el.getBoundingClientRect().top - view.getBoundingClientRect().top + view.scrollTop - 60), behavior: 'smooth'});
+}
+function cancelEdit() { editMode = false; editPid = null; editBoxes = []; editMasks = []; selBox = -1; updateEditMenu(); renderPages(); if (curPid) select(curPid); }
+let drag = null;
+function dragStart(ev, k, mode) {
+  ev.preventDefault(); ev.stopPropagation();
+  selBox = k;
+  document.querySelectorAll('.box.edit').forEach(b => b.classList.toggle('sel', +b.dataset.k === k));
+  const pageEl = ev.target.closest('.page');
+  const info = pages[pageEl.dataset.pno];
+  drag = {k, mode, x: ev.clientX, y: ev.clientY, b: editBoxes[k].slice(), scale: info.w / pageEl.clientWidth, info, el: ev.target.closest('.box')};
+  window.addEventListener('pointermove', dragMove);
+  window.addEventListener('pointerup', dragEnd, {once: true});
+}
+function dragMove(ev) {
+  if (!drag) return;
+  const dx = (ev.clientX - drag.x) * drag.scale, dy = (ev.clientY - drag.y) * drag.scale;
+  const b = drag.b.slice(), W = drag.info.w, H = drag.info.h, MIN = 10;
+  if (drag.mode === 'm') { const h = b[2] - b[1], w = b[4] - b[3];
+    b[1] = Math.min(Math.max(0, b[1] + dy), H - h); b[2] = b[1] + h; b[3] = Math.min(Math.max(0, b[3] + dx), W - w); b[4] = b[3] + w; }
+  if (drag.mode === 'n') b[1] = Math.min(Math.max(0, b[1] + dy), b[2] - MIN);
+  if (drag.mode === 's') b[2] = Math.max(Math.min(H, b[2] + dy), b[1] + MIN);
+  if (drag.mode === 'w') b[3] = Math.min(Math.max(0, b[3] + dx), b[4] - MIN);
+  if (drag.mode === 'e') b[4] = Math.max(Math.min(W, b[4] + dx), b[3] + MIN);
+  editBoxes[drag.k] = b.map((v, i) => i === 0 ? v : Math.round(v));
+  const e = drag.el, q = editBoxes[drag.k];
+  e.style.left = q[3] / W * 100 + '%'; e.style.top = q[1] / H * 100 + '%';
+  e.style.width = (q[4] - q[3]) / W * 100 + '%'; e.style.height = (q[2] - q[1]) / H * 100 + '%';
+}
+function dragEnd() { window.removeEventListener('pointermove', dragMove); drag = null; }
+function visiblePage() {
+  // 左栏视野中间那一页
+  const view = document.getElementById('pageview'), mid = view.getBoundingClientRect().top + view.clientHeight / 2;
+  let best = null;
+  view.querySelectorAll('.page').forEach(p => { const r = p.getBoundingClientRect(); if (r.top <= mid && r.bottom >= mid) best = +p.dataset.pno; });
+  return best || +Object.keys(pages)[0];
+}
+function addBox() {
+  const pno = visiblePage(), info = pages[String(pno)];
+  const view = document.getElementById('pageview');
+  const pageEl = view.querySelector(`.page[data-pno="${pno}"]`);
+  const scale = info.w / pageEl.clientWidth;
+  const vr = view.getBoundingClientRect(), pr = pageEl.getBoundingClientRect();
+  const yMid = (vr.top + view.clientHeight / 2 - pr.top) * scale;
+  const xMid = (Math.max(pr.left, Math.min(pr.right, vr.left + view.clientWidth / 2)) - pr.left) * scale;
+  // 默认是视野中间的一个中等矩形（约一幅插图大小），直接拖到插图/漏掉的那块上再调边
+  const w = Math.round(info.w * 0.36), h = Math.round(info.w * 0.30);
+  const x0 = Math.round(Math.min(Math.max(0, xMid - w / 2), info.w - w));
+  const y0 = Math.round(Math.min(Math.max(0, yMid - h / 2), Math.max(0, info.h - h)));
+  editBoxes.push([pno, y0, Math.min(info.h, y0 + h), x0, x0 + w]);
+  selBox = editBoxes.length - 1;
+  renderPages();
+}
+let pick = null;
+function startPick(mode) {
+  pick = {mode, stage: 0};
+  document.getElementById('pageview').classList.add('picking');
+  setPickHint('在原页上点第 1 个点（要扣除区域的一个角），再点对角；Esc 取消');
+}
+function setPickHint(t) { const h = document.getElementById('pickhint'); if (h) h.innerText = t ? '　' + t : ''; }
+function endPick() {
+  pick = null; document.getElementById('pageview').classList.remove('picking');
+  document.querySelectorAll('.pv, .pdot').forEach(e => e.remove()); setPickHint('');
+}
+function pagePoint(ev) {
+  const pageEl = ev.target.closest ? ev.target.closest('.page') : null;
+  if (!pageEl) return null;
+  const info = pages[pageEl.dataset.pno], r = pageEl.getBoundingClientRect(), sc = info.w / r.width;
+  return {pageEl, pno: +pageEl.dataset.pno, w: info.w, h: info.h, x: Math.min(info.w, Math.max(0, Math.round((ev.clientX - r.left) * sc))),
+          y: Math.min(info.h, Math.max(0, Math.round((ev.clientY - r.top) * sc)))};
+}
+function pickRect(a, b) { return [a.pno, Math.min(a.y, b.y), Math.max(a.y, b.y), Math.min(a.x, b.x), Math.max(a.x, b.x)]; }
+document.getElementById('pageview').addEventListener('click', ev => {
+  if (!pick) return;
+  const pt = pagePoint(ev);
+  if (!pt) return;
+  ev.preventDefault(); ev.stopPropagation();
+  if (pick.stage === 0) {
+    pick.a = pt; pick.stage = 1;
+    const dot = document.createElement('div'); dot.className = 'pdot';
+    dot.style.left = pt.x / pt.w * 100 + '%'; dot.style.top = pt.y / pt.h * 100 + '%'; pt.pageEl.appendChild(dot);
+    const pv = document.createElement('div'); pv.className = 'box pv'; pt.pageEl.appendChild(pv); pick.pv = pv;
+    setPickHint('再点对角（同一页内）；Esc 取消');
+    return;
+  }
+  if (pt.pno !== pick.a.pno) { setPickHint('两个点要在同一页上；跨页的题请分别加一块'); return; }
+  const r = pickRect(pick.a, pt);
+  if (r[2] - r[1] < 10 || r[4] - r[3] < 10) { setPickHint('矩形太小，请重新点对角'); return; }
+  editMasks.push(r);                 // 扣除：这块区域在切片里涂白去掉
+  endPick(); renderPages();
+}, true);
+document.getElementById('pageview').addEventListener('mousemove', ev => {
+  if (!pick || pick.stage !== 1) return;
+  const pt = pagePoint(ev);
+  if (!pt || pt.pno !== pick.a.pno) return;
+  const r = pickRect(pick.a, pt);
+  Object.assign(pick.pv.style, {left: r[3] / pt.w * 100 + '%', top: r[1] / pt.h * 100 + '%', width: (r[4] - r[3]) / pt.w * 100 + '%', height: (r[2] - r[1]) / pt.h * 100 + '%'});
+});
+document.addEventListener('keydown', ev => { if (ev.key === 'Escape' && pick) endPick(); });
+function delMask(k) { editMasks.splice(k, 1); renderPages(); }
+function delBox() {
+  if (selBox < 0 || editBoxes.length <= 1) { say('至少要保留一块'); return; }
+  editBoxes.splice(selBox, 1); selBox = Math.min(selBox, editBoxes.length - 1);
+  renderPages();
+}
+async function saveEdit() {
+  const pid = editPid;
+  const res = await fetch('/api/review/boxes', {method: 'POST', headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({pid, boxes: editBoxes, masks: editMasks, project_id: document.getElementById('proj').value})});
+  const d = await res.json();
+  if (!d.ok) { say('保存失败：' + (d.error || '')); return; }
+  editPid = null; editBoxes = []; editMasks = []; selBox = -1;
+  await load(pid);
+  select(pid);
+  markSaved(pid, d.solved);
+}
+function select(pid, fromPage = false, noSwitch = false) {
+  curPid = pid;
+  if (editMode && !noSwitch && editPid !== pid) { startEdit(pid); return; }
+  document.querySelectorAll('.card').forEach(c => c.classList.toggle('active', c.dataset.pid === pid));
+  const boxes = document.querySelectorAll('.box');
+  boxes.forEach(b => b.classList.toggle('active', b.dataset.pid === pid));
+  const view = document.getElementById('pageview');
+  const first = [...boxes].find(b => b.dataset.pid === pid);
+  if (fromPage) {
+    // 点了左边的框：右边滚到这道题
+    scrollLock = Date.now() + 900;
+    const c = document.getElementById('card-' + pid);
+    if (c) c.scrollIntoView({block: 'start', behavior: 'smooth'});
+  } else if (first) {
+    // 右边选到哪题，左边滚到它的框
+    const top = first.getBoundingClientRect().top - view.getBoundingClientRect().top + view.scrollTop - 30;
+    view.scrollTo({top: Math.max(0, top), behavior: 'smooth'});
+  }
+}
+let io = null, scrollLock = 0;
+function observe() {
+  // 右栏滚动时，左栏跟着显示最上面那道题所在的页
+  if (io) io.disconnect();
+  io = new IntersectionObserver(entries => {
+    const vis = entries.filter(e => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+    if (vis.length && Date.now() > scrollLock && !editMode) select(vis[0].target.dataset.pid);
+  }, {root: document.getElementById('list'), rootMargin: '0px 0px -70% 0px'});
+  document.querySelectorAll('.card').forEach(c => io.observe(c));
+}
+document.getElementById('list').addEventListener('click', () => { scrollLock = Date.now() + 800; });
+function toggleAiMenu(force) {
+  const m = document.getElementById('ai-menu');
+  m.style.display = (force === undefined ? m.style.display === 'none' : force) ? 'block' : 'none';
+}
+document.addEventListener('click', e => { if (!e.target.closest('#btn-ai') && !e.target.closest('#ai-menu')) toggleAiMenu(false); });
+
+function editCurrent() {
+  toggleAiMenu(false);
+  const pid = curPid || (items[0] && items[0].problem_id);
+  if (!pid) { say('请先在右边选一道题'); return; }
+  startEdit(pid);
+}
+let aiTimer = null;
+function showProgress(text, done, total, finished) {
+  document.getElementById('progress').style.display = 'block';
+  document.getElementById('prog-text').innerText = text;
+  const pct = total ? Math.round(done / total * 100) : (finished ? 100 : 0);
+  document.getElementById('prog-pct').innerText = total ? `${done}/${total} 页·题  ${pct}%` : '';
+  document.getElementById('prog-bar').style.width = pct + '%';
+}
+function watch(kind) {
+  // kind: 'check' | 'fix'；轮询后台进度，完成后刷新页面数据
+  const url = kind === 'check' ? '/api/cropcheck/status' : '/api/cropfix/status';
+  const title = kind === 'check' ? 'AI 检查切题' : 'AI 一键修复';
+  const btn = document.getElementById('btn-ai');
+  btn.disabled = true;
+  if (aiTimer) clearInterval(aiTimer);
+  const tick = async () => {
+    const st = await (await fetch(url)).json();
+    showProgress(`${title}：${st.message || '进行中…'}`, st.done || 0, st.total || 0, !st.is_running);
+    if (!st.is_running) {
+      clearInterval(aiTimer); aiTimer = null; btn.disabled = false;
+      await load(curPid);
+      showProgress(`${title}：${st.message}`, st.total || 1, st.total || 1, true);
+      if (kind === 'check' && !st.error) setFilter('ai');
+      setTimeout(() => { if (!aiTimer) document.getElementById('progress').style.display = 'none'; }, 15000);
+    }
+  };
+  tick();
+  aiTimer = setInterval(tick, 2500);
+}
+async function startCheck() {
+  toggleAiMenu(false);
+  const proj = document.getElementById('proj').value;
+  const est = await (await fetch('/api/cropcheck/estimate')).json();
+  if (!est.has_boxes) { say('这本书没有记录切割位置，请先回工作台“继续构建”重新切题'); return; }
+  const tok = est.tokens >= 1e4 ? (est.tokens / 1e4).toFixed(1) + ' 万' : est.tokens;
+  if (!await ask(`AI 将逐页对照原书检查《${proj}》的切题：共 ${est.pages} 页、${est.problems} 题，预计约 ${tok} token。继续？`)) return;
+  const r = await (await fetch('/api/cropcheck/start', {method: 'POST'})).json();
+  if (!r.ok) { say('无法开始：' + (r.error || '')); return; }
+  showProgress('AI 检查切题：开始…', 0, est.pages, false);
+  watch('check');
+}
+async function startFix() {
+  toggleAiMenu(false);
+  const n = items.filter(x => x.ai && !x.ai.ok).length;
+  if (!n) { say('还没有 AI 标出的问题：请先点“AI 检查切题”'); return; }
+  if (!await ask(`AI 将尝试修复 ${n} 道被标出的题（自动调整边界，修完复查）。复杂版式会留给你手动调整。继续？`)) return;
+  const r = await (await fetch('/api/cropfix/start', {method: 'POST', headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({project_id: document.getElementById('proj').value})})).json();
+  if (!r.ok) { say('无法开始：' + (r.error || '')); return; }
+  showProgress('AI 一键修复：开始…', 0, n, false);
+  watch('fix');
+}
+const INGEST_STAGE = {crop: '切题', text: '核对题干', solve: '解题', verify: '检验', aggregate: '汇编', pdf: '编译PDF', done: '完成', error: '失败'};
+let ingestHideAt = 0;
+async function pollIngest() {
+  // 书的构建进度（切题 / 转写 / 解题 / 出 PDF）：在切题检查页也显示，不必回工作台看
+  try {
+    const st = await (await fetch('/api/ingest/status')).json();
+    const box = document.getElementById('ingest');
+    if (st.is_running || (st.stage && st.stage !== 'idle' && Date.now() < ingestHideAt)) {
+      box.style.display = 'block';
+      box.style.background = st.stage === 'error' ? '#e11d48' : (st.stage === 'done' ? '#16a34a' : '#4f46e5');
+      document.getElementById('ingest-text').innerText = `构建《${st.project}》${INGEST_STAGE[st.stage] || st.stage}：${st.message || ''}`;
+      document.getElementById('ingest-pct').innerText = (st.pct || 0) + '%';
+      document.getElementById('ingest-bar').style.width = (st.pct || 0) + '%';
+      if (st.is_running) ingestHideAt = Date.now() + 20000;
+    } else if (box.style.display !== 'none' && Date.now() >= ingestHideAt) box.style.display = 'none';
+    // 正在切当前这本：两栏显示进度；切题阶段一结束自动载入切片
+    const mine = st.project === document.getElementById('proj').value;
+    const was = cropRunning;
+    cropRunning = (mine && st.is_running && st.stage === 'crop') ? (st.message || '进行中…') : '';
+    if (mine && was && !cropRunning) await load(curPid);
+    else if (cropRunning && !items.length && cropRunning !== was) { renderPages(); renderList(); }
+  } catch (e) {}
+}
+setInterval(pollIngest, 3000); pollIngest();
+async function uploadPdf(inp) {
+  const f = inp.files[0]; inp.value = '';
+  if (!f) return;
+  const btn = document.getElementById('btn-up');
+  btn.disabled = true; btn.innerText = '上传中…';
+  try {
+    const fd = new FormData();
+    fd.append('file', f); fd.append('auto_solve', '0');   // 这里只切题，不解题
+    const r = await fetch('/api/upload', {method: 'POST', body: fd});
+    const d = await r.json();
+    if (!r.ok || !d.ok) { alert(d.error || '上传失败'); return; }
+    const sel = document.getElementById('proj');
+    if (![...sel.options].some(o => o.value === d.project_id)) sel.add(new Option(d.project_id, d.project_id));
+    sel.value = d.project_id;
+    ingestHideAt = Date.now() + 20000;
+    await switchProj();
+    pollIngest();
+  } catch (e) { alert('上传失败：' + e); }
+  finally { btn.disabled = false; btn.innerText = '⬆ 上传 PDF'; }
+}
+async function switchProj() {
+  // 检查/修复接口作用于服务端“当前项目”，下拉切换时同步过去
+  cancelEdit();
+  await fetch('/api/projects/switch', {method: 'POST', headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({project_id: document.getElementById('proj').value})});
+  await load();
+}
+async function load(keepPid) {
+  const sel = document.getElementById('proj');
+  const d = await (await fetch('/api/review' + (sel.value ? '?project_id=' + encodeURIComponent(sel.value) : ''))).json();
+  if ([...sel.options].map(o => o.value).join('|') !== d.projects.join('|')) {
+    sel.innerHTML = d.projects.map(p => `<option value="${esc(p)}" ${p === d.project ? 'selected' : ''}>${esc(p)}</option>`).join('');
+  }
+  const nb = document.getElementById('notes');
+  if ((d.notes || []).length) { nb.style.display = 'block'; nb.innerHTML = '<b>⚠ 切题提示</b>　' + d.notes.map(esc).join('　｜　'); }
+  else nb.style.display = 'none';
+  items = d.items; pages = d.pages || {}; curPid = keepPid || null;
+  renderPages();
+  aiInfo = d.ai_checked_at ? `AI 检查于 ${d.ai_checked_at}` + ((d.ai_missing || []).length ? `；疑似漏题：${d.ai_missing.map(m => m.pid + '（第' + m.page + '页）').join('、')}` : '') : '尚未做 AI 检查';
+  if (firstLoad && new URLSearchParams(location.search).get('ai') === '1') {
+    firstLoad = false; setFilter('ai'); return;
+  }
+  firstLoad = false;
+  renderList();
+}
+load();
+</script>
+<div id="dlg" style="display:none;position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:100;align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:14px;padding:18px 20px;width:min(440px,92vw);box-shadow:0 12px 40px rgba(0,0,0,.25)">
+    <div id="dlg-msg" style="font-size:14px;line-height:1.6;white-space:pre-wrap"></div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:14px">
+      <button id="dlg-no" style="display:none">取消</button>
+      <button id="dlg-ok" style="background:#4f46e5;color:#fff;border-color:#4f46e5">好</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>

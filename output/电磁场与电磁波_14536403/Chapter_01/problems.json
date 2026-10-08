@@ -1,0 +1,441 @@
+[
+  {
+    "problem_id": "1.1",
+    "text": "已知 $\\boldsymbol{A}$、$\\boldsymbol{B}$ 和 $\\boldsymbol{C}$ 为任意矢量，\n\n(1) 若 $\\boldsymbol{A}\\cdot\\boldsymbol{B}=\\boldsymbol{A}\\cdot\\boldsymbol{C}$，则是否意味着 $\\boldsymbol{B}$ 总等于 $\\boldsymbol{C}$ 呢？试讨论之；\n\n(2) 试证明：$\\boldsymbol{A}\\cdot(\\boldsymbol{B}\\times\\boldsymbol{C})=\\boldsymbol{B}\\cdot(\\boldsymbol{C}\\times\\boldsymbol{A})=\\boldsymbol{C}\\cdot(\\boldsymbol{A}\\times\\boldsymbol{B})$。",
+    "page": 32,
+    "boxes": [
+      [
+        32,
+        1438,
+        1554,
+        4,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "1.2",
+    "text": "给定三个矢量 $\\boldsymbol{A}$、$\\boldsymbol{B}$ 和 $\\boldsymbol{C}$ 如下：\n\n$$\n\n\\boldsymbol{A}=\\boldsymbol{a}_x+2\\boldsymbol{a}_y-3\\boldsymbol{a}_z\n\n$$\n\n$$\n\n\\boldsymbol{B}=-4\\boldsymbol{a}_y+\\boldsymbol{a}_z\n\n$$\n\n$$\n\n\\boldsymbol{C}=5\\boldsymbol{a}_x-2\\boldsymbol{a}_z\n\n$$\n\n求：\n\n(1) 矢量 $\\boldsymbol{A}$ 的单位矢量 $\\boldsymbol{a}_A$；\n\n(2) 矢量 $\\boldsymbol{A}$ 和 $\\boldsymbol{B}$ 的夹角 $\\theta_{AB}$；\n\n(3) $\\boldsymbol{A}\\cdot\\boldsymbol{B}$ 和 $\\boldsymbol{A}\\times\\boldsymbol{B}$；\n\n(4) $\\boldsymbol{A}\\cdot(\\boldsymbol{B}\\times\\boldsymbol{C})$ 和 $(\\boldsymbol{A}\\times\\boldsymbol{B})\\cdot\\boldsymbol{C}$；\n\n(5) $\\boldsymbol{A}\\times(\\boldsymbol{B}\\times\\boldsymbol{C})$ 和 $(\\boldsymbol{A}\\times\\boldsymbol{B})\\times\\boldsymbol{C}$。",
+    "page": 32,
+    "boxes": [
+      [
+        32,
+        1554,
+        1672,
+        4,
+        1241
+      ],
+      [
+        33,
+        154,
+        421,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "1.3",
+    "text": "有一个二维矢量场 $\\boldsymbol{F}(\\boldsymbol{r})=\\boldsymbol{a}_x(-y)+\\boldsymbol{a}_y(x)$，求其矢量线方程，并\n\n定性画出该矢量场图形。",
+    "page": 33,
+    "boxes": [
+      [
+        33,
+        422,
+        499,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "1.4",
+    "text": "已知直角坐标系中的点 $P_1(-3, 1, 4)$ 和 $P_2(2, -2, 3)$：\n\n(1) 在直角坐标系中写出点 $P_1$、$P_2$ 的位置矢量 $\\boldsymbol{r}_1$ 和 $\\boldsymbol{r}_2$；\n\n(2) 求点 $P_1$ 到 $P_2$ 的距离矢量的大小和方向；\n\n(3) 求矢量 $\\boldsymbol{r}_1$ 在 $\\boldsymbol{r}_2$ 的投影。",
+    "page": 33,
+    "boxes": [
+      [
+        33,
+        500,
+        621,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "1.5",
+    "text": "写出空间任一点在直角坐标系的位置矢量表达式，并将此位置矢\n\n量分别变换成在圆柱坐标系中和球坐标系中的位置矢量。",
+    "page": 33,
+    "boxes": [
+      [
+        33,
+        656,
+        731,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "1.6",
+    "text": "求数量场 $\\psi=\\ln(x^2+y^2+z^2)$ 通过点 $P(1, 2, 3)$ 的等值面方程。",
+    "page": 33,
+    "boxes": [
+      [
+        33,
+        731,
+        774,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "1.7",
+    "text": "用球坐标表示的场 $\\boldsymbol{E}=\\boldsymbol{a}_r\\frac{25}{r^2}$，求：\n\n(1) 在直角坐标系中的点 $(-3, 4, -5)$ 处的 $|\\boldsymbol{E}|$ 和 $E_z$；\n\n(2) $\\boldsymbol{E}$ 与矢量 $\\boldsymbol{B}=2\\boldsymbol{a}_x-2\\boldsymbol{a}_y+\\boldsymbol{a}_z$ 之间的夹角。",
+    "page": 33,
+    "boxes": [
+      [
+        33,
+        774,
+        933,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "1.8",
+    "text": "试计算 $\\oint_S \\boldsymbol{r}\\cdot\\text{d}\\boldsymbol{S}$ 的值，式中的闭合曲面 $S$ 是以原点为顶点的单位立\n\n方体，$\\boldsymbol{r}$ 为空间任一点的位置矢量。",
+    "page": 33,
+    "boxes": [
+      [
+        33,
+        933,
+        1020,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "1.9",
+    "text": "求标量场 $\\psi(x, y, z)=6x^2y^3+\\text{e}^z$ 在点 $P(2, -1, 0)$ 的梯度。",
+    "page": 33,
+    "boxes": [
+      [
+        33,
+        1021,
+        1060,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "1.10",
+    "text": "在圆柱体 $x^2+y^2=9$ 和平面 $x=0$、$y=0$、$z=0$ 及 $z=2$ 所包围的\n\n第一象限区域，设此区域的表面为 $S$：\n\n(1) 求矢量场 $\\boldsymbol{A}$ 沿闭合曲面 $S$ 的通量，其中矢量场 $\\boldsymbol{A}$ 的表达式为\n\n$$\n\n\\boldsymbol{A}=\\boldsymbol{a}_x 3x^2+\\boldsymbol{a}_y(3y+z)+\\boldsymbol{a}_z(3z-x)\n\n$$\n\n(2) 验证散度定理。",
+    "page": 33,
+    "boxes": [
+      [
+        33,
+        1060,
+        1271,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "1.11",
+    "text": "从 $P(0, 0, 0)$ 到 $Q(1, 1, 0)$ 计算 $\\int_C \\boldsymbol{A}\\cdot\\text{d}\\boldsymbol{l}$，其中矢量场 $\\boldsymbol{A}$ 的表达\n\n式为\n\n$$\n\n\\boldsymbol{A}=\\boldsymbol{a}_x 4x-\\boldsymbol{a}_y 14y^2\n\n$$\n\n曲线 $C$ 沿下列路径：\n\n(1) $x=t$，$y=t^2$；\n\n(2) 从 $(0, 0, 0)$ 沿 $x$ 轴到 $(1, 0, 0)$，再沿 $x=1$ 到 $(1, 1, 0)$；\n\n(3) 此矢量场为保守场吗？",
+    "page": 33,
+    "boxes": [
+      [
+        33,
+        1271,
+        1551,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "1.12",
+    "text": "(1) 若矢量场 $\\boldsymbol{A}=(2+16r^2)\\boldsymbol{a}_z$，在半径为 $2$ 和 $0\\leqslant\\theta\\leqslant\\pi/2$ 的半球\n\n面上计算 $\\int_S \\boldsymbol{A}\\cdot\\text{d}\\boldsymbol{S}$ 的值；\n\n(2) 若矢量场 $\\boldsymbol{A}=10\\cos^2\\varphi\\,\\boldsymbol{a}_z$，求穿过 $xy$ 平面上半径为 $2$ 的圆面的通量\n\n$\\int_S \\boldsymbol{A}\\cdot\\text{d}\\boldsymbol{S}$。",
+    "page": 33,
+    "boxes": [
+      [
+        33,
+        1553,
+        1657,
+        0,
+        1241
+      ],
+      [
+        34,
+        165,
+        269,
+        4,
+        1096
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "1.13",
+    "text": "求矢量 $\\boldsymbol{A}=\\boldsymbol{a}_x x+\\boldsymbol{a}_y xy^2$ 沿圆周 $x^2+y^2=a^2$ 的线积分，再求 $\\nabla\\times\\boldsymbol{A}$\n\n对此圆周所包围的表面积分，验证斯托克斯定理。",
+    "page": 34,
+    "boxes": [
+      [
+        34,
+        272,
+        353,
+        4,
+        1096
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "1.14",
+    "text": "在球坐标系中，已知标量函数 $\\phi=\\frac{p_e\\cos\\theta}{4\\pi\\varepsilon_0 r^2}$，其中 $p_e$ 和 $\\varepsilon_0$ 均为常\n\n数，求矢量场 $\\boldsymbol{E}=-\\nabla\\phi$。",
+    "page": 34,
+    "boxes": [
+      [
+        34,
+        355,
+        464,
+        4,
+        1096
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "1.15",
+    "text": "求下列标量场的梯度：\n\n(1) $u=xyz+x^2$\n\n(2) $u=4x^2y+y^2z-4xz$\n\n(3) $u=5yz+x^3$",
+    "page": 34,
+    "boxes": [
+      [
+        34,
+        464,
+        620,
+        4,
+        1096
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "1.16",
+    "text": "求下列矢量场在给定点的散度：\n\n(1) $\\boldsymbol{A}=\\boldsymbol{a}_x x^3+\\boldsymbol{a}_y y^3+\\boldsymbol{a}_z(3z-x)$ 在点 $P(1, 0, -1)$；\n\n(2) $\\boldsymbol{A}=\\boldsymbol{a}_x x^2y+\\boldsymbol{a}_y yz+\\boldsymbol{a}_z 3z^2$ 在点 $P(1, 1, 0)$。",
+    "page": 34,
+    "boxes": [
+      [
+        34,
+        620,
+        741,
+        4,
+        1096
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "1.17",
+    "text": "求下列矢量场的旋度：\n\n(1) $\\boldsymbol{A}=\\boldsymbol{a}_x x^2+\\boldsymbol{a}_y y^2+\\boldsymbol{a}_z 3z^2$\n\n(2) $\\boldsymbol{A}=\\boldsymbol{a}_x yz+\\boldsymbol{a}_y xz+\\boldsymbol{a}_z xy$",
+    "page": 34,
+    "boxes": [
+      [
+        34,
+        741,
+        858,
+        4,
+        1096
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "1.18",
+    "text": "现有三个矢量场 $\\boldsymbol{A}$、$\\boldsymbol{B}$ 和 $\\boldsymbol{C}$，已知：\n\n$$\n\n\\boldsymbol{A}=\\boldsymbol{a}_r\\sin\\theta\\cos\\varphi+\\boldsymbol{a}_\\theta\\cos\\theta\\cos\\varphi-\\boldsymbol{a}_\\varphi\\sin\\varphi\n\n$$\n\n$$\n\n\\boldsymbol{B}=\\boldsymbol{a}_\\rho z^2\\sin\\varphi+\\boldsymbol{a}_\\varphi z^2\\cos\\varphi+\\boldsymbol{a}_z 2\\rho z\\sin\\varphi\n\n$$\n\n$$\n\n\\boldsymbol{C}=\\boldsymbol{a}_x(3y^2-2x)+\\boldsymbol{a}_y 3x^2+\\boldsymbol{a}_z 2z\n\n$$\n\n(1) 试问：哪些矢量场为无旋场？哪些矢量场为无散场？\n\n(2) 试问：哪些矢量场可以用一个标量函数的梯度来表示？哪些矢量场\n\n可以用一个矢量函数的旋度来表示？\n\n(3) 求出它们的源分布。",
+    "page": 34,
+    "boxes": [
+      [
+        34,
+        858,
+        1178,
+        4,
+        1096
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "1.19",
+    "text": "已知直角坐标系中的点 $P(x, y, z)$ 和点 $Q(x', y', z')$，求：\n\n(1) $P$ 点的位置矢量 $\\boldsymbol{r}$ 和 $Q$ 点的位置矢量 $\\boldsymbol{r}'$；\n\n(2) 从 $Q$ 点到 $P$ 点的距离矢量 $\\boldsymbol{R}$；\n\n(3) $\\nabla\\times\\boldsymbol{r}$ 和 $\\nabla\\cdot\\boldsymbol{r}$；\n\n(4) $\\nabla\\left(\\frac{1}{R}\\right)$。",
+    "page": 34,
+    "boxes": [
+      [
+        34,
+        1178,
+        1399,
+        4,
+        1096
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "1.20",
+    "text": "证明矢量场\n\n$$\n\n\\boldsymbol{A}=\\boldsymbol{a}_x(y^2+2xz^2)+\\boldsymbol{a}_y(2xy-z)+\\boldsymbol{a}_z(2x^2z-y+2z)\n\n$$\n\n为有势场。",
+    "page": 34,
+    "boxes": [
+      [
+        34,
+        1403,
+        1518,
+        4,
+        1096
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "1.21",
+    "text": "在直角坐标中，证明\n\n$$\n\n\\nabla\\cdot(\\psi\\boldsymbol{A})=\\psi\\nabla\\cdot\\boldsymbol{A}+\\boldsymbol{A}\\cdot\\nabla\\psi\n\n$$",
+    "page": 34,
+    "boxes": [
+      [
+        34,
+        1519,
+        1598,
+        4,
+        1096
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "1.22",
+    "text": "在直角坐标中，证明\n\n$$\n\n\\nabla\\times(\\psi\\boldsymbol{A})=\\psi\\nabla\\times\\boldsymbol{A}+(\\nabla\\psi)\\times\\boldsymbol{A}\n\n$$",
+    "page": 34,
+    "boxes": [
+      [
+        34,
+        1598,
+        1679,
+        4,
+        1096
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "1.23",
+    "text": "求函数 $\\phi=3x^2y-y^2$ 在点 $P(2, 3)$ 处沿曲线 $y=x^2-1$ 朝 $x$ 增大\n\n方向的方向导数。",
+    "page": 35,
+    "boxes": [
+      [
+        35,
+        148,
+        224,
+        155,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "1.24",
+    "text": "若矢量场\n\n$$\n\n\\boldsymbol{A}=\\boldsymbol{a}_x(5+2z)+\\boldsymbol{a}_y(3x-2)+\\boldsymbol{a}_z(4x-1)\n\n$$\n\n试在由半球面 $x^2+y^2+z^2=4$ 和平面 $z=0$ 组成的闭合曲面上验证高斯定理。",
+    "page": 35,
+    "boxes": [
+      [
+        35,
+        225,
+        344,
+        155,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "1.25",
+    "text": "在直角坐标中，证明：\n\n(1) 一个矢量场的旋度的散度恒等于零，即 $\\nabla\\cdot(\\nabla\\times\\boldsymbol{A})\\equiv 0$；\n\n(2) 一个标量场的梯度的旋度恒等于零，即 $\\nabla\\times(\\nabla\\psi)\\equiv 0$。",
+    "page": 35,
+    "boxes": [
+      [
+        35,
+        344,
+        465,
+        155,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  }
+]

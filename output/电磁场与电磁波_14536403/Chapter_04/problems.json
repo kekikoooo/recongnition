@@ -1,0 +1,322 @@
+[
+  {
+    "problem_id": "4.1",
+    "text": "自由空间中有一半径为 $a$ 的载流线圈，电流强度为 $I$，求其轴线上\n\n任一点处的磁通密度。",
+    "page": 117,
+    "boxes": [
+      [
+        117,
+        1615,
+        1655,
+        0,
+        1241
+      ],
+      [
+        118,
+        160,
+        199,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "4.2",
+    "text": "真空中直线长电流 $I$ 的磁场中有一等边三角形回路，如题 4.2 图所\n\n示【见原图】，求通过三角形回路的磁通量。",
+    "page": 118,
+    "boxes": [
+      [
+        118,
+        199,
+        276,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": true
+  },
+  {
+    "problem_id": "4.3",
+    "text": "若半径为 $a$、电流为 $I$ 的无限长圆柱导体置于空气中，已知导体的\n\n磁导率为 $\\mu_0$，求导体内、外的磁场强度 $\\boldsymbol{H}$ 和磁通密度 $\\boldsymbol{B}$。",
+    "page": 118,
+    "boxes": [
+      [
+        118,
+        276,
+        355,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "4.4",
+    "text": "如果在半径为 $a$、电流为 $I$ 的无限长圆柱导体内有一个不同轴的半\n\n径为 $b$ 的圆柱空腔，两轴线的距离为 $c$，且 $c+b<a$，如题 4.4 图所示【见原图】。求空腔\n\n内的磁通密度。",
+    "page": 118,
+    "boxes": [
+      [
+        118,
+        355,
+        820,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": true
+  },
+  {
+    "problem_id": "4.5",
+    "text": "在下面的矢量中，哪些可能是磁通密度 $\\boldsymbol{B}$？如果是，与它相应的电\n\n流密度 $\\boldsymbol{J}$ 为多少？\n\n(1) $\\boldsymbol{F}=\\boldsymbol{a}_\\rho\\rho$（圆柱坐标系）；\n\n(2) $\\boldsymbol{F}=-\\boldsymbol{a}_x y+\\boldsymbol{a}_y x$；\n\n(3) $\\boldsymbol{F}=\\boldsymbol{a}_x x-\\boldsymbol{a}_y y$；\n\n(4) $\\boldsymbol{F}=-\\boldsymbol{a}_\\varphi r$（球坐标系）。",
+    "page": 118,
+    "boxes": [
+      [
+        118,
+        833,
+        1063,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "4.6",
+    "text": "已知某电流在空间产生的磁矢位是\n\n$$\n\n\\boldsymbol{A}=\\boldsymbol{a}_x x^2y+\\boldsymbol{a}_y xy^2+\\boldsymbol{a}_z(y^2-z^2)\n\n$$\n\n求磁感应强度 $\\boldsymbol{B}$。",
+    "page": 118,
+    "boxes": [
+      [
+        118,
+        1064,
+        1178,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "4.7",
+    "text": "两半径为 $a$ 且平行放置的长直圆柱导体，轴线距离为 $d(d<2a)$。现\n\n将相交部分挖成一空洞，并且在相交处用绝缘纸隔开，如题 4.7 图所示【见原图】。设两\n\n导体分别通有面密度为 $\\boldsymbol{J}_1=J_0\\boldsymbol{a}_z$ 和 $\\boldsymbol{J}_2=-J_0\\boldsymbol{a}_z$ 的电流，求空洞中的磁场强度。",
+    "page": 118,
+    "boxes": [
+      [
+        118,
+        1178,
+        1667,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": true
+  },
+  {
+    "problem_id": "4.8",
+    "text": "边长分别为 $a$ 和 $b$ 载有电流 $I$ 的小矩形回路，如题 4.8 图所示【见原图】，求\n\n远处的一点 $P(x, y, z)$ 的磁矢位。",
+    "page": 119,
+    "boxes": [
+      [
+        119,
+        143,
+        220,
+        155,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": true
+  },
+  {
+    "problem_id": "4.9",
+    "text": "无限长直线电流 $I$ 垂直于磁导率分别为 $\\mu_1$ 和 $\\mu_2$ 的两种磁介质的交\n\n界面，如题 4.9 图所示【见原图】，试求两种媒质中的磁通密度 $\\boldsymbol{B}_1$ 和 $\\boldsymbol{B}_2$。",
+    "page": 119,
+    "boxes": [
+      [
+        119,
+        220,
+        626,
+        155,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": true
+  },
+  {
+    "problem_id": "4.10",
+    "text": "任意一个平面电流回路在真空中产生的磁场强度为 $\\boldsymbol{H}_0$，若平面回\n\n路位于磁导率分别为 $\\mu_1$ 和 $\\mu_2$ 的两种磁介质的交界面上，试求两种媒质内的\n\n磁场强度 $\\boldsymbol{H}_1$ 和 $\\boldsymbol{H}_2$。",
+    "page": 119,
+    "boxes": [
+      [
+        119,
+        639,
+        753,
+        155,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "4.11",
+    "text": "一个薄铁圆盘的半径为 $a$，厚度为 $b(b\\ll a)$，如题 4.11 图所示【见原图】，在\n\n平行于 $z$ 轴方向均匀磁化，磁化强度为 $\\boldsymbol{M}$。试求沿薄铁圆盘轴线上一点的磁\n\n场强度和磁通密度。",
+    "page": 119,
+    "boxes": [
+      [
+        119,
+        755,
+        871,
+        155,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": true
+  },
+  {
+    "problem_id": "4.12",
+    "text": "均匀磁化的无限大导磁媒质的磁导率为 $\\mu$，磁通密度为 $\\boldsymbol{B}$，若在该\n\n媒质内有两个空腔，空腔 1 的形状为一薄盘，空腔 2 的形状像一长针，腔内\n\n都充有空气，如题 4.12 图所示【见原图】。试求两空腔中心处磁场强度大小的比值。",
+    "page": 119,
+    "boxes": [
+      [
+        119,
+        871,
+        1268,
+        155,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": true
+  },
+  {
+    "problem_id": "4.13",
+    "text": "已知钢在某种磁饱和情况下的\n\n磁导率为 $\\mu_1=2000\\mu_0$，当钢中的磁通密度\n\n$B_1=0.5\\times 10^{-2}\\text{ T}$、$\\theta_1=75^\\circ$ 时，试求此时磁\n\n力线由钢进入自由空间一侧后，磁通密度\n\n$B_2$ 的大小及 $\\boldsymbol{B}_2$ 与法线的夹角 $\\theta_2$（如题 4.13\n\n图所示【见原图】）。",
+    "page": 119,
+    "boxes": [
+      [
+        119,
+        1281,
+        1474,
+        155,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": true
+  },
+  {
+    "problem_id": "4.14",
+    "text": "一条扁平的直导带，宽为 $2a$，中\n\n心线与 $z$ 轴重合，流过电流为 $I$，如题 4.14\n\n图所示【见原图】。证明：在第一象限内\n\n$$\n\nB_x=-\\frac{\\mu_0 I}{4\\pi a}\\alpha,\\quad B_y=\\frac{\\mu_0 I}{4\\pi a}\\ln\\frac{r_2}{r_1}\n\n$$",
+    "page": 119,
+    "boxes": [
+      [
+        119,
+        1474,
+        1634,
+        155,
+        1241
+      ],
+      [
+        120,
+        163,
+        230,
+        4,
+        1096
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": true
+  },
+  {
+    "problem_id": "4.15",
+    "text": "通有电流 $I_1$ 的两平行长直导线，两轴线距离为 $d$，两导线间有一\n\n载有电流 $I_2$ 的矩形线圈，如题 4.15 图所示【见原图】。求两平行长直导线对线圈的\n\n互感。",
+    "page": 120,
+    "boxes": [
+      [
+        120,
+        231,
+        721,
+        4,
+        1096
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": true
+  },
+  {
+    "problem_id": "4.16",
+    "text": "一个电流为 $I_1$ 的长直导线和一个电流为 $I_2$ 的圆环在同一平面上，\n\n圆心与导线的距离为 $d$。证明：两电流间相互作用的安培力为\n\n$$\n\nF=\\mu_0 I_1 I_2\\left(\\sec\\frac{\\alpha}{2}-1\\right)\n\n$$\n\n其中，$\\alpha$ 是圆环在直线最接近圆环的点所张的角。",
+    "page": 120,
+    "boxes": [
+      [
+        120,
+        733,
+        915,
+        4,
+        1096
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "4.17",
+    "text": "如题 4.17 图所示【见原图】的无限长直线附近有一矩形回路，回路与导线\n\n不共面。证明：它们之间的互感为\n\n$$\n\nM=-\\frac{\\mu_0 a}{2\\pi}\\ln\\frac{R}{\\left[2b(R^2-C^2)^{1/2}+b^2+R^2\\right]^{1/2}}\n\n$$",
+    "page": 120,
+    "boxes": [
+      [
+        120,
+        917,
+        1405,
+        4,
+        1096
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": true
+  },
+  {
+    "problem_id": "4.18",
+    "text": "简述产生磁耦合的机理。",
+    "page": 120,
+    "boxes": [
+      [
+        120,
+        1406,
+        1447,
+        4,
+        1096
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  }
+]

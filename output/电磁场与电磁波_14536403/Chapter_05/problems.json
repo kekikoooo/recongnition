@@ -1,0 +1,295 @@
+[
+  {
+    "problem_id": "5.1",
+    "text": "设有一个断开的矩形线圈与一根长直导线位于同一平面内，如题\n\n5.1 图所示【见原图】。假设：\n\n(1) 长直导线中通过的电流为 $i=I\\cos\\omega t$，线圈不动；\n\n(2) 长直导线中通过的电流为不随时间变化的直流电流 $i=I$，线圈以角\n\n速度 $\\omega$ 旋转；\n\n(3) 长直导线中通过的电流为 $i=I\\cos\\omega t$，线圈以角速度 $\\omega$ 旋转。\n\n在上述三种情况下，分别求线圈中的感应电动势。",
+    "page": 136,
+    "boxes": [
+      [
+        136,
+        1153,
+        1530,
+        4,
+        1241
+      ],
+      [
+        137,
+        148,
+        302,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": true
+  },
+  {
+    "problem_id": "5.2",
+    "text": "圆柱形电容器，内导体半径和外导体内半径分别为 $a$ 和 $b$，长度为\n\n$l$。设外加电压为 $U_0\\sin\\omega t$，试计算电容器极板间的总位移电流，证明它等于\n\n引线中的传导电流。",
+    "page": 137,
+    "boxes": [
+      [
+        137,
+        303,
+        419,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "5.3",
+    "text": "设 $y=0$ 为两种磁介质的分界面，$y<0$ 为媒质 1，其磁导率为 $\\mu_1$，\n\n$y>0$ 为媒质 2，其磁导率为 $\\mu_2$，如题 5.3 图所示【见原图】。分界面上有以电流密度\n\n$\\boldsymbol{J}_S=2\\boldsymbol{a}_x\\text{ A/m}$ 分布的面电流，已知媒质 1 中的磁场强度为\n\n$$\n\n\\boldsymbol{H}_1=\\boldsymbol{a}_x+2\\boldsymbol{a}_y+3\\boldsymbol{a}_z\\text{ A/m}\n\n$$\n\n求媒质 2 中的磁场强度 $\\boldsymbol{H}_2$。",
+    "page": 137,
+    "boxes": [
+      [
+        137,
+        421,
+        743,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": true
+  },
+  {
+    "problem_id": "5.4",
+    "text": "一平板电容器的极板为圆盘状，其半径为 $a$，极板间距离为 $d$\n\n$(d\\ll a)$，如题 5.4 图所示【见原图】。\n\n(1) 假设极板上电荷均匀分布，且 $\\rho_S=\\pm\\rho_m\\cos\\omega t$，忽略边缘效应，求极\n\n板间的电场和磁场；\n\n(2) 证明这样的场不满足电磁场基本方程。",
+    "page": 137,
+    "boxes": [
+      [
+        137,
+        1018,
+        1214,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": true
+  },
+  {
+    "problem_id": "5.5",
+    "text": "计算下列媒质中的传导电流密度与位移电流密度在频率 $f_1=$\n\n$1\\text{ kHz}$ 和 $f_2=1\\text{ MHz}$ 时的比值。\n\n(1) 铜：$\\sigma=5.8\\times 10^7\\text{ S/m}$，$\\varepsilon_r=1$；\n\n(2) 蒸馏水：$\\sigma=2\\times 10^{-4}\\text{ S/m}$，$\\varepsilon_r=80$；\n\n(3) 聚苯乙烯：$\\sigma=10^{-16}\\text{ S/m}$，$\\varepsilon_r=2.53$。",
+    "page": 137,
+    "boxes": [
+      [
+        137,
+        1215,
+        1420,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "5.6",
+    "text": "已知在空气中，电场强度矢量为\n\n$$\n\n\\boldsymbol{E}=\\boldsymbol{a}_y 0.1\\sin(10\\pi x)\\cos(6\\pi\\times 10^9 t-\\beta z)\\text{ V/m}\n\n$$\n\n试求磁场强度 $\\boldsymbol{H}$ 和相位常数 $\\beta$。",
+    "page": 137,
+    "boxes": [
+      [
+        137,
+        1421,
+        1539,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "5.7",
+    "text": "自由空间中，已知电场强度 $\\boldsymbol{E}$ 的表达式为\n\n$$\n\n\\boldsymbol{E}=\\boldsymbol{a}_x 4\\cos(\\omega t-\\beta z)+\\boldsymbol{a}_y 3\\cos(\\omega t-\\beta z)\n\n$$\n\n求：(1) 磁场强度的复数表达式；\n\n(2) 坡印廷矢量的瞬时表达式；\n\n(3) 平均坡印廷矢量。",
+    "page": 137,
+    "boxes": [
+      [
+        137,
+        1539,
+        1657,
+        0,
+        1241
+      ],
+      [
+        138,
+        168,
+        247,
+        0,
+        1096
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "5.8",
+    "text": "在由 $x=0$ 和 $x=a$ 两个无限大理想导电壁构成的区域内存在一个\n\n如下的电场（如题 5.8 图所示【见原图】）：\n\n$$\n\n\\boldsymbol{E}=\\boldsymbol{a}_y E_0\\sin(k_x x)\\cos(\\omega t-\\beta z)\n\n$$\n\n求：(1) 此区域中的磁场强度 $\\boldsymbol{H}$；\n\n(2) 这个电磁场应满足的边界条件及 $k_x$ 的值；\n\n(3) 两导体表面的电流密度。",
+    "page": 138,
+    "boxes": [
+      [
+        138,
+        247,
+        888,
+        0,
+        1096
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": true
+  },
+  {
+    "problem_id": "5.9",
+    "text": "将下列复数形式的场矢量变换成瞬时表达式，或作相反的变换。\n\n(1) $\\boldsymbol{E}=\\boldsymbol{a}_x 4\\text{e}^{-\\text{j}\\beta z}+\\boldsymbol{a}_y 3\\text{j}\\text{e}^{-\\text{j}\\beta z}$\n\n(2) $\\boldsymbol{E}=\\boldsymbol{a}_y 4\\sin\\left(\\frac{\\pi}{a}x\\right)\\sin(\\omega t-\\beta z)+\\boldsymbol{a}_z\\cos\\left(\\frac{\\pi}{a}x\\right)\\cos(\\omega t-\\beta z)$\n\n(3) $\\boldsymbol{E}=\\boldsymbol{a}_x\\cos(\\omega t-\\beta z)+\\boldsymbol{a}_y 2\\sin(\\omega t-\\beta z)$\n\n(4) $\\boldsymbol{E}=\\boldsymbol{a}_y 3\\text{j}\\cos(k_x\\cos\\theta)\\text{e}^{-\\text{j}kz\\sin\\theta}$\n\n(5) $\\boldsymbol{E}=\\boldsymbol{a}_y 2\\sin(\\omega t-\\beta z+\\varphi)$",
+    "page": 138,
+    "boxes": [
+      [
+        138,
+        888,
+        1150,
+        0,
+        1096
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "5.10",
+    "text": "证明自由空间仅随时间变化的场，如 $\\boldsymbol{B}=\\boldsymbol{B}_m\\sin\\omega t$，不满足麦克斯\n\n韦方程组。若将时间变量 $t$ 换成 $t-\\beta z$，则它可以满足电磁场基本方程组。",
+    "page": 138,
+    "boxes": [
+      [
+        138,
+        1150,
+        1227,
+        0,
+        1096
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "5.11",
+    "text": "设真空中同时存在两个频率的正弦场，其电场强度表达式分别为\n\n$\\boldsymbol{E}_1=\\boldsymbol{a}_x E_{10}\\text{e}^{-\\text{j}k_1 z}$ 和 $\\boldsymbol{E}_2=\\boldsymbol{a}_y E_{20}\\text{e}^{-\\text{j}k_2 z}$。试证明总的平均能流密度矢量等于两个正\n\n弦电磁场各自的平均能流密度矢量之和。",
+    "page": 138,
+    "boxes": [
+      [
+        138,
+        1227,
+        1340,
+        0,
+        1096
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "5.12",
+    "text": "对于线性、均匀和各向同性导电媒质，设媒质的介电常数为 $\\varepsilon$、磁\n\n导率为 $\\mu$、电导率为 $\\sigma$，试证明无源区域中时谐电磁场所满足的波动方程为\n\n$$\n\n\\nabla^2\\boldsymbol{E}=\\text{j}\\omega\\mu\\sigma\\boldsymbol{E}-k^2\\boldsymbol{E}\n\n$$\n\n$$\n\n\\nabla^2\\boldsymbol{H}=\\text{j}\\omega\\mu\\sigma\\boldsymbol{H}-k^2\\boldsymbol{H}\n\n$$\n\n式中，$k^2=\\omega^2\\mu\\varepsilon$。",
+    "page": 138,
+    "boxes": [
+      [
+        138,
+        1340,
+        1532,
+        0,
+        1096
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "5.13",
+    "text": "证明真空中随时间变化的电荷电流分布 $\\rho_V$ 和 $\\boldsymbol{J}$ 所激发的场满足\n\n如下的波动方程：\n\n$$\n\n\\nabla^2\\boldsymbol{E}-\\frac{1}{c^2}\\frac{\\partial^2\\boldsymbol{E}}{\\partial t^2}=\\mu_0\\frac{\\partial\\boldsymbol{J}}{\\partial t}+\\frac{1}{\\varepsilon_0}\\nabla\\rho_V\n\n$$\n\n$$\n\n\\nabla^2\\boldsymbol{B}-\\frac{1}{c^2}\\frac{\\partial^2\\boldsymbol{B}}{\\partial t^2}=-\\mu_0\\nabla\\times\\boldsymbol{J}\n\n$$\n\n式中，$c$ 为光速。",
+    "page": 138,
+    "boxes": [
+      [
+        138,
+        1532,
+        1677,
+        0,
+        1096
+      ],
+      [
+        139,
+        151,
+        255,
+        155,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "5.14",
+    "text": "已知半径为 $a$、导电率为 $\\sigma$ 的无限长直圆柱导线沿轴向通以均匀\n\n分布的恒定电流 $I$，如题 5.14 图所示【见原图】。设导线表面上均匀分布着面电荷密\n\n度 $\\rho_S$。\n\n(1) 求导线表面外侧的能流密度矢量；\n\n(2) 证明单位时间内由导线表面进入其内部的电磁能量恰好等于导线内\n\n的焦耳损耗。",
+    "page": 139,
+    "boxes": [
+      [
+        139,
+        256,
+        764,
+        155,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": true
+  },
+  {
+    "problem_id": "5.15",
+    "text": "设电场强度和磁场强度分别为\n\n$$\n\n\\boldsymbol{E}=\\boldsymbol{E}_0\\cos(\\omega t+\\varphi_e)\\quad\\text{和}\\quad\\boldsymbol{H}=\\boldsymbol{H}_0\\cos(\\omega t+\\varphi_m)\n\n$$\n\n求其平均坡印廷矢量。",
+    "page": 139,
+    "boxes": [
+      [
+        139,
+        765,
+        880,
+        155,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "5.16",
+    "text": "试写出在线性、各向同性、无耗、无源的均匀媒质中用 $\\boldsymbol{E}$ 和 $\\boldsymbol{B}$ 表\n\n示的麦克斯韦方程组。",
+    "page": 139,
+    "boxes": [
+      [
+        139,
+        881,
+        960,
+        155,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  }
+]

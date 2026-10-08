@@ -1,0 +1,313 @@
+[
+  {
+    "problem_id": "7.1",
+    "text": "",
+    "page": 230,
+    "boxes": [
+      [
+        230,
+        1893,
+        1944,
+        202,
+        1893
+      ]
+    ],
+    "masks": [],
+    "text_source": "none"
+  },
+  {
+    "problem_id": "7.2",
+    "text": "",
+    "page": 230,
+    "boxes": [
+      [
+        230,
+        1949,
+        2055,
+        202,
+        1893
+      ]
+    ],
+    "masks": [],
+    "text_source": "none"
+  },
+  {
+    "problem_id": "7.3",
+    "text": "",
+    "page": 230,
+    "boxes": [
+      [
+        230,
+        2060,
+        2112,
+        202,
+        1893
+      ]
+    ],
+    "masks": [],
+    "text_source": "none"
+  },
+  {
+    "problem_id": "7.4",
+    "text": "",
+    "page": 230,
+    "boxes": [
+      [
+        230,
+        2116,
+        2168,
+        202,
+        1893
+      ]
+    ],
+    "masks": [],
+    "text_source": "none"
+  },
+  {
+    "problem_id": "7.5",
+    "text": "",
+    "page": 230,
+    "boxes": [
+      [
+        230,
+        2172,
+        2223,
+        202,
+        1893
+      ]
+    ],
+    "masks": [],
+    "text_source": "none"
+  },
+  {
+    "problem_id": "7.6",
+    "text": "",
+    "page": 230,
+    "boxes": [
+      [
+        230,
+        2223,
+        2715,
+        202,
+        1893
+      ],
+      [
+        231,
+        188,
+        239,
+        318,
+        2020
+      ]
+    ],
+    "masks": [],
+    "text_source": "none"
+  },
+  {
+    "problem_id": "7.7",
+    "text": "",
+    "page": 231,
+    "boxes": [
+      [
+        231,
+        325,
+        436,
+        318,
+        2020
+      ]
+    ],
+    "masks": [],
+    "text_source": "none"
+  },
+  {
+    "problem_id": "7.8",
+    "text": "",
+    "page": 231,
+    "boxes": [
+      [
+        231,
+        438,
+        489,
+        318,
+        2020
+      ]
+    ],
+    "masks": [],
+    "text_source": "none"
+  },
+  {
+    "problem_id": "7.9",
+    "text": "",
+    "page": 231,
+    "boxes": [
+      [
+        231,
+        493,
+        546,
+        318,
+        2020
+      ]
+    ],
+    "masks": [],
+    "text_source": "none"
+  },
+  {
+    "problem_id": "7.10",
+    "text": "",
+    "page": 231,
+    "boxes": [
+      [
+        231,
+        550,
+        602,
+        318,
+        2020
+      ]
+    ],
+    "masks": [],
+    "text_source": "none"
+  },
+  {
+    "problem_id": "7.11",
+    "text": "",
+    "page": 231,
+    "boxes": [
+      [
+        231,
+        606,
+        713,
+        318,
+        2020
+      ]
+    ],
+    "masks": [],
+    "text_source": "none"
+  },
+  {
+    "problem_id": "7.12",
+    "text": "",
+    "page": 231,
+    "boxes": [
+      [
+        231,
+        717,
+        768,
+        318,
+        2020
+      ]
+    ],
+    "masks": [],
+    "text_source": "none"
+  },
+  {
+    "problem_id": "7.13",
+    "text": "",
+    "page": 231,
+    "boxes": [
+      [
+        231,
+        773,
+        1053,
+        318,
+        2020
+      ]
+    ],
+    "masks": [],
+    "text_source": "none"
+  },
+  {
+    "problem_id": "7.14",
+    "text": "",
+    "page": 231,
+    "boxes": [
+      [
+        231,
+        1055,
+        1274,
+        318,
+        2020
+      ]
+    ],
+    "masks": [],
+    "text_source": "none"
+  },
+  {
+    "problem_id": "7.15",
+    "text": "",
+    "page": 231,
+    "boxes": [
+      [
+        231,
+        1278,
+        1499,
+        318,
+        2020
+      ]
+    ],
+    "masks": [],
+    "text_source": "none"
+  },
+  {
+    "problem_id": "7.16",
+    "text": "",
+    "page": 231,
+    "boxes": [
+      [
+        231,
+        1503,
+        1612,
+        318,
+        2020
+      ]
+    ],
+    "masks": [],
+    "text_source": "none"
+  },
+  {
+    "problem_id": "7.17",
+    "text": "",
+    "page": 231,
+    "boxes": [
+      [
+        231,
+        1616,
+        1840,
+        318,
+        2020
+      ]
+    ],
+    "masks": [],
+    "text_source": "none"
+  },
+  {
+    "problem_id": "7.18",
+    "text": "",
+    "page": 231,
+    "boxes": [
+      [
+        231,
+        1844,
+        1951,
+        318,
+        2020
+      ]
+    ],
+    "masks": [],
+    "text_source": "none"
+  },
+  {
+    "problem_id": "7.19",
+    "text": "",
+    "page": 231,
+    "boxes": [
+      [
+        231,
+        1955,
+        2122,
+        318,
+        2020
+      ]
+    ],
+    "masks": [],
+    "text_source": "none"
+  }
+]

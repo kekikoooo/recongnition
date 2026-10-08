@@ -1,0 +1,2624 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="h-full overflow-hidden">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StudyHelp · 题库工作台</title>
+  <link rel="stylesheet" href="/static/tailwind.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    html, body { height: 100vh; overflow: hidden; margin: 0; padding: 0; }
+    .math-rendered pre { background: #f8fafc; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; }
+    .math-rendered code { font-family: monospace; }
+    /* 自定义美观滚动条 */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    ::selection { background: #c7d2fe; color: #1e1b4b; }
+    /* 拖拽分栏控制样式（绝不使用 pointer-events 锁定全局） */
+    .is-resizing { cursor: col-resize !important; user-select: none !important; }
+    #markdown-viewer {
+      overflow-y: auto;
+    }
+    /* 严格固定 7 个章节的可视窗口高度，绝不自动撑大溢出，严禁第 8 章露头 */
+    #chapter-list-box {
+      height: 208px !important;
+      max-height: 208px !important;
+      overflow-y: auto !important;
+      flex-shrink: 0 !important;
+      padding-bottom: 0 !important;
+    }
+    /* 20通道槽位滚动条 */
+    #worker-grid-scroll {
+      height: 48px !important;
+      max-height: 48px !important;
+      overflow-y: auto !important;
+    }
+    /* 做题操作按钮显式背景（杜绝任何 Tailwind 版本缺失导致的白底白字隐形） */
+    .btn-solve-primary {
+      background: linear-gradient(135deg, #4f46e5 0%, #2563eb 100%) !important;
+      color: #ffffff !important;
+    }
+    .btn-solve-primary:hover {
+      background: linear-gradient(135deg, #4338ca 0%, #1d4ed8 100%) !important;
+    }
+    .btn-solve-running {
+      background-color: #d97706 !important;
+      color: #ffffff !important;
+    }
+    .btn-solve-running:hover {
+      background-color: #b45309 !important;
+    }
+    .btn-solve-done {
+      background-color: #059669 !important;
+      color: #ffffff !important;
+    }
+    .btn-solve-done:hover {
+      background-color: #047857 !important;
+    }
+    .btn-solve-restart {
+      background-color: #ffffff !important;
+      color: #334155 !important;
+      border: 1px solid #cbd5e1 !important;
+    }
+    .btn-solve-restart:hover {
+      background-color: #f1f5f9 !important;
+      color: #0f172a !important;
+    }
+    /* 左侧原题卡片紧凑排版：消除公式与文本的过大底部留白，消除原图书籍图片突兀的内框阴影 */
+    #problem-pane-content .math-rendered p {
+      margin-bottom: 0.25rem !important;
+    }
+    #problem-pane-content .math-rendered .katex-display {
+      margin: 0.35rem 0 0.25rem 0 !important;
+    }
+    #problem-pane-content .math-rendered > *:last-child {
+      margin-bottom: 0 !important;
+    }
+    #problem-pane-content .sub-item p {
+      display: inline !important;
+      margin: 0 !important;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 h-screen flex flex-row font-sans select-none overflow-hidden relative">
+  <div id="ingest-banner" class="hidden fixed top-0 left-0 right-0 z-[60] bg-indigo-600 text-white text-xs px-4 py-1.5 flex items-center gap-3 shadow">
+    <span id="ingest-banner-text" class="font-semibold truncate">构建中…</span>
+    <div class="flex-1 h-1.5 bg-indigo-400/50 rounded overflow-hidden"><div id="ingest-banner-bar" class="h-full bg-white transition-all" style="width:0%"></div></div>
+    <span id="ingest-banner-pct" class="font-mono">0%</span>
+    <button id="ingest-banner-action" onclick="startSolvingCurrent()" class="hidden px-2.5 py-0.5 rounded-md bg-white text-emerald-700 font-bold hover:bg-emerald-50 cursor-pointer shrink-0">▶ 开始解题</button>
+    <button onclick="document.getElementById('ingest-banner').classList.add('hidden')" class="px-1 opacity-80 hover:opacity-100 cursor-pointer shrink-0" title="关闭">✕</button>
+  </div>
+
+
+  <!-- ======================= 划选引用悬浮胶囊 (Quote Capsule) ======================= -->
+  <div id="quote-capsule" onclick="quoteSelectedText()" class="fixed hidden z-50 bg-slate-900 hover:bg-purple-700 text-white px-3 py-1.5 rounded-full shadow-2xl text-xs font-bold flex items-center gap-1.5 cursor-pointer transition -translate-x-1/2 -translate-y-full pointer-events-auto">
+    <span>💬 引用提问 (Quote)</span>
+  </div>
+
+  <!-- ======================= “上传新书”下拉菜单 ======================= -->
+  <div id="book-menu" class="hidden fixed z-[70] w-72 bg-white rounded-xl border border-slate-200 shadow-xl p-1.5 flex flex-col text-xs">
+    <button onclick="toggleBookMenu(false); toggleUploadModal(true)" class="text-left px-3 py-2 rounded-lg hover:bg-emerald-50 cursor-pointer"><b>📤 上传新书</b><div class="text-[11px] text-slate-400">上传 PDF，自动切题、解题、出 PDF</div></button>
+    <button onclick="toggleBookMenu(false); toggleTimuModal(true)" class="text-left px-3 py-2 rounded-lg hover:bg-indigo-50 cursor-pointer"><b>📥 导入题目文本</b><div class="text-[11px] text-slate-400">用大模型对话框导出的全部题目当题干</div></button>
+    <a href="/static/md_cleaner/index.html" target="_blank" onclick="toggleBookMenu(false)" class="px-3 py-2 rounded-lg hover:bg-emerald-50 cursor-pointer"><b>🧹 清洗 md</b><div class="text-[11px] text-slate-400">修公式/小问顺序/模型草稿，清洗完可直接导入</div></a>
+    <a href="/review" target="_blank" onclick="toggleBookMenu(false)" class="px-3 py-2 rounded-lg hover:bg-sky-50 cursor-pointer"><b>🔍 切题检查</b><div class="text-[11px] text-slate-400">左边原书页、右边切片；含 AI 检查与一键修复</div></a>
+    <div class="border-t border-slate-100 my-1"></div>
+    <button id="usage-chip" onclick="toggleUsageDetail()" class="text-left px-3 py-2 rounded-lg hover:bg-amber-50 cursor-pointer text-amber-900">🪙 本书用量 …</button>
+    <div id="usage-detail" class="hidden mx-2 mb-1 p-2 rounded-lg border border-slate-200 bg-white text-[11px] text-slate-600 font-mono"></div>
+  </div>
+
+  <!-- ======================= 导入题目文本弹窗 ======================= -->
+  <div id="timu-modal-backdrop" onclick="toggleTimuModal(false)" class="hidden fixed inset-0 bg-slate-900/40 z-50 flex items-center justify-center p-4">
+    <div onclick="event.stopPropagation()" class="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-2xl w-full p-5 flex flex-col gap-3">
+      <div class="flex items-center justify-between">
+        <h3 class="text-sm font-bold text-slate-900">导入题目文本 · <span id="timu-modal-proj" class="text-indigo-700"></span></h3>
+        <button onclick="toggleTimuModal(false)" class="p-1 rounded text-slate-400 hover:text-slate-600 cursor-pointer">✕</button>
+      </div>
+      <ol class="text-[11px] text-slate-600 list-decimal pl-4 space-y-0.5">
+        <li>先下载<b>习题页 PDF</b>（只含习题的页，比整本小很多；一章一章传，输出不会被截断）：
+          <div id="expdf-list" class="flex flex-wrap gap-1 mt-1 text-[11px]"></div></li>
+        <li>点 <button type="button" onclick="copyTimuPrompt()" class="text-indigo-600 font-bold hover:underline cursor-pointer">复制提示词</button>，打开大模型网页对话框，上传上面的 PDF 并粘贴提示词。</li>
+        <li>把它输出的内容粘贴到下面（或选择保存好的 .md / .txt 文件），点导入；一章一章分次导入也行。</li>
+        <li>导入后按题号写进每道题；没对上的题仍由系统看图转写。</li>
+      </ol>
+      <div class="flex items-center gap-3">
+        <input type="file" id="timu-file-input" accept=".md,.txt" class="text-[11px]" onchange="loadTimuFile(this)" />
+        <a href="/static/md_cleaner/index.html?target=timu" target="_blank" class="text-[11px] text-emerald-700 font-bold hover:underline cursor-pointer" title="公式/小问清洗，清洗完可直接发回这里">🧹 先清洗 md</a>
+      </div>
+      <textarea id="timu-text" rows="12" placeholder="### 3.1&#10;题干……&#10;&#10;### 3.2&#10;题干……" class="w-full p-2 text-xs font-mono rounded-lg border border-slate-300 focus:outline-none focus:border-indigo-500"></textarea>
+      <label class="flex items-center gap-1.5 text-[11px] text-slate-600 cursor-pointer">
+        <input type="checkbox" id="timu-check" class="accent-indigo-600" />导入后仍逐题对照原图核对（更稳，但不省 token）
+      </label>
+      <div id="timu-result" class="hidden text-[11px] p-2 rounded-lg border"></div>
+      <div class="flex justify-end gap-2">
+        <button onclick="toggleTimuModal(false)" class="px-3 py-1.5 text-xs text-slate-600 hover:bg-slate-100 rounded-lg cursor-pointer">关闭</button>
+        <button id="btn-timu-submit" onclick="submitTimuImport()" class="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold cursor-pointer">导入</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================= 上传教材/试卷构建题库弹窗 (Upload Modal) ======================= -->
+  <div id="upload-modal-backdrop" onclick="toggleUploadModal(false)" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+    <div onclick="event.stopPropagation()" class="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-lg w-full p-5 flex flex-col gap-4 animate-in fade-in zoom-in duration-150">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-lg shadow-2xs">📤</div>
+          <div>
+            <h3 class="text-sm font-bold text-slate-900">上传教材 / 真题试卷</h3>
+            <p class="text-[11px] text-slate-400">自动完成智能文档嗅探 · 题目智能切片 · 题库工作台构建</p>
+          </div>
+        </div>
+        <button onclick="toggleUploadModal(false)" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition cursor-pointer">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- 表单内容 -->
+      <form id="upload-book-form" onsubmit="handleUploadSubmit(event)" class="flex flex-col gap-3">
+        <!-- 文件拖拽或选择区域 -->
+        <div id="upload-dropzone" onclick="document.getElementById('upload-file-input').click()" class="border-2 border-dashed border-slate-300 hover:border-emerald-500 bg-slate-50 hover:bg-emerald-50/40 rounded-xl p-6 flex flex-col items-center justify-center cursor-pointer transition group">
+          <input type="file" id="upload-file-input" accept=".pdf" class="hidden" onchange="handleFileSelected(this)" />
+          <div class="text-3xl mb-1.5 group-hover:scale-110 transition-transform">📄</div>
+          <p id="upload-file-label" class="text-xs font-bold text-slate-700 group-hover:text-emerald-700">点击或将 PDF 文件拖拽至此处</p>
+          <p class="text-[10px] text-slate-400 mt-0.5">支持任意理工科教材、真题试卷、课后习题集 PDF</p>
+        </div>
+
+        <!-- 书名/试卷名称 (选填) -->
+        <div class="flex flex-col gap-1">
+          <label class="text-[11px] font-bold text-slate-600">书名 / 试卷工程名称 (留空自动由大模型嗅探识别):</label>
+          <input type="text" id="upload-title-input" placeholder="留空则使用文件名，如：光纤通信（第2版）" class="px-3 py-1.5 text-xs rounded-lg border border-slate-300 focus:outline-none focus:border-emerald-500 font-sans" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <!-- 文档模式 -->
+          <div class="flex flex-col gap-1">
+            <label class="text-[11px] font-bold text-slate-600">文档模式:</label>
+            <select id="upload-doc-type" class="px-2.5 py-1.5 text-xs rounded-lg border border-slate-300 focus:outline-none focus:border-emerald-500 bg-white">
+              <option value="auto" selected>自动判断（>12 页按教材）</option>
+              <option value="book">教材 / 习题集 (Book)</option>
+              <option value="exam">试卷 / 期末真题 (Exam)</option>
+            </select>
+          </div>
+
+          <!-- 学科领域 -->
+          <div class="flex flex-col gap-1">
+            <label class="text-[11px] font-bold text-slate-600">学科领域 (动态装配名师):</label>
+            <select id="upload-subject" class="px-2.5 py-1.5 text-xs rounded-lg border border-slate-300 focus:outline-none focus:border-emerald-500 bg-white">
+              <option value="math">数学类 (复变/数理方程/高数)</option>
+              <option value="ee">电子信息类 (信号/数电/模电)</option>
+              <option value="physics">物理力学类 (普物/理论力学)</option>
+              <option value="general">通用理工科综合</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-1 p-2 rounded-lg border border-slate-200 bg-slate-50">
+          <div class="flex items-center justify-between">
+            <label class="text-[11px] font-bold text-slate-600">题目文本（可选）：大模型对话框导出的全部题目</label>
+            <span class="flex gap-3">
+              <a href="/static/md_cleaner/index.html?target=upload" target="_blank" class="text-[11px] text-emerald-700 hover:underline cursor-pointer" title="公式/小问清洗，清洗完可直接发回这里">🧹 清洗 md</a>
+              <button type="button" onclick="copyTimuPrompt()" class="text-[11px] text-indigo-600 hover:underline cursor-pointer">复制提示词</button>
+            </span>
+          </div>
+          <input type="file" id="upload-timu-file" accept=".md,.txt" class="text-[11px]" />
+          <label class="flex items-center gap-1.5 text-[11px] text-slate-500 cursor-pointer">
+            <input type="checkbox" id="upload-timu-check" class="accent-emerald-600" />导入后仍逐题对照原图核对（更稳，但不省 token）
+          </label>
+          <span class="text-[10px] text-slate-400">附上后按题号对上的题直接用这份题干，不再看图转写；没对上的题照常转写。</span>
+        </div>
+
+        <label class="flex items-start gap-2 p-2 rounded-lg border border-slate-200 bg-slate-50 cursor-pointer">
+          <input type="checkbox" id="upload-crop-only" class="mt-0.5 accent-emerald-600" />
+          <span class="text-[11px] text-slate-700 leading-snug"><b>只切题，先不解题</b><br><span class="text-slate-500">先切题并核对题干（花费很少），你逐题检查切片没问题后，再点顶部的“开始解题”。</span></span>
+        </label>
+
+        <!-- 切换既有工程列表 -->
+        <div id="existing-projects-container" class="mt-1 pt-2 border-t border-slate-100 flex flex-col gap-1">
+          <label class="text-[11px] font-bold text-slate-500 flex items-center justify-between">
+            <span>已有题库工程快速切换:</span>
+            <button type="button" onclick="loadExistingProjects()" class="text-indigo-600 hover:underline cursor-pointer">刷新</button>
+          </label>
+          <div id="existing-projects-list" class="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto pt-1">
+            <span class="text-[11px] text-slate-400">正在载入工程列表...</span>
+          </div>
+        </div>
+
+        <!-- 上传构建状态提示 -->
+        <div id="upload-status-tip" class="hidden p-2.5 bg-emerald-50 border border-emerald-200 rounded-lg text-xs text-emerald-800 flex items-center gap-2">
+          <span class="w-3.5 h-3.5 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin shrink-0"></span>
+          <span id="upload-status-text">正在上传并执行智能嗅探与自适应切片构建...</span>
+        </div>
+
+        <!-- 提交按钮 -->
+        <div class="flex items-center justify-end gap-2 mt-1">
+          <button type="button" onclick="toggleUploadModal(false)" class="px-3 py-1.5 text-xs text-slate-600 hover:bg-slate-100 rounded-lg transition cursor-pointer">取消</button>
+          <button type="submit" id="btn-submit-upload" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold shadow-2xs transition flex items-center gap-1.5 cursor-pointer">
+            <span>🚀 开始构建题库</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================= 全书合订本专属资源弹窗 (Modal) ======================= -->
+  <div id="book-modal-backdrop" onclick="toggleBookModal(false)" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+    <div onclick="event.stopPropagation()" class="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-md w-full p-5 flex flex-col gap-4 animate-in fade-in zoom-in duration-150">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-bold text-lg shadow-2xs">📚</div>
+          <div>
+            <h3 class="text-sm font-bold text-slate-900" id="modal-book-title">全卷合订本与专属题典</h3>
+            <p class="text-[11px] text-slate-400" id="modal-book-subtitle">涵盖全卷全部试题 · 出版级编译验收</p>
+          </div>
+        </div>
+        <button onclick="toggleBookModal(false)" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition cursor-pointer">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- 资源列表卡片 -->
+      <div class="flex flex-col gap-2.5">
+        <!-- 1. 便携打印全解 -->
+        <div class="flex items-center justify-between p-3 rounded-xl border border-emerald-100 bg-emerald-50/40 hover:bg-emerald-50/70 transition">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <span class="text-xl">🖨️</span>
+            <div>
+              <div class="text-xs font-bold text-slate-800">便携打印全解 (高密度省纸版)</div>
+              <div class="text-[10px] text-slate-500 font-mono">Book_Print.pdf · 全公式行内排版 · 适合双面打印</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-1.5 shrink-0">
+            <button onclick="openBook('print_pdf')" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold shadow-2xs transition flex items-center gap-1 cursor-pointer">
+              <span>📄 打开 PDF</span>
+            </button>
+            <button onclick="openBook('print_md')" class="px-2 py-1 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-lg text-xs font-medium transition cursor-pointer">
+              <span>MD</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 2. 习题全书 (含原书高清原图) -->
+        <div class="flex items-center justify-between p-3 rounded-xl border border-amber-100 bg-amber-50/40 hover:bg-amber-50/70 transition">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <span class="text-xl">📖</span>
+            <div>
+              <div class="text-xs font-bold text-slate-800">习题全书 (含原书高清图谱)</div>
+              <div class="text-[10px] text-slate-500 font-mono">Book_Timu_All.pdf · 原题高清切片图谱 · 考题核对</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-1.5 shrink-0">
+            <button onclick="openBook('timu_pdf')" class="px-2.5 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-bold shadow-2xs transition flex items-center gap-1 cursor-pointer">
+              <span>📄 打开 PDF</span>
+            </button>
+            <button onclick="openBook('timu_md')" class="px-2 py-1 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-lg text-xs font-medium transition cursor-pointer">
+              <span>MD</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 3. 课后习题详解题典 -->
+        <div class="flex items-center justify-between p-3 rounded-xl border border-blue-100 bg-blue-50/40 hover:bg-blue-50/70 transition">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <span class="text-xl">📘</span>
+            <div>
+              <div class="text-xs font-bold text-slate-800">课后习题详解 (分步推导全解)</div>
+              <div class="text-[10px] text-slate-500 font-mono">Book_All.pdf · 多阶段详尽解题答卷合订 · 典藏参考</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-1.5 shrink-0">
+            <button onclick="openBook('all_pdf')" class="px-2.5 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold shadow-2xs transition flex items-center gap-1 cursor-pointer">
+              <span>📄 打开 PDF</span>
+            </button>
+            <button onclick="openBook('all_md')" class="px-2 py-1 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-lg text-xs font-medium transition cursor-pointer">
+              <span>MD</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================= 左侧固定侧边栏 (Title + 章节 + 控制 + 导航 竖向排列) ======================= -->
+  <aside id="sidebar" class="w-72 bg-white border-r border-slate-200 flex flex-col h-screen shrink-0 overflow-hidden shadow-xs z-20">
+
+    <!-- 1. 顶部品牌与标题 -->
+    <div class="p-3.5 border-b border-slate-100 flex items-center justify-between shrink-0 bg-slate-50/60">
+      <div class="flex items-center gap-2.5 min-w-0">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center font-bold text-lg shadow-xs shadow-indigo-500/20 shrink-0">
+          Ω
+        </div>
+        <h1 class="text-base font-black text-slate-900 tracking-tight">StudyHelp</h1>
+      </div>
+      <button onclick="toggleSidebar()" class="px-2 py-1 rounded-lg text-slate-600 hover:text-indigo-600 hover:bg-slate-100 border border-slate-200 shadow-2xs transition flex items-center gap-1 cursor-pointer shrink-0" title="折叠左侧边栏">
+        <svg class="w-3.5 h-3.5 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="18" height="18" rx="2"/>
+          <path d="M9 3v18"/>
+        </svg>
+        <span class="text-xs font-semibold text-slate-600">折叠侧栏</span>
+      </button>
+    </div>
+
+    <!-- 2. 书名与章节选择 -->
+    <div class="px-3 pt-2.5 pb-1 border-b-0 shrink-0 flex items-center justify-between relative">
+      <!-- 书名即项目切换器：列出 output/ 下的全部工作项（与资源管理器里的文件夹一一对应） -->
+      <button type="button" onclick="toggleProjectMenu()" class="flex items-center gap-1 min-w-0 mr-1 cursor-pointer hover:bg-slate-50 rounded-md px-1 -mx-1 py-0.5" title="切换 output 中的其它书/试卷">
+        <span class="text-xs font-bold text-slate-800 tracking-tight truncate mr-1" title="">📖 加载中…</span>
+        <span class="text-[10px] text-slate-400 shrink-0">▾</span>
+      </button>
+      <div id="project-menu" class="hidden fixed w-[26rem] max-h-[70vh] overflow-y-auto bg-white border border-slate-200 rounded-xl shadow-xl z-50 p-2">
+        <div class="flex items-center justify-between px-1 pb-1.5 mb-1 border-b border-slate-100">
+          <span class="text-[11px] font-bold text-slate-500">output 工作项（共 <span id="project-menu-count">0</span> 个，按文件夹名排序）</span>
+          <button type="button" onclick="toggleUploadModal(true); toggleProjectMenu(false)" class="text-[11px] text-emerald-700 hover:underline cursor-pointer">＋ 上传新书</button>
+        </div>
+        <div id="project-menu-list" class="flex flex-col gap-1"></div>
+      </div>
+      <button onclick="toggleBookModal(true)" class="text-[10px] font-bold text-purple-700 bg-purple-50 hover:bg-purple-100 hover:text-purple-800 border border-purple-200 px-2 py-0.5 rounded-md shadow-2xs transition flex items-center gap-1 cursor-pointer shrink-0" title="打开全书合订本专属资源面板">
+        <span>📚 全书合订本</span>
+      </button>
+    </div>
+    <div id="chapter-list-box" style="height: 208px; max-height: 208px; overflow-y: auto; padding-bottom: 0;" class="px-2.5 pb-0 border-b border-slate-100 flex flex-col gap-1 shrink-0">
+      <button onclick="switchChapter(1)" id="btn-ch1" class="w-full text-left px-2 py-1 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-50 border border-transparent transition cursor-pointer flex items-center justify-between shrink-0">
+        <span>第 1 章 · 信号与系统</span>
+        <span class="text-[10px] bg-emerald-50 text-emerald-700 px-1 py-0.2 rounded font-mono font-bold">52/52 ✓</span>
+      </button>
+      <button onclick="switchChapter(2)" id="btn-ch2" class="w-full text-left px-2 py-1 rounded-lg text-xs font-bold bg-indigo-50 text-indigo-900 border border-indigo-200 shadow-2xs transition cursor-pointer flex items-center justify-between shrink-0">
+        <span>第 2 章 · 线性时不变系统</span>
+        <span class="text-[10px] bg-emerald-50 text-emerald-700 px-1 py-0.2 rounded font-mono font-bold">73/73 ✓</span>
+      </button>
+      <button onclick="switchChapter(3)" id="btn-ch3" class="w-full text-left px-2 py-1 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-50 border border-transparent transition cursor-pointer flex items-center justify-between shrink-0">
+        <span>第 3 章 · 周期信号傅里叶级数</span>
+        <span class="text-[10px] bg-emerald-50 text-emerald-700 px-1 py-0.2 rounded font-mono font-bold">71/71 ✓</span>
+      </button>
+      <button onclick="switchChapter(4)" id="btn-ch4" class="w-full text-left px-2 py-1 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-50 border border-transparent transition cursor-pointer flex items-center justify-between shrink-0">
+        <span>第 4 章 · 连续时间傅里叶变换</span>
+        <span class="text-[10px] bg-emerald-50 text-emerald-700 px-1 py-0.2 rounded font-mono font-bold">53/53 ✓</span>
+      </button>
+      <button onclick="switchChapter(5)" id="btn-ch5" class="w-full text-left px-2 py-1 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-50 border border-transparent transition cursor-pointer flex items-center justify-between shrink-0">
+        <span>第 5 章 · 离散时间傅里叶变换</span>
+        <span class="text-[10px] bg-emerald-50 text-emerald-700 px-1 py-0.2 rounded font-mono font-bold">56/56 ✓</span>
+      </button>
+      <button onclick="switchChapter(6)" id="btn-ch6" class="w-full text-left px-2 py-1 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-50 border border-transparent transition cursor-pointer flex items-center justify-between shrink-0">
+        <span>第 6 章 · 信号系统时频域特性</span>
+        <span class="text-[10px] bg-emerald-50 text-emerald-700 px-1 py-0.2 rounded font-mono font-bold">66/66 ✓</span>
+      </button>
+      <button onclick="switchChapter(7)" id="btn-ch7" class="w-full text-left px-2 py-1 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-50 border border-transparent transition cursor-pointer flex items-center justify-between shrink-0">
+        <span>第 7 章 · 采样定理</span>
+        <span class="text-[10px] bg-emerald-50 text-emerald-700 px-1 py-0.2 rounded font-mono font-bold">52/52 ✓</span>
+      </button>
+      <button onclick="switchChapter(8)" id="btn-ch8" class="w-full text-left px-2 py-1 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-50 border border-transparent transition cursor-pointer flex items-center justify-between shrink-0">
+        <span>第 8 章 · 通信系统</span>
+        <span class="text-[10px] bg-emerald-50 text-emerald-700 px-1 py-0.2 rounded font-mono font-bold">49/49 ✓</span>
+      </button>
+      <button onclick="switchChapter(9)" id="btn-ch9" class="w-full text-left px-2 py-1 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-50 border border-transparent transition cursor-pointer flex items-center justify-between shrink-0">
+        <span>第 9 章 · 拉普拉斯变换</span>
+        <span class="text-[10px] bg-emerald-50 text-emerald-700 px-1 py-0.2 rounded font-mono font-bold">66/66 ✓</span>
+      </button>
+      <button onclick="switchChapter(10)" id="btn-ch10" class="w-full text-left px-2 py-1 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-50 border border-transparent transition cursor-pointer flex items-center justify-between shrink-0">
+        <span>第 10 章 · Z 变换</span>
+        <span class="text-[10px] bg-emerald-50 text-emerald-700 px-1 py-0.2 rounded font-mono font-bold">66/66 ✓</span>
+      </button>
+      <button onclick="switchChapter(11)" id="btn-ch11" class="w-full text-left px-2 py-1 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-50 border border-transparent transition cursor-pointer flex items-center justify-between shrink-0">
+        <span>第 11 章 · 线性反馈系统</span>
+        <span class="text-[10px] bg-emerald-50 text-emerald-700 px-1 py-0.2 rounded font-mono font-bold">60/60 ✓</span>
+      </button>
+    </div>
+
+    <!-- 3. 做题控制区 (开始做题 + 进度/Token 智能绑定展开) -->
+    <div id="solving-control-container" class="p-2.5 border-b border-slate-100 flex flex-col gap-2 shrink-0 bg-slate-50/50">
+      <!-- 主操作按钮组 -->
+      <div id="action-btn-group" class="flex items-center gap-1.5 w-full">
+        <button id="btn-main-action" onclick="toggleChapterRun()" class="btn-solve-primary flex-1 py-2 text-white text-xs font-bold rounded-xl shadow-xs transition flex items-center justify-center gap-1.5 cursor-pointer">
+          <span id="btn-icon">🚀</span>
+          <span id="btn-text">开始做题</span>
+        </button>
+        <button id="btn-restart-action" onclick="restartChapterRun()" class="btn-solve-restart hidden px-2.5 py-2 text-xs font-semibold rounded-xl shadow-2xs transition flex items-center gap-1 cursor-pointer shrink-0" title="清空本章做题缓存并重新开启 20 通道并发做题">
+          <span>🔄 重新做题</span>
+        </button>
+      </div>
+
+      <!-- 进度与 Token/耗时面板 (点击「开始做题」或正在做题时才跳出展示，做完后自动折叠) -->
+      <div id="solving-stats-panel" class="hidden bg-white p-2.5 rounded-xl border border-indigo-100 shadow-2xs flex flex-col gap-1.5">
+        <div class="flex items-center justify-between text-[11px] font-semibold text-slate-700">
+          <span id="chapter-title-badge" class="font-bold text-indigo-900">第 2 章做题进度</span>
+          <span id="progress-badge" class="font-mono text-indigo-700 font-bold">0 / 73 题 (0%)</span>
+        </div>
+        <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden border border-slate-200/50">
+          <div id="progress-bar" class="bg-gradient-to-r from-blue-600 to-indigo-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+        </div>
+        <div class="flex items-center justify-between text-[10px] font-mono text-slate-500 pt-0.5">
+          <span class="flex items-center gap-1">🪙 Token: <b id="top-tokens" class="text-slate-800 font-bold">0</b></span>
+          <span class="flex items-center gap-1">⏱️ 耗时: <b id="top-time" class="text-slate-800 font-bold">0.0s</b></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. 题目导航列表 (下半部独立滚动，已释放上方直达栏空间) -->
+    <div class="px-3 py-2 border-b border-slate-100 flex items-center justify-between shrink-0 bg-slate-50/40">
+      <span class="text-xs font-bold text-slate-700">题目导航</span>
+      <div class="flex items-center gap-2">
+        <button id="btn-filter-review" onclick="toggleReviewFilter()" class="px-1.5 py-0.5 rounded border border-slate-200 text-[10px] text-slate-500 hover:bg-amber-50 cursor-pointer" title="只显示评审未达标、题干被更正或检验有问题的题">只看待复核</button>
+        <span id="completed-fraction" class="text-slate-400 font-mono text-[11px]">0/63</span>
+      </div>
+    </div>
+    <div id="problem-list" class="flex-1 overflow-y-auto p-2 space-y-1 font-mono text-xs select-none">
+      <!-- 动态增量渲染题目列表 -->
+    </div>
+
+  </aside>
+
+  <!-- ======================= 左侧边栏可滑动调整手柄 (Draggable Splitter Handle) ======================= -->
+  <div id="resizer-left" class="w-3.5 h-screen relative shrink-0 cursor-col-resize flex items-center justify-center select-none group z-30 -mr-1.5 -ml-1.5 hover:bg-indigo-50/40 transition-colors" title="按住左右拖拽调整宽度">
+    <div class="w-[2px] h-full bg-slate-300 group-hover:bg-indigo-500 group-active:bg-indigo-600 transition-colors"></div>
+    <div class="absolute top-1/2 -translate-y-1/2 w-4 h-12 bg-white border border-slate-300 rounded-full shadow-md flex items-center justify-center group-hover:border-indigo-500 group-hover:shadow-lg group-active:border-indigo-600 transition-all pointer-events-none">
+      <div class="w-1 h-5 rounded-full bg-slate-400 group-hover:bg-indigo-500 group-active:bg-indigo-600 transition-colors"></div>
+    </div>
+  </div>
+
+  <!-- ======================= 中间主工作区 (并发矩阵 + Markdown 详析) ======================= -->
+  <main class="flex-1 flex flex-col h-screen overflow-hidden min-w-0 bg-slate-100 p-3 gap-2.5">
+
+    <!-- 顶部工作条 (折叠侧栏按钮 + 状态 + 私教唤起) -->
+    <div class="bg-white px-3.5 py-2 rounded-xl border border-slate-200 shadow-2xs shrink-0 flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <!-- 侧栏展开按钮（仅在侧栏折叠后显示） -->
+        <button id="btn-toggle-sidebar" onclick="toggleSidebar()" class="hidden p-1.5 rounded-lg text-slate-600 hover:text-indigo-600 hover:bg-slate-100 border border-slate-200 shadow-2xs transition flex items-center gap-1 cursor-pointer" title="展开左侧边栏">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+            <path d="M9 3v18"/>
+          </svg>
+          <span id="sidebar-toggle-text" class="text-xs font-semibold">展开侧栏</span>
+        </button>
+
+        <span class="text-xs font-bold text-slate-800" id="current-chapter-header-text">第 2 章 线性时不变系统</span>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <!-- 上传新书/试卷入口 (在 VS Code 直达左侧) -->
+        <button id="btn-book-menu" onclick="toggleBookMenu()" class="px-2.5 py-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white rounded-lg text-xs font-bold shadow-2xs transition flex items-center gap-1.5 cursor-pointer shrink-0" title="上传新书、导入题目文本、切题检查、本书用量">
+          <span>📤 上传新书 ▾</span>
+        </button>
+
+        <!-- VS Code 本地直达 (单章) -->
+        <div class="flex items-center gap-1 bg-slate-50 p-1 rounded-lg border border-slate-200">
+          <span class="text-[10px] font-bold text-slate-400 px-1 uppercase font-mono tracking-wider">VS Code 直达</span>
+          <button onclick="openInVSCode('print')" title="在本地 VS Code 中打开便携省纸高密度 打印.md" class="px-2 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold rounded-md border border-emerald-200 text-xs shadow-2xs transition flex items-center gap-1 cursor-pointer">
+            <span>🖨️ 打印.md</span>
+          </button>
+          <button onclick="openInVSCode('pdf')" title="在本地打开便携省纸高密度 打印.pdf" class="px-2 py-1 bg-rose-50 hover:bg-rose-100 text-rose-800 font-bold rounded-md border border-rose-200 text-xs shadow-2xs transition flex items-center gap-1 cursor-pointer">
+            <span>📄 打印.pdf</span>
+          </button>
+          <button onclick="openInVSCode('compact')" title="在本地 VS Code 中打开紧凑速查 Compact.md" class="px-2 py-1 bg-amber-50 hover:bg-amber-100 text-amber-800 font-bold rounded-md border border-amber-200 text-xs shadow-2xs transition flex items-center gap-1 cursor-pointer">
+            <span>⚡ Compact.md</span>
+          </button>
+          <button onclick="openInVSCode('all')" title="在本地 VS Code 中打开全解 All.md" class="px-2 py-1 bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold rounded-md border border-blue-200 text-xs shadow-2xs transition flex items-center gap-1 cursor-pointer">
+            <span>📘 All.md</span>
+          </button>
+          <button onclick="openInVSCode('dir')" title="在本地 VS Code 中打开本章文件夹" class="px-2 py-1 bg-white hover:bg-slate-100 text-slate-600 rounded-md border border-slate-200 text-xs transition flex items-center gap-1 cursor-pointer">
+            <span>📂 目录</span>
+          </button>
+        </div>
+
+        <!-- 开启 AI 私人私教伴读抽屉 -->
+        <button id="btn-tutor-toggle" onclick="toggleTutor()" class="px-3 py-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 text-white rounded-lg text-xs font-bold shadow-2xs transition flex items-center gap-1.5 cursor-pointer">
+          <span>🎓 AI 私人私教</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 1. 20 通道活跃矩阵 (做题时才跳出显示，题目做完后自动隐藏让它消失) -->
+    <div id="worker-matrix-card" class="hidden bg-white px-3.5 py-2 rounded-xl border border-slate-200 shadow-2xs shrink-0 transition-all">
+      <div class="flex items-center justify-between mb-1.5 text-[11px] text-slate-500 font-medium">
+        <div class="flex items-center gap-1.5 font-bold text-slate-700">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+          <span>20 通道槽位并发矩阵</span>
+          <span class="text-[10px] font-normal text-slate-400 font-mono">(首排 5 个固定窗口 · 下滑查看 6-20 通道)</span>
+        </div>
+        <span id="active-channels-badge" class="font-mono text-indigo-600 font-bold bg-indigo-50 px-2 py-0.5 rounded text-[11px]">⚡ 20 通道就绪</span>
+      </div>
+      <!-- 固定 5 个显示窗口滚动容器：高度严格适配 1 排 5 个窗口，下滑浏览全部 20 通道 -->
+      <div id="worker-grid-scroll" style="height: 48px; max-height: 48px; overflow-y: auto;" class="overflow-y-auto pr-0.5">
+        <div id="worker-grid" class="grid grid-cols-5 gap-1.5">
+          <!-- 动态 20 个通道槽位方块 (每排 5 个固定窗口) -->
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. 详尽答卷预览区 (左右分栏：左原题，右解题) -->
+    <div class="flex-1 bg-white rounded-xl border border-slate-200 p-2.5 shadow-xs flex flex-col overflow-hidden min-w-0">
+      <!-- 左右分栏对照核心容器 (左边：原题，右边：解题文字) -->
+      <div id="split-view-container" class="flex-1 flex flex-row flex-nowrap overflow-hidden min-w-0 relative">
+        
+        <!-- 左边：原题展示区 (原书扫描切片 + 题干) -->
+        <div id="left-problem-pane" class="w-1/2 flex flex-col border border-slate-200 rounded-xl bg-slate-50/60 overflow-hidden shrink-0 min-w-[240px] max-w-[80%] shadow-2xs mr-1">
+          <!-- 原题顶部说明栏 -->
+          <div class="px-3 py-1.5 bg-slate-100/90 border-b border-slate-200 flex items-center justify-between shrink-0">
+            <div class="flex items-center gap-1 text-xs font-bold text-slate-700 truncate">
+              <button onclick="toggleProblemSplit()" class="px-1.5 py-0.5 hover:bg-slate-200 text-slate-500 hover:text-slate-800 rounded transition cursor-pointer flex items-center" title="折叠收起原题栏">◀</button>
+              <span>📖</span>
+              <span id="problem-pane-title">原题 习题 2.1</span>
+            </div>
+            <div class="flex items-center gap-1.5 shrink-0">
+              <!-- 原题栏：上一题按钮 (第一题自动隐藏) -->
+              <button id="btn-problem-prev" onclick="goToPrevProblem()" class="hidden px-2.5 py-1 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 rounded-lg text-xs font-semibold shadow-2xs transition flex items-center gap-1 cursor-pointer" title="点击切换至上一题">
+                <span>⬅</span>
+                <span>上一题</span>
+                <span id="btn-problem-prev-id" class="font-mono text-slate-500"></span>
+              </button>
+              <!-- 原题栏：下一题按钮 (最后一题自动隐藏) -->
+              <button id="btn-problem-next" onclick="goToNextProblem()" class="hidden px-2.5 py-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shadow-2xs transition flex items-center gap-1 cursor-pointer" title="点击切换至下一题">
+                <span>下一题</span>
+                <span id="btn-problem-next-id" class="font-mono text-indigo-100"></span>
+                <span>➔</span>
+              </button>
+            </div>
+          </div>
+          <!-- 原题独立滚动容器 -->
+          <div id="problem-pane-content" class="flex-1 overflow-y-auto p-3.5 text-sm leading-relaxed select-text space-y-3">
+            <div class="p-6 text-center text-slate-400">正在载入原题内容...</div>
+          </div>
+        </div>
+
+        <!-- 中间可拖拽调整左右分栏宽度的手柄 -->
+        <div id="resizer-split" class="w-3 h-full relative shrink-0 cursor-col-resize flex items-center justify-center select-none group hover:bg-indigo-50/60 transition-colors mx-0.5 z-10" title="按住拖拽调整左右宽度">
+          <div class="w-[2px] h-full bg-slate-200 group-hover:bg-indigo-400 group-active:bg-indigo-600 transition-colors"></div>
+          <div class="absolute top-1/2 -translate-y-1/2 w-3.5 h-8 bg-white border border-slate-300 rounded shadow-xs flex items-center justify-center group-hover:border-indigo-400 transition-all pointer-events-none">
+            <div class="w-0.5 h-3 bg-slate-400 group-hover:bg-indigo-500 rounded-full"></div>
+          </div>
+        </div>
+
+        <!-- 右边：解题文字展示区 -->
+        <div id="right-solution-pane" class="flex-1 flex flex-col border border-slate-200 rounded-xl bg-white overflow-hidden min-w-0 shadow-2xs ml-1">
+          <!-- 阶段横幅与精简选项卡 (阶段三、阶段一、阶段二、Compact) -->
+          <div id="solution-stage-banner" class="shrink-0 px-3 py-1.5 border-b border-slate-100 bg-slate-50/60 flex items-center justify-between gap-2 flex-wrap">
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <button onclick="toggleProblemSplit()" id="btn-unfold-problem" class="hidden px-2 py-1 rounded-lg text-xs font-semibold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 shadow-2xs cursor-pointer flex items-center gap-1 transition" title="展开左侧原题栏">
+                <span>📖 展开原题</span>
+              </button>
+              <button onclick="switchStage('final')" id="stage-btn-final" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200 shadow-2xs cursor-pointer flex items-center gap-1 transition">
+                <span>阶段三</span>
+              </button>
+              <button onclick="switchStage('draft')" id="stage-btn-draft" class="px-2.5 py-1 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-100 border border-transparent cursor-pointer flex items-center gap-1 transition">
+                <span>阶段一</span>
+              </button>
+              <button onclick="switchStage('review')" id="stage-btn-review" class="px-2.5 py-1 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-100 border border-transparent cursor-pointer flex items-center gap-1.5 transition">
+                <span>阶段二</span>
+                <span id="stage-score-badge" class="bg-emerald-100 text-emerald-800 text-[10px] font-mono px-1 py-0.2 rounded font-bold">--</span>
+              </button>
+              <button onclick="switchStage('compact')" id="stage-btn-compact" class="px-2.5 py-1 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-100 border border-transparent cursor-pointer flex items-center gap-1 transition">
+                <span>Compact</span>
+              </button>
+            </div>
+            <div class="flex items-center gap-2 flex-wrap justify-end ml-auto">
+              <span id="resolve-status" class="text-[10px] text-indigo-600 font-mono"></span>
+              <button id="btn-resolve" onclick="triggerSolveSingle(selectedPid)" class="hidden px-2 py-1 bg-white hover:bg-amber-50 text-slate-700 border border-slate-300 rounded-lg text-xs font-semibold shadow-2xs transition cursor-pointer" title="重新求解这一题（草稿→评审→定稿→检验），完成后自动刷新合订本与 PDF">🔄 重解本题</button>
+              <!-- 上一题按钮 (第一题自动隐藏) -->
+              <button id="btn-prev-problem" onclick="goToPrevProblem()" class="hidden px-2.5 py-1 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 rounded-lg text-xs font-semibold shadow-2xs transition flex items-center gap-1 cursor-pointer" title="点击切换至上一题">
+                <span>⬅</span>
+                <span>上一题</span>
+                <span id="btn-prev-problem-id" class="font-mono text-slate-500"></span>
+              </button>
+              <!-- 下一题按钮 (最后一题自动隐藏) -->
+              <button id="btn-next-problem" onclick="goToNextProblem()" class="hidden px-2.5 py-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shadow-2xs transition flex items-center gap-1 cursor-pointer" title="点击切换至下一题">
+                <span>下一题</span>
+                <span id="btn-next-problem-id" class="font-mono text-indigo-100"></span>
+                <span>➔</span>
+              </button>
+              <!-- 考研满分 / 阶段标签 -->
+              <div id="solution-stage-tag" class="shrink-0">
+                <span class="text-[11px] text-blue-700 font-mono bg-blue-100/70 px-2 py-0.5 rounded-full font-semibold">无涂改痕迹 / 考研满分答卷</span>
+              </div>
+            </div>
+          </div>
+          <!-- 解答正文独立滚动容器 -->
+          <div id="markdown-viewer" class="flex-1 overflow-y-auto p-4 math-rendered text-sm text-slate-800 leading-relaxed select-text">
+            <!-- Markdown 解析渲染内容 -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ======================= 右侧私教面板可滑动调整手柄 (Draggable Splitter Handle) ======================= -->
+  <div id="resizer-right" class="w-3.5 h-screen relative shrink-0 cursor-col-resize flex items-center justify-center select-none group z-30 -mr-1.5 -ml-1.5 hover:bg-purple-50/40 transition-colors hidden" title="按住左右拖拽调整宽度">
+    <div class="w-[2px] h-full bg-slate-300 group-hover:bg-purple-500 group-active:bg-purple-600 transition-colors"></div>
+    <div class="absolute top-1/2 -translate-y-1/2 w-4 h-12 bg-white border border-slate-300 rounded-full shadow-md flex items-center justify-center group-hover:border-purple-500 group-hover:shadow-lg group-active:border-purple-600 transition-all pointer-events-none">
+      <div class="w-1 h-5 rounded-full bg-slate-400 group-hover:bg-purple-500 group-active:bg-purple-600 transition-colors"></div>
+    </div>
+  </div>
+
+  <!-- ======================= 右侧「🎓 AI 私人私教」伴读抽屉 ======================= -->
+  <aside id="tutor-drawer" class="w-[420px] bg-white border-l border-slate-200 flex flex-col h-screen shrink-0 shadow-2xl z-30 hidden">
+    <!-- Header -->
+    <div class="p-3.5 border-b border-slate-100 flex items-center justify-between shrink-0 bg-purple-50/60">
+      <div class="flex items-center gap-2 min-w-0">
+        <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-600 text-white flex items-center justify-center font-bold text-sm shadow-xs shadow-purple-500/20">
+          🎓
+        </div>
+        <div class="min-w-0">
+          <h3 class="text-xs font-bold text-slate-900 truncate">《信号与系统》私人名师导师</h3>
+          <span id="tutor-pid-badge" class="text-[10px] text-purple-700 font-mono font-bold">研读对象：习题 2.1</span>
+        </div>
+      </div>
+      <button onclick="toggleTutor()" class="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-purple-100/50 transition cursor-pointer" title="收起私教面板">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <!-- Messages Container -->
+    <div id="tutor-messages" class="flex-1 overflow-y-auto p-3.5 space-y-3 text-xs leading-relaxed select-text">
+    </div>
+
+    <!-- Bottom Input & Quote Preview -->
+    <div class="p-3 border-t border-slate-100 flex flex-col gap-2 shrink-0 bg-slate-50/60">
+      <!-- Quote Preview -->
+      <div id="quote-preview-box" class="hidden p-2 bg-amber-50 border border-amber-200 rounded-xl text-[11px] text-amber-900 relative">
+        <div class="font-bold flex items-center justify-between text-[10px] text-amber-700 mb-0.5">
+          <span>📌 引用的解答推导片段：</span>
+          <button onclick="clearQuote()" class="text-amber-600 hover:text-amber-900 font-normal cursor-pointer">✕ 取消引用</button>
+        </div>
+        <div id="quote-preview-text" class="line-clamp-3 font-mono text-[10px] bg-white/80 p-1.5 rounded border border-amber-200/50 overflow-hidden"></div>
+      </div>
+
+      <!-- Quick Question Chips (快捷提问胶囊气泡) -->
+      <div id="quick-prompt-chips" class="flex items-center gap-1.5 overflow-x-auto py-0.5 no-scrollbar select-none text-[11px]"></div>
+
+      <!-- Textarea Input -->
+      <div class="flex gap-2">
+        <textarea id="tutor-input" rows="2" placeholder="输入你想请教的疑问（Enter 发送）..." class="flex-1 p-2.5 bg-white border border-slate-200 rounded-xl text-xs resize-none focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-2xs"></textarea>
+        <button id="btn-tutor-send" onclick="sendTutorMessage()" class="px-4 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 text-white font-bold rounded-xl text-xs shadow-xs transition flex items-center justify-center shrink-0 cursor-pointer">
+          发送
+        </button>
+      </div>
+      <div class="flex items-center justify-between text-[10px] text-slate-400 px-1">
+        <span>Enter 发送 / Shift+Enter 换行</span>
+        <button onclick="clearTutorHistory()" class="hover:text-slate-600 cursor-pointer" title="仅清空当前题目的名师对话记录">清空本题记录</button>
+      </div>
+    </div>
+  </aside>
+
+  <script>
+    if (window.marked) {
+      if (typeof marked.use === 'function') {
+        marked.use({ breaks: true, gfm: true });
+      } else if (typeof marked.setOptions === 'function') {
+        marked.setOptions({ breaks: true, gfm: true });
+      }
+    }
+    let currentChapter = 2;
+    let currentStage = 'final';
+    let currentProblemData = null;
+    let isRunning = false;
+    let problems = [];
+    let selectedPid = null;
+    let lastCompletedList = [];
+    let lastActiveWorkers = {};
+    let tutorHistory = [];
+    let currentQuote = "";
+    // 每个阶段独立的滚动位置记忆字典 (final: 阶段三, draft: 阶段一, review: 阶段二, compact: 紧凑版)
+    let stageScrollPositions = { final: 0, draft: 0, review: 0, compact: 0 };
+
+    function showToast(msg) {
+      let toast = document.getElementById('toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'toast';
+        toast.className = 'fixed bottom-4 right-4 bg-slate-900 text-white px-4 py-2.5 rounded-xl shadow-2xl text-xs z-50 transition-all duration-300 pointer-events-none opacity-0 translate-y-2';
+        document.body.appendChild(toast);
+      }
+      toast.innerText = msg;
+      toast.classList.remove('opacity-0', 'translate-y-2');
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+      }, 2500);
+    }
+
+    // 侧边栏折叠/展开
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const resizer = document.getElementById('resizer-left');
+      const mainToggleBtn = document.getElementById('btn-toggle-sidebar');
+      sidebar.classList.toggle('hidden');
+      const isHidden = sidebar.classList.contains('hidden');
+      if (resizer) {
+        if (isHidden) resizer.classList.add('hidden');
+        else resizer.classList.remove('hidden');
+      }
+      if (mainToggleBtn) {
+        if (isHidden) {
+          mainToggleBtn.classList.remove('hidden');
+        } else {
+          mainToggleBtn.classList.add('hidden');
+        }
+      }
+    }
+
+    // 私教抽屉展开/关闭
+    function toggleTutor() {
+      const drawer = document.getElementById('tutor-drawer');
+      const resizer = document.getElementById('resizer-right');
+      drawer.classList.toggle('hidden');
+      const isHidden = drawer.classList.contains('hidden');
+      if (resizer) {
+        if (isHidden) resizer.classList.add('hidden');
+        else resizer.classList.remove('hidden');
+      }
+      localStorage.setItem('tutor_open', !isHidden);
+      if (!isHidden) {
+        document.getElementById('tutor-input').focus();
+      }
+    }
+
+    function openTutor() {
+      const drawer = document.getElementById('tutor-drawer');
+      const resizer = document.getElementById('resizer-right');
+      drawer.classList.remove('hidden');
+      if (resizer) resizer.classList.remove('hidden');
+      localStorage.setItem('tutor_open', 'true');
+    }
+
+    // 唤起本地 VS Code (K:\\AI\\VSCode\\Code.exe)
+    async function openInVSCode(type) {
+      try {
+        const res = await fetch(`/api/open-vscode?chapter=${currentChapter}&type=${type}`, { method: 'POST' });
+        const data = await res.json();
+        if (data.ok) {
+          showToast(`已在 VS Code (K:\\AI\\VSCode\\Code.exe) 中打开：${data.target}`);
+        } else {
+          showToast(`打开失败：${data.error || '文件尚未生成'}`);
+        }
+      } catch (e) {
+        showToast('请求后端打开失败');
+      }
+    }
+
+    // 唤起本地打开全书合订本
+    async function openBook(type) {
+      try {
+        const res = await fetch(`/api/open-book?type=${type}`, { method: 'POST' });
+        const data = await res.json();
+        if (data.ok) {
+          showToast(`已成功打开全书合订本：${data.target}`);
+        } else {
+          showToast(`打开全书失败：${data.error || '文件尚未生成'}`);
+        }
+      } catch (e) {
+        showToast('请求后端打开全书文件失败');
+      }
+    }
+
+    // 控制全书合订本弹窗显示/隐藏
+    function toggleBookModal(show = true) {
+      const modal = document.getElementById('book-modal-backdrop');
+      if (!modal) return;
+      if (show) {
+        modal.classList.remove('hidden');
+      } else {
+        modal.classList.add('hidden');
+      }
+    }
+
+    function openCurrentInVSCode() {
+      openInVSCode(currentStage === 'compact' ? 'compact' : 'all');
+    }
+
+    async function switchChapter(ch) {
+      currentChapter = ch;
+      Object.keys(window._dynamicChapterNames || {1:1,2:2,3:3,4:4}).forEach(c => {
+        c = parseInt(c) || c;
+        const btn = document.getElementById(`btn-ch${c}`);
+        if (!btn) return;
+        btn.className = c === ch 
+          ? "w-full text-left px-2 py-1 rounded-lg text-xs font-bold bg-indigo-50 text-indigo-900 border border-indigo-200 shadow-2xs transition cursor-pointer flex items-center justify-between"
+          : "w-full text-left px-2 py-1 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-50 border border-transparent transition cursor-pointer flex items-center justify-between";
+        if (c === ch) {
+          btn.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        }
+      });
+
+      let names = window._dynamicChapterNames || {
+        1: "第 1 部分",
+        2: "第 2 部分",
+        3: "第 3 部分",
+        4: "第 4 部分"
+      };
+
+      document.getElementById('chapter-title-badge').innerText = `第 ${ch} 章做题进度`;
+      document.getElementById('current-chapter-header-text').innerText = names[ch] || `第 ${ch} 章`;
+      selectedPid = null;
+      manualShowStats = false;  // 切换章节时重置做题面板手动展开状态
+      lastStatusSignature = ""; // 切换章节时强制重置状态签名
+      lastCompletedList = [];   // 清空旧章节的已完成列表缓存
+      await loadProblems();
+      await fetchStatus(true);  // 强制拉取新章节的完成状态与题号列表
+    }
+
+    // ---------- 待复核筛选 / 单题重解任务 / 用量 ----------
+    let onlyReview = false;
+    let problemJobs = {};
+    let jobPollTimer = null;
+    function toggleReviewFilter() {
+      onlyReview = !onlyReview;
+      const b = document.getElementById('btn-filter-review');
+      b.className = 'px-1.5 py-0.5 rounded border text-[10px] cursor-pointer ' +
+        (onlyReview ? 'bg-amber-500 border-amber-600 text-white font-bold' : 'border-slate-200 text-slate-500 hover:bg-amber-50');
+      updateProblemListUI();
+    }
+    function updateReviewCount() {
+      const n = problems.filter(p => p.needs_review).length;
+      const b = document.getElementById('btn-filter-review');
+      if (b) b.innerText = `只看待复核 (${n})`;
+    }
+    async function refreshProblemStatuses() {
+      const fresh = await (await fetch(`/api/chapter/${currentChapter}/problems`)).json();
+      const byId = Object.fromEntries(fresh.map(p => [String(p.problem_id), p]));
+      for (const p of problems) Object.assign(p, byId[String(p.problem_id)] || {});
+      updateReviewCount();
+      updateProblemListUI();
+    }
+    async function pollProblemJobs() {
+      try {
+        const before = problemJobs;
+        problemJobs = await (await fetch('/api/problem-jobs')).json();
+        let running = false;
+        for (const [pid, j] of Object.entries(problemJobs)) {
+          const live = ['queued', 'solving', 'checking', 'pdf'].includes(j.state);
+          running = running || live;
+          const was = before[pid];
+          if (was && was.state !== j.state && (j.state === 'done' || j.state === 'error')) {
+            showToast(`习题 ${pid}：${j.message}`);
+            await refreshProblemStatuses();
+            if (pid === selectedPid) await inspectProblem(pid);
+            refreshUsageChip();
+          }
+          if (pid === selectedPid) {
+            const t = document.getElementById('resolve-status');
+            if (t) t.innerText = live ? j.message : '';
+          }
+        }
+        updateProblemListUI();
+        if (!running && jobPollTimer) { clearInterval(jobPollTimer); jobPollTimer = null; }
+      } catch (e) {}
+    }
+    function ensureJobPolling() {
+      if (!jobPollTimer) jobPollTimer = setInterval(pollProblemJobs, 3000);
+      pollProblemJobs();
+    }
+    function fmtTok(n) { return n >= 1e4 ? (n / 1e4).toFixed(1) + ' 万' : String(n); }
+    async function refreshUsageChip() {
+      const chip = document.getElementById('usage-chip');
+      if (!chip) return;
+      try {
+        const u = await (await fetch('/api/usage')).json();
+        chip.classList.remove('hidden');
+        if (!u.recorded) { chip.innerText = '🪙 本书用量：未记录（此功能上线前构建的书）'; return; }
+        chip.innerText = `🪙 本书用量 ${fmtTok(u.total)} token` + (u.per_problem ? ` · 每题约 ${fmtTok(u.per_problem)}` : '') + ' ▾';
+        document.getElementById('usage-detail').innerHTML =
+          `<div class="flex justify-between"><span>输入</span><span>${fmtTok(u.in)}</span></div>` +
+          `<div class="flex justify-between"><span>输出</span><span>${fmtTok(u.out)}</span></div>` +
+          `<div class="flex justify-between"><span>思考</span><span>${fmtTok(u.think)}</span></div>` +
+          `<div class="border-t border-slate-100 my-1"></div>` +
+          (u.by_stage || []).map(s => `<div class="flex justify-between"><span>${escHtml(s.name)} ×${s.calls}</span><span>${fmtTok(s.total)}</span></div>`).join('');
+      } catch (e) { chip.classList.add('hidden'); }
+    }
+    function toggleUsageDetail() {
+      document.getElementById('usage-detail').classList.toggle('hidden');
+    }
+
+    async function loadProblems() {
+      const url = `/api/chapter/${currentChapter}/problems`;
+      const res = await fetch(url);
+      problems = await res.json();
+      updateReviewCount();
+      refreshUsageChip();
+      ensureJobPolling();
+      showSolvePromptIfCropOnly();
+      initProblemList();
+      if (problems.length > 0 && !selectedPid) {
+        selectedPid = problems[0].problem_id;
+        inspectProblem(selectedPid);
+      }
+    }
+
+    // 初始化题目列表 DOM（只生成一次，滚动位置永不重置）
+    function initProblemList() {
+      const container = document.getElementById('problem-list');
+      container.innerHTML = problems.map(p => {
+        const pid = p.problem_id;
+        return `
+          <div id="p-item-${pid}" class="flex items-center justify-between p-2 rounded-lg cursor-pointer transition text-slate-600 hover:bg-slate-50 border border-transparent" onclick="inspectProblem('${pid}')">
+            <span class="font-medium text-xs">题 ${pid}</span>
+            <span id="p-badge-${pid}" class="text-slate-300 text-xs font-mono">○</span>
+          </div>
+        `;
+      }).join('');
+      updateProblemListUI();
+    }
+
+    // 增量刷新各题状态，绝不重建 DOM，不重置滚动条
+    function updateProblemListUI() {
+      for (const p of problems) {
+        const pid = p.problem_id;
+        const itemEl = document.getElementById(`p-item-${pid}`);
+        const badgeEl = document.getElementById(`p-badge-${pid}`);
+        if (!itemEl || !badgeEl) continue;
+
+        const isDone = lastCompletedList.includes(pid) || (currentProblemData && currentProblemData.found && currentProblemData.problem_id === pid);
+        const job = problemJobs[pid];
+        const jobRunning = !!(job && ['queued', 'solving', 'checking', 'pdf'].includes(job.state));
+        const activeInfo = lastActiveWorkers[pid] || (jobRunning ? {status: '重解中'} : null);
+        const isSelected = pid === selectedPid;
+        itemEl.style.display = (onlyReview && !p.needs_review && !isSelected && !jobRunning) ? 'none' : '';
+
+        if (isDone && !activeInfo && p.needs_review) {
+          badgeEl.className = "text-amber-800 font-bold bg-amber-100 px-1.5 py-0.5 rounded text-[10px]";
+          badgeEl.innerText = p.stale_text ? '⚠ 题干已改' : `⚠ 复核${p.score !== '' && p.score != null ? ' ' + p.score : ''}`;
+          badgeEl.title = (p.issues || []).join('；');
+        } else if (isDone && !activeInfo) {
+          badgeEl.className = "text-emerald-700 font-bold bg-emerald-100/70 px-1.5 py-0.5 rounded text-[10px]";
+          badgeEl.innerText = "✓ 完成";
+        } else if (activeInfo) {
+          badgeEl.className = "text-indigo-700 font-bold bg-indigo-100 px-1.5 py-0.5 rounded animate-pulse text-[10px]";
+          badgeEl.innerText = `⚡ ${activeInfo.status}`;
+        } else {
+          badgeEl.className = "text-slate-300 text-xs";
+          badgeEl.innerText = "○ 待解";
+        }
+
+        let cls = "flex items-center justify-between p-2 rounded-lg cursor-pointer transition text-xs ";
+        if (isSelected) {
+          cls += "ring-2 ring-indigo-500 bg-indigo-50/90 font-bold text-indigo-950 border-indigo-200 shadow-xs";
+        } else if (activeInfo) {
+          cls += "bg-indigo-50/60 border border-indigo-200 text-indigo-900 font-medium";
+        } else if (isDone) {
+          cls += "text-slate-700 hover:bg-emerald-50/40 border-transparent";
+        } else {
+          cls += "hover:bg-slate-100 text-slate-600 border-transparent";
+        }
+        itemEl.className = cls;
+      }
+    }
+
+    // 纯净 Markdown + KaTeX 混合渲染器：高效两遍正则替换，彻底消除多重嵌套循环和浏览器卡顿
+    function renderMarkdownWithMath(markdownText) {
+      if (!markdownText) return '';
+
+      const mathBlocks = [];
+
+      // 1. 占位保护所有独立块级公式 $$ ... $$ 和 \[ ... \]
+      let text = markdownText.replace(/\$\$([\s\S]*?)\$\$/g, (match, formula) => {
+        const id = mathBlocks.length;
+        mathBlocks.push({ display: true, formula: formula.trim() });
+        return `\n\nKATEXBLOCK_${id}_\n\n`;
+      });
+
+      text = text.replace(/\\\[([\s\S]*?)\\\]/g, (match, formula) => {
+        const id = mathBlocks.length;
+        mathBlocks.push({ display: true, formula: formula.trim() });
+        return `\n\nKATEXBLOCK_${id}_\n\n`;
+      });
+
+      // 2. 占位保护 \( ... \)
+      text = text.replace(/\\\(([\s\S]*?)\\\)/g, (match, formula) => {
+        const id = mathBlocks.length;
+        mathBlocks.push({ display: false, formula: formula.trim() });
+        return `KATEXINLINE_${id}_`;
+      });
+
+      // 3. 占位保护所有行内公式 $ ... $ (防止误伤转义的 \$ 货币符号，防止数字连缀)
+      text = text.replace(/(?<!\\)(?<!\$)\$((?:[^\$\n]|\\\$)+?)(?<!\\)\$(?!\$)/g, (match, formula) => {
+        const id = mathBlocks.length;
+        mathBlocks.push({ display: false, formula: formula.trim() });
+        return `KATEXINLINE_${id}_`;
+      });
+
+      // 1.5 占位保护可能裸露的多行 LaTeX 环境 \begin{...} ... \end{...}
+      text = text.replace(/\\begin\{(aligned|alignedat|cases|matrix|pmatrix|bmatrix|vmatrix|Vmatrix|equation\*?|align\*?)\}([\s\S]*?)\\end\{\1\}/g, (match) => {
+        const id = mathBlocks.length;
+        mathBlocks.push({ display: true, formula: match.trim() });
+        return `\n\nKATEXBLOCK_${id}_\n\n`;
+      });
+
+      // 4. marked 解析纯 Markdown
+      text = text.replace(/\\qquad/g, '&emsp;&emsp;');
+      text = text.replace(/\\quad/g, '&emsp;');
+      let html = marked.parse(text, { breaks: true, gfm: true });
+
+      // 5. 高效两遍正则回调单次替换，彻底避免 N 次全文正则遍历与卡顿
+      html = html.replace(/(?:<p>\s*)?KATEXBLOCK_(\d+)_(?:\s*<\/p>)?/g, (match, idStr) => {
+        const item = mathBlocks[parseInt(idStr, 10)];
+        if (!item) return match;
+        let renderedMath = '';
+        try {
+          if (window.katex) {
+            renderedMath = window.katex.renderToString(item.formula, {
+              displayMode: true,
+              throwOnError: false
+            });
+          } else {
+            renderedMath = `$$${item.formula}$$`;
+          }
+        } catch (e) {
+          renderedMath = `<span class="katex-error text-rose-500 font-mono text-xs">$$${item.formula}$$</span>`;
+        }
+        return `<div class="katex-display-wrapper my-2.5 overflow-x-auto text-center">${renderedMath}</div>`;
+      });
+
+      html = html.replace(/KATEXINLINE_(\d+)_/g, (match, idStr) => {
+        const item = mathBlocks[parseInt(idStr, 10)];
+        if (!item) return match;
+        let renderedMath = '';
+        try {
+          if (window.katex) {
+            renderedMath = window.katex.renderToString(item.formula, {
+              displayMode: false,
+              throwOnError: false
+            });
+          } else {
+            renderedMath = `$${item.formula}$`;
+          }
+        } catch (e) {
+          renderedMath = `<span class="katex-error text-rose-500 font-mono text-xs">$${item.formula}$</span>`;
+        }
+        return renderedMath;
+      });
+
+      // 6. 还原未被公式消耗的转义货币符号 \$ 为纯文本 $
+      html = html.replace(/\\\$/g, '$');
+
+      return html;
+    }
+
+    // 渲染巨型章节 Markdown 文档（分片卡片化）
+    function renderLargeMarkdownDocument(text, viewer) {
+      if (window._mathObserver) {
+        window._mathObserver.disconnect();
+        window._mathObserver = null;
+      }
+
+      // 按题号切分为各个独立卡片，彻底避免 15000+ 个公式一次性霸占主线程
+      const sections = text.split(/(?=\n#{2,3}\s+习题)/);
+      let html = '';
+      sections.forEach((sec, idx) => {
+        if (!sec.trim()) return;
+        const match = sec.match(/#{2,3}\s+习题\s+([\d\.\-]+)/);
+        const pid = match ? match[1] : (idx === 0 ? 'header' : `sec-${idx}`);
+        const parsed = renderMarkdownWithMath(sec);
+        html += `
+          <div id="card-${pid}" class="problem-card bg-white border border-slate-200/90 rounded-2xl p-5 mb-4 shadow-2xs hover:shadow-xs transition select-text">
+            ${parsed}
+          </div>
+        `;
+      });
+
+      viewer.innerHTML = html;
+      viewer.scrollTop = 0;
+    }
+
+    // 阶段切换 (Plan B: 4 阶段选项卡)
+    function switchStage(stage) {
+      const viewer = document.getElementById('markdown-viewer');
+      if (viewer && currentStage) {
+        stageScrollPositions[currentStage] = viewer.scrollTop;
+      }
+      currentStage = stage;
+      updateStageButtons();
+      renderCurrentProblemStage();
+    }
+
+    function updateStageButtons() {
+      const stages = [
+        { id: 'final', activeClass: 'bg-blue-50 text-blue-700 border-blue-200 shadow-2xs' },
+        { id: 'draft', activeClass: 'bg-amber-50 text-amber-700 border-amber-200 shadow-2xs' },
+        { id: 'review', activeClass: 'bg-emerald-50 text-emerald-700 border-emerald-200 shadow-2xs' },
+        { id: 'compact', activeClass: 'bg-purple-50 text-purple-700 border-purple-200 shadow-2xs' }
+      ];
+      stages.forEach(item => {
+        const btn = document.getElementById(`stage-btn-${item.id}`);
+        if (!btn) return;
+        const isActive = (item.id === currentStage);
+        btn.className = isActive
+          ? `px-2.5 py-1 rounded-lg text-xs font-bold border cursor-pointer flex items-center gap-1 transition ${item.activeClass}`
+          : "px-2.5 py-1 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-100 border border-transparent cursor-pointer flex items-center gap-1 transition";
+      });
+    }
+
+    // 折叠 / 展开原题面板
+    function toggleProblemSplit() {
+      const leftPane = document.getElementById('left-problem-pane');
+      if (!leftPane) return;
+      const isHidden = leftPane.classList.contains('hidden');
+      setProblemSplitCollapsed(!isHidden);
+    }
+
+    function setProblemSplitCollapsed(collapsed) {
+      const leftPane = document.getElementById('left-problem-pane');
+      const resizer = document.getElementById('resizer-split');
+      const unfoldBtn = document.getElementById('btn-unfold-problem');
+
+      if (!leftPane) return;
+
+      if (collapsed) {
+        leftPane.classList.add('hidden');
+        if (resizer) resizer.classList.add('hidden');
+        if (unfoldBtn) unfoldBtn.classList.remove('hidden');
+        localStorage.setItem('problem_pane_collapsed', 'true');
+      } else {
+        leftPane.classList.remove('hidden');
+        if (resizer) resizer.classList.remove('hidden');
+        if (unfoldBtn) unfoldBtn.classList.add('hidden');
+        localStorage.setItem('problem_pane_collapsed', 'false');
+      }
+    }
+
+    // 切换上一题与下一题导航逻辑（第一题无上一题，最后一题无下一题，同步联动解答区与原题区）
+    function updateProblemNavButtons() {
+      const prevBtn = document.getElementById('btn-prev-problem');
+      const prevIdSpan = document.getElementById('btn-prev-problem-id');
+      const nextBtn = document.getElementById('btn-next-problem');
+      const nextIdSpan = document.getElementById('btn-next-problem-id');
+
+      const probPrevBtn = document.getElementById('btn-problem-prev');
+      const probPrevIdSpan = document.getElementById('btn-problem-prev-id');
+      const probNextBtn = document.getElementById('btn-problem-next');
+      const probNextIdSpan = document.getElementById('btn-problem-next-id');
+
+      if (!problems || problems.length === 0) {
+        if (prevBtn) prevBtn.classList.add('hidden');
+        if (nextBtn) nextBtn.classList.add('hidden');
+        if (probPrevBtn) probPrevBtn.classList.add('hidden');
+        if (probNextBtn) probNextBtn.classList.add('hidden');
+        return;
+      }
+      const currentIndex = problems.findIndex(p => p.problem_id === selectedPid);
+
+      // 第一个没有上一题
+      if (currentIndex > 0) {
+        const prevPid = problems[currentIndex - 1].problem_id;
+        if (prevBtn) {
+          prevBtn.classList.remove('hidden');
+          if (prevIdSpan) prevIdSpan.innerText = prevPid;
+        }
+        if (probPrevBtn) {
+          probPrevBtn.classList.remove('hidden');
+          if (probPrevIdSpan) probPrevIdSpan.innerText = prevPid;
+        }
+      } else {
+        if (prevBtn) prevBtn.classList.add('hidden');
+        if (probPrevBtn) probPrevBtn.classList.add('hidden');
+      }
+
+      // 最后一个没有下一题
+      if (currentIndex >= 0 && currentIndex < problems.length - 1) {
+        const nextPid = problems[currentIndex + 1].problem_id;
+        if (nextBtn) {
+          nextBtn.classList.remove('hidden');
+          if (nextIdSpan) nextIdSpan.innerText = nextPid;
+        }
+        if (probNextBtn) {
+          probNextBtn.classList.remove('hidden');
+          if (probNextIdSpan) probNextIdSpan.innerText = nextPid;
+        }
+      } else {
+        if (nextBtn) nextBtn.classList.add('hidden');
+        if (probNextBtn) probNextBtn.classList.add('hidden');
+      }
+    }
+
+    const updateNextProblemButton = updateProblemNavButtons;
+
+    function goToPrevProblem() {
+      if (!problems || problems.length === 0) return;
+      const currentIndex = problems.findIndex(p => p.problem_id === selectedPid);
+      if (currentIndex > 0) {
+        const prevPid = problems[currentIndex - 1].problem_id;
+        inspectProblem(prevPid);
+        const el = document.getElementById(`p-item-${prevPid}`);
+        if (el) el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      }
+    }
+
+    function goToNextProblem() {
+      if (!problems || problems.length === 0) return;
+      const currentIndex = problems.findIndex(p => p.problem_id === selectedPid);
+      if (currentIndex >= 0 && currentIndex < problems.length - 1) {
+        const nextPid = problems[currentIndex + 1].problem_id;
+        inspectProblem(nextPid);
+        const el = document.getElementById(`p-item-${nextPid}`);
+        if (el) el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      }
+    }
+
+    // 原题书籍排版对齐器：保留纯净 Markdown 与多行 KaTeX 公式结构，不再生硬切断换行与公式块
+    function formatProblemContent(rawText, pid) {
+      if (!rawText) return '';
+      let text = rawText.trim();
+
+      // 去除可能已存在的题号前缀。书中写法各异（3.9 / 3-9 / 3－9 / 3—9 / 习题3.9 / 第3.9题），
+      // 全部去掉，避免与下面加粗的题号重复；可能连续出现两次（如“3.9 3-9 …”），循环去除
+      const [pCh, pNo] = String(pid).split('.');
+      const pidRegex = new RegExp(`^(?:\\*\\*)?(?:习题|第)?\\s*${pCh}\\s*[-－—–﹣.．·]\\s*${pNo}(?!\\d)\\s*(?:题)?(?:\\*\\*)?\\s*[\\.。:：、]?\\s*`, 'i');
+      for (let i = 0; i < 2; i++) text = text.replace(pidRegex, '').trim();
+
+      // 保证首行自然添加加粗题号
+      const formatted = `**${pid}**  ${text}`;
+      return `
+        <div class="math-rendered text-sm text-slate-800 leading-relaxed select-text space-y-2">
+          ${renderMarkdownWithMath(formatted)}
+        </div>
+      `;
+    }
+
+    function renderCurrentProblemStage() {
+      const viewer = document.getElementById('markdown-viewer');
+      const problemContent = document.getElementById('problem-pane-content');
+      const problemTitle = document.getElementById('problem-pane-title');
+      const fullImgLink = document.getElementById('link-full-page-img');
+
+      if (!currentProblemData) return;
+
+      // 1. 渲染左侧【原题】展示区（只显示“原题 习题2.1”，去除中间冗余字样）
+      if (problemTitle) {
+        const srcName = {imported: '题干：导入', imported_check: '题干：导入（待核对）', verified: '题干：已对照原图核对'}[currentProblemData.text_source] || '';
+        problemTitle.innerText = `原题 习题 ${currentProblemData.problem_id || selectedPid}` + (srcName ? `  ·  ${srcName}` : '');
+      }
+      updateProblemNavButtons();
+
+      if (fullImgLink) {
+        if (currentProblemData.page_img_url) {
+          fullImgLink.href = currentProblemData.page_img_url;
+          fullImgLink.classList.remove('hidden');
+        } else {
+          fullImgLink.classList.add('hidden');
+        }
+      }
+
+      if (problemContent) {
+        const rawText = (currentProblemData.problem_text || '').trim();
+        const hasImg = !!currentProblemData.page_img_url;
+        // 仅当文本具备实质性内容（长度大于25且非残缺短标签），或者无图时才在上方单独展示排版文本
+        const isSnippetOnly = rawText.length < 25 || /^(\d+[\.、\s]|习题|\(?[0-9一二三四五六七八九十]+\)?)+$/.test(rawText);
+        const shouldShowText = rawText.length > 0 && (!hasImg || !isSnippetOnly);
+
+        if (shouldShowText || hasImg) {
+          let innerHtml = "";
+
+          // 1. 上面放规范文字整理（排版对齐原书切片）
+          if (shouldShowText) {
+            innerHtml += formatProblemContent(currentProblemData.problem_text, selectedPid);
+          }
+
+          // 2. 下面放原图书籍高清扫描图（直接融入同一个卡片，紧贴文字，不套额外边框，间距小且紧凑）
+          if (hasImg) {
+            innerHtml += `
+              <div class="${shouldShowText ? 'mt-2 pt-2 border-t border-slate-100' : ''} flex flex-col items-center">
+                <img src="${currentProblemData.page_img_url}" alt="原书扫描图" class="w-full h-auto object-contain rounded" loading="eager" />
+                <div class="w-full flex items-center justify-between mt-1 text-[11px] text-slate-400">
+                  <button onclick="triggerSolveSingle(selectedPid, 1)" class="text-slate-400 hover:text-amber-700 hover:underline cursor-pointer" title="题干文字和原图对不上时用：按原图重新识别题干，再用新题干重解">题干识别有误？重新识别并重解</button>
+                  <a href="${currentProblemData.page_img_url}" target="_blank" class="text-indigo-600 hover:text-indigo-800 font-medium hover:underline">查看大图 ↗</a>
+                </div>
+              </div>
+            `;
+          }
+
+          // 统一直接放在同一个干净利落的卡片框里，上下间距紧致微小
+          problemContent.innerHTML = `
+            <div class="bg-white rounded-xl border border-slate-200 p-3 shadow-2xs">
+              ${innerHtml}
+            </div>
+          `;
+        } else {
+          problemContent.innerHTML = `
+            <div class="bg-white rounded-xl border border-slate-200 p-8 text-center text-slate-400 text-xs shadow-2xs">
+              <p class="font-bold text-slate-600 mb-1">暂无原题内容</p>
+              <p>可直接阅读右侧详细解答推导。</p>
+            </div>
+          `;
+        }
+      }
+
+      // 2. 渲染右侧【解题文字】展示区与选项卡状态
+      updateStageButtons();
+      const stageTag = document.getElementById('solution-stage-tag');
+      const curJob = problemJobs[selectedPid];
+      const jobLive = !!(curJob && ['queued', 'solving', 'checking', 'pdf'].includes(curJob.state));
+      document.getElementById('btn-resolve').classList.toggle('hidden', !currentProblemData.found || jobLive);
+      document.getElementById('resolve-status').innerText = jobLive ? curJob.message : '';
+
+      if (!currentProblemData.found) {
+        if (stageTag) {
+          stageTag.innerHTML = '<span class="text-[11px] text-amber-700 font-mono bg-amber-100/70 px-2 py-0.5 rounded-full font-semibold">待求解</span>';
+        }
+        viewer.innerHTML = `
+          <div class="p-6 bg-gradient-to-br from-indigo-50/90 to-purple-50/80 border border-indigo-200/80 rounded-2xl shadow-xs mt-2">
+            <div class="flex items-center gap-2.5 text-indigo-950 font-bold text-sm mb-1.5">
+              <span class="w-3 h-3 rounded-full bg-amber-400 animate-ping"></span>
+              <span>习题 ${selectedPid} · 待求解 / 调度中</span>
+            </div>
+            <p class="text-xs text-indigo-800/80 mb-4 leading-relaxed">
+              系统检测到该题尚未生成完整多阶段推导答卷。左侧题目导航与右侧推导已建立实时联动——您可以直接点击下方按钮触发单题极速推导，或开启全章 20 通道极速调度。
+            </p>
+            <div class="flex items-center gap-3 flex-wrap">
+              <button onclick="triggerSolveSingle('${selectedPid}')" id="btn-solve-single-now" class="px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 text-white font-bold text-xs rounded-xl shadow-xs transition flex items-center gap-1.5 cursor-pointer">
+                <span>⚡</span>
+                <span id="btn-solve-single-text">立即求解本题 (习题 ${selectedPid})</span>
+              </button>
+              <button onclick="startSolvingCurrent()" class="px-4 py-2 bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 font-bold text-xs rounded-xl shadow-2xs transition flex items-center gap-1.5 cursor-pointer" title="解全书所有未解的题，然后检验、汇编 MD、编译 PDF">
+                <span>🚀</span>
+                <span>解全书剩余题目（含检验与 PDF）</span>
+              </button>
+            </div>
+            <div id="single-solve-tip" class="mt-3 text-[11px] text-indigo-600 font-mono hidden flex items-center gap-1.5">
+              <span class="w-3.5 h-3.5 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin"></span>
+              <span>正在调配 AI 模型并发通道计算本题，解完将自动原地呈现...</span>
+            </div>
+          </div>`;
+        return;
+      }
+
+      if (stageTag) {
+        if (currentStage === 'final') {
+          stageTag.innerHTML = '<span class="text-[11px] text-blue-700 font-mono bg-blue-100/70 px-2 py-0.5 rounded-full font-semibold">无涂改痕迹 / 考研满分答卷</span>';
+        } else if (currentStage === 'draft') {
+          stageTag.innerHTML = currentProblemData.final_mode === 'draft_passed'
+            ? '<span class="text-[11px] text-emerald-700 font-mono bg-emerald-100/70 px-2 py-0.5 rounded-full font-semibold">评审通过，本草稿已直接作为定稿</span>'
+            : '<span class="text-[11px] text-amber-700 font-mono bg-amber-100/70 px-2 py-0.5 rounded-full font-semibold">演算过程 / 备选路径 / 验算试错</span>';
+        } else if (currentStage === 'review') {
+          stageTag.innerHTML = `<span class="text-[11px] font-bold text-emerald-700 font-mono bg-emerald-100/80 px-2 py-0.5 rounded-full">${(isNaN(parseFloat(currentProblemData.score)) || parseFloat(currentProblemData.score) < 95) ? '评审未达标 · 待复核：' : '综合评分：'}${currentProblemData.score !== '' && currentProblemData.score != null ? currentProblemData.score + '分' : '未评审'}</span>`;
+        } else if (currentStage === 'compact') {
+          stageTag.innerHTML = '<span class="text-[11px] text-purple-700 font-mono bg-purple-100/70 px-2 py-0.5 rounded-full font-semibold">主干推导 + 关键折点 + 权威结论</span>';
+        }
+      }
+
+      let content = currentProblemData[currentStage] || currentProblemData.content || "";
+      // 待复核提示：评审未达标 / 题干在解题后被更正 / 检验发现问题
+      const d = currentProblemData;
+      const warn = [];
+      if (d.stale_text) warn.push('题干在解题后按原图更正过，这份解答基于旧题干');
+      if (d.status && d.status !== 'passed') warn.push(d.status === 'unreviewed' ? '评审没有给出分数' : `评审未达标（${d.score || '无'} 分）`);
+      for (const it of (d.issues || [])) if (!/评审未达标|题干已按原图更正/.test(it)) warn.push(it);
+      const warnHtml = warn.length ? `
+        <div class="mb-3 p-2.5 rounded-xl border border-amber-300 bg-amber-50 text-[12px] text-amber-900 flex items-start justify-between gap-3">
+          <div><b>⚠ 待复核：</b>${warn.map(escHtml).join('；')}</div>
+          ${jobLive ? '' : '<button onclick="triggerSolveSingle(selectedPid)" class="shrink-0 px-2 py-0.5 rounded-md bg-amber-500 hover:bg-amber-600 text-white font-bold cursor-pointer">🔄 重解本题</button>'}
+        </div>` : '';
+      viewer.innerHTML = warnHtml + renderMarkdownWithMath(content);
+
+      // 独立恢复当前 Tab 记忆的滚动高度，并用 requestAnimationFrame 抵消数学公式回流抖动
+      const targetScrollTop = stageScrollPositions[currentStage] || 0;
+      viewer.scrollTop = targetScrollTop;
+      requestAnimationFrame(() => {
+        viewer.scrollTop = targetScrollTop;
+      });
+    }
+
+    // 求解 / 重解单题：后台运行（求解 -> 检验 -> 刷新合订本与 PDF），列表角标与按钮显示进度
+    // retranscribe=1：题干本身识别有误时，先按原图重新识别题干再解
+    async function triggerSolveSingle(pid, retranscribe = 0) {
+      if (currentProblemData && currentProblemData.found) {
+        const msg = retranscribe ? `重新识别习题 ${pid} 的题干并重解？现有解答会被替换。`
+                                 : `重解习题 ${pid}？新解答会替换现有解答（题干不变）。`;
+        if (!await ask(msg)) return;
+      }
+      const btn = document.getElementById('btn-solve-single-now');
+      const text = document.getElementById('btn-solve-single-text');
+      const tip = document.getElementById('single-solve-tip');
+      if (btn) btn.disabled = true;
+      if (text) text.innerText = `正在求解 ${pid}…`;
+      if (tip) tip.classList.remove('hidden');
+      try {
+        const res = await fetch(`/api/chapter/${currentChapter}/solve-single/${pid}?retranscribe=${retranscribe ? 1 : 0}`, { method: 'POST' });
+        const data = await res.json();
+        if (data.ok) {
+          showToast(`习题 ${pid} 已开始${currentProblemData && currentProblemData.found ? '重解' : '求解'}，完成后自动刷新（约 1~3 分钟）`);
+          ensureJobPolling();
+        } else {
+          showToast(`无法求解: ${data.error || '未知错误'}`);
+          if (text) text.innerText = `重新求解 ${pid}`;
+          if (btn) btn.disabled = false;
+        }
+      } catch (e) {
+        showToast(`请求异常: ${e}`);
+        if (text) text.innerText = `重新求解 ${pid}`;
+        if (btn) btn.disabled = false;
+      }
+    }
+
+    // 选定并锁定查看某道题
+    async function inspectProblem(pid) {
+      selectedPid = pid;
+      // 换题时重置当前题目所有阶段的滚动记录为0
+      stageScrollPositions = { final: 0, draft: 0, review: 0, compact: 0 };
+      updateProblemListUI();
+      document.getElementById('tutor-pid-badge').innerText = `研读对象：第 ${currentChapter} 章 · 习题 ${pid}`;
+      loadTutorHistoryForProblem(currentChapter, pid);
+      const vt = document.getElementById('view-title');
+      if (vt) vt.innerText = `习题 ${pid}`;
+
+      const viewer = document.getElementById('markdown-viewer');
+      viewer.innerHTML = '<div class="p-8 text-center text-slate-400 text-xs flex items-center justify-center gap-2"><span class="w-4 h-4 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin"></span> 正在载入题目多阶段推导数据...</div>';
+
+      const problemContent = document.getElementById('problem-pane-content');
+      if (problemContent) {
+        problemContent.innerHTML = '<div class="p-8 text-center text-slate-400 text-xs flex items-center justify-center gap-2"><span class="w-4 h-4 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin"></span> 正在读取原书原题切片...</div>';
+      }
+
+      try {
+        const url = `/api/chapter/${currentChapter}/problem/${pid}`;
+        const res = await fetch(url);
+        currentProblemData = await res.json();
+        
+        // 动态更新审校阶段按钮上的分数标签
+        const scoreBadge = document.getElementById('stage-score-badge');
+        if (scoreBadge) {
+          const sc = parseFloat(currentProblemData.score);
+          scoreBadge.innerText = currentProblemData.score !== '' && currentProblemData.score != null ? `${currentProblemData.score}分` : '未评审';
+          const low = isNaN(sc) || sc < 95;
+          scoreBadge.className = 'text-[10px] font-mono px-1 py-0.2 rounded font-bold ' + (low ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-800');
+        }
+
+        // 强联动：若当前题目已具备解答，立即联动更新左侧列表状态
+        if (currentProblemData.found) {
+          if (!lastCompletedList.includes(pid)) {
+            lastCompletedList.push(pid);
+          }
+          updateProblemListUI();
+        }
+
+        renderCurrentProblemStage();
+      } catch (e) {
+        viewer.innerHTML = `<div class="text-rose-600 p-4">加载失败: ${e}</div>`;
+        if (problemContent) {
+          problemContent.innerHTML = `<div class="text-rose-600 p-4">原题切片加载失败: ${e}</div>`;
+        }
+      }
+    }
+
+    let manualShowStats = false;
+
+    async function toggleChapterRun() {
+      if (isRunning) {
+        await fetch(`/api/solve/pause-all`, { method: 'POST' });
+        isRunning = false;
+        fetchStatus(true);
+      } else {
+        manualShowStats = true;
+        document.getElementById('solving-stats-panel').classList.remove('hidden');
+        document.getElementById('worker-matrix-card').classList.remove('hidden');
+        await fetch(`/api/solve/start-all`, { method: 'POST' });
+        isRunning = true;
+        fetchStatus(true);
+      }
+    }
+    window.toggleChapter2Run = toggleChapterRun;
+
+    async function restartChapterRun() {
+      if (await ask(`确定要清空全卷所有题解并重新开启全量并发做题吗？`)) {
+        manualShowStats = true;
+        document.getElementById('solving-stats-panel').classList.remove('hidden');
+        document.getElementById('worker-matrix-card').classList.remove('hidden');
+        await fetch(`/api/solve/restart-all`, { method: 'POST' });
+        isRunning = true;
+        fetchStatus(true);
+      }
+    }
+
+    function renderWorkerGrid(activeWorkers) {
+      const grid = document.getElementById('worker-grid');
+      if (!grid) return;
+      const activeEntries = Object.entries(activeWorkers || {});
+      const totalSlots = 20;
+      let html = '';
+
+      for (let i = 0; i < totalSlots; i++) {
+        const slotNum = String(i + 1).padStart(2, '0');
+        const active = activeEntries[i];
+        
+        if (active) {
+          const [pid, info] = active;
+          html += `
+            <div class="h-[44px] bg-indigo-50/90 border border-indigo-300 hover:border-indigo-500 rounded-lg px-2 py-0.5 flex flex-col justify-between cursor-pointer transition shadow-2xs group shrink-0" onclick="inspectProblem('${pid}')" title="通道 ${slotNum} 正在求解题 ${pid}，点击查看">
+              <div class="flex items-center justify-between leading-none">
+                <span class="text-[9px] font-bold text-indigo-700 font-mono">CH #${slotNum}</span>
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
+              </div>
+              <div class="flex items-center justify-between text-[10px] leading-tight">
+                <span class="font-bold text-indigo-950 font-mono truncate">题 ${pid}</span>
+                <span class="text-[8px] font-medium text-indigo-600 truncate">${info.status || '求解中'}</span>
+              </div>
+            </div>
+          `;
+        } else {
+          const isDoneAll = problems.length > 0 && lastCompletedList.length >= problems.length;
+          const statusText = isDoneAll ? "已完结" : (isRunning ? "等待派发" : "待命");
+          const dotColor = isDoneAll ? "bg-emerald-400" : "bg-slate-300";
+          html += `
+            <div class="h-[44px] bg-slate-50 border border-slate-200/80 hover:border-slate-300 rounded-lg px-2 py-0.5 flex flex-col justify-between cursor-default transition select-none shrink-0">
+              <div class="flex items-center justify-between leading-none">
+                <span class="text-[9px] font-medium text-slate-400 font-mono">CH #${slotNum}</span>
+                <span class="w-1.5 h-1.5 rounded-full ${dotColor}"></span>
+              </div>
+              <div class="flex items-center justify-between text-[9px] leading-tight text-slate-400 font-mono">
+                <span>---</span>
+                <span class="text-[8px]">${statusText}</span>
+              </div>
+            </div>
+          `;
+        }
+      }
+      grid.innerHTML = html;
+    }
+
+    let lastStatusSignature = "";
+    async function fetchStatus(force = false) {
+      try {
+        const url = `/api/chapter/${currentChapter}/status`;
+        const res = await fetch(url);
+        const data = await res.json();
+
+        const allTotal = data.all_total || (problems.length || 19);
+        const allCompleted = data.all_completed || data.completed_count || 0;
+        const allPct = Math.min(100, Math.round((allCompleted / allTotal) * 100));
+        const isDoneAll = allTotal > 0 && allCompleted >= allTotal;
+
+        const sig = `${currentChapter}_${data.is_running}_${allCompleted}_${allTotal}_${data.completed_count}_${data.total_problems}_${data.total_tokens_used}_${Object.keys(data.active_workers || {}).length}_${manualShowStats}`;
+        if (!force && sig === lastStatusSignature) {
+          return;
+        }
+        lastStatusSignature = sig;
+
+        isRunning = data.is_running;
+        const total = data.total_problems || problems.length || 1;
+        const completed = data.completed_count || 0;
+
+        const mainBtn = document.getElementById('btn-main-action');
+        const restartBtn = document.getElementById('btn-restart-action');
+        const statsPanel = document.getElementById('solving-stats-panel');
+        const matrixCard = document.getElementById('worker-matrix-card');
+
+        // 1. 20通道槽位矩阵与进度面板智能联动 (做完题目后自动消失，点击做题时跳出)
+        if (isRunning) {
+          matrixCard.classList.remove('hidden');
+          statsPanel.classList.remove('hidden');
+        } else if (isDoneAll) {
+          // 题目做完后，20通道必须彻底消失让出空间！
+          matrixCard.classList.add('hidden');
+          if (!manualShowStats) {
+            statsPanel.classList.add('hidden');
+          } else {
+            statsPanel.classList.remove('hidden');
+          }
+        } else {
+          // 未做完但处于暂停/待启动状态
+          if (!manualShowStats) {
+            matrixCard.classList.add('hidden');
+            statsPanel.classList.add('hidden');
+          } else {
+            matrixCard.classList.remove('hidden');
+            statsPanel.classList.remove('hidden');
+          }
+        }
+
+        // 2. 按钮状态精准渲染（面向全卷全量解题）
+        if (isRunning) {
+          document.getElementById('btn-icon').innerText = '⏸';
+          document.getElementById('btn-text').innerText = '暂停做题';
+          mainBtn.className = "btn-solve-running flex-1 py-2 text-white text-xs font-bold rounded-xl shadow-xs transition flex items-center justify-center gap-1.5 cursor-pointer";
+          if (restartBtn) restartBtn.classList.add('hidden');
+        } else if (isDoneAll) {
+          document.getElementById('btn-icon').innerText = '✓';
+          document.getElementById('btn-text').innerText = `全卷已全部完结 (${allCompleted}/${allTotal})`;
+          mainBtn.className = "btn-solve-done flex-1 py-2 text-white text-xs font-bold rounded-xl shadow-xs transition flex items-center justify-center gap-1.5 cursor-pointer";
+          if (restartBtn) restartBtn.classList.remove('hidden');
+        } else {
+          document.getElementById('btn-icon').innerText = '🚀';
+          document.getElementById('btn-text').innerText = allCompleted > 0 ? `继续全卷做题 (${allCompleted}/${allTotal})` : `开始解题 (全卷并发)`;
+          mainBtn.className = "btn-solve-primary flex-1 py-2 text-white text-xs font-bold rounded-xl shadow-xs transition flex items-center justify-center gap-1.5 cursor-pointer";
+          if (restartBtn) restartBtn.classList.add('hidden');
+        }
+
+        // 3. 更新指标数据 (显示全卷总览与本章状态)
+        document.getElementById('chapter-title-badge').innerText = `全卷做题总进度`;
+        document.getElementById('top-tokens').innerText = (data.total_tokens_used || 0).toLocaleString();
+        document.getElementById('top-time').innerText = `${data.total_elapsed_time_s || 0}s`;
+
+        document.getElementById('progress-bar').style.width = `${allPct}%`;
+        document.getElementById('progress-badge').innerText = `${allCompleted} / ${allTotal} 题 (${allPct}%)`;
+        document.getElementById('completed-fraction').innerText = `${completed}/${total}`;
+
+        const activeCount = Object.keys(data.active_workers || {}).length;
+        document.getElementById('active-channels-badge').innerText = isRunning 
+          ? `⚡ 并发进行: ${activeCount} 通道` 
+          : (isDoneAll ? "✓ 全卷已全部完结" : "⚡ 4 通道并发就绪");
+
+        lastCompletedList = data.completed_list || data.completed_problems || [];
+        lastActiveWorkers = data.active_workers || {};
+        updateProblemListUI();
+
+        // 动态更新左侧各章节按钮进度徽章
+        if (data.chapters_summary) {
+          Object.entries(data.chapters_summary).forEach(([cIdx, cInfo]) => {
+            const badge = document.getElementById(`badge-ch-${cIdx}`);
+            if (badge) {
+              const isChDone = cInfo.total > 0 && cInfo.completed >= cInfo.total;
+              badge.className = isChDone 
+                ? "text-[10px] bg-emerald-50 text-emerald-700 px-1 py-0.2 rounded font-mono font-bold"
+                : (cInfo.completed > 0 
+                    ? "text-[10px] bg-indigo-50 text-indigo-700 px-1 py-0.2 rounded font-mono font-bold"
+                    : "text-[10px] bg-slate-100 text-slate-500 px-1 py-0.2 rounded font-mono");
+              badge.innerText = `${cInfo.completed}/${cInfo.total} ${isChDone ? '✓' : ''}`;
+            }
+          });
+        }
+
+        // 自动探测：若当前选中的题目此前处于待解状态，现已完成，则自动重新载入解答
+        if (selectedPid && currentProblemData && !currentProblemData.found) {
+          if (lastCompletedList.includes(selectedPid)) {
+            inspectProblem(selectedPid);
+          }
+        }
+
+        renderWorkerGrid(data.active_workers || {});
+
+      } catch (e) {
+        console.error("轮询异常:", e);
+      }
+    }
+
+    // 划选引用逻辑
+    const quoteCapsule = document.getElementById('quote-capsule');
+    document.addEventListener('mouseup', function(e) {
+      if (document.body.classList.contains('is-resizing')) return;
+      const viewer = document.getElementById('markdown-viewer');
+      if (!viewer) return;
+      
+      setTimeout(() => {
+        const sel = window.getSelection();
+        const text = sel ? sel.toString().trim() : '';
+        if (text && text.length > 2 && viewer.contains(sel.anchorNode)) {
+          currentQuote = text;
+          const range = sel.getRangeAt(0);
+          const rect = range.getBoundingClientRect();
+          quoteCapsule.style.left = `${rect.left + rect.width / 2}px`;
+          quoteCapsule.style.top = `${rect.top - 8}px`;
+          quoteCapsule.classList.remove('hidden');
+        } else {
+          if (!quoteCapsule.contains(e.target)) {
+            quoteCapsule.classList.add('hidden');
+          }
+        }
+      }, 15);
+    });
+
+    const MACRO_CHIPS = [
+      { label: "⚡ 极简核心步骤", text: "讲讲本题极简核心解题骨架" },
+      { label: "🎯 题眼与物理本质", text: "这道题的核心考点与物理本质是什么？" },
+      { label: "⚡ 破局关键转折点", text: "这道题最关键的转折步骤在哪里？" },
+      { label: "⚠️ 考研丢分陷阱", text: "这道题在考研中最容易丢分的陷阱是什么？" },
+      { label: "🚀 秒杀与验算技巧", text: "这道题有没有更快的秒杀或验算技巧？" }
+    ];
+
+    const MICRO_CHIPS = [
+      { label: "❓ 这一步推导依据", text: "选中的这一步推导依据是什么？" },
+      { label: "📐 积分限与边界划分", text: "这一步的积分限或时间区间为什么这样划分？" },
+      { label: "⚠️ 这一步常见易错点", text: "这一步最容易踩坑的盲区是什么？" }
+    ];
+
+    function renderQuickPromptChips(isQuote = false) {
+      const container = document.getElementById('quick-prompt-chips');
+      if (!container) return;
+      const chips = isQuote ? MICRO_CHIPS : MACRO_CHIPS;
+      container.innerHTML = chips.map(item => {
+        const safeText = encodeURIComponent(item.text);
+        return `
+          <button 
+            type="button" 
+            onclick="handleQuickChipClick('${safeText}')" 
+            class="px-2.5 py-1 bg-white hover:bg-purple-50 text-slate-600 hover:text-purple-700 border border-slate-200 hover:border-purple-300 rounded-lg cursor-pointer whitespace-nowrap transition-all flex items-center gap-1 shadow-2xs shrink-0 text-[11px] font-medium"
+            title="${item.text}"
+          >
+            <span>${item.label}</span>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function handleQuickChipClick(encodedText) {
+      const promptText = decodeURIComponent(encodedText);
+      const input = document.getElementById('tutor-input');
+      if (!input) return;
+      input.value = promptText;
+      sendTutorMessage();
+    }
+
+    function quoteSelectedText() {
+      if (!currentQuote) return;
+      openTutor();
+      document.getElementById('quote-preview-box').classList.remove('hidden');
+      document.getElementById('quote-preview-text').innerText = currentQuote;
+      quoteCapsule.classList.add('hidden');
+      renderQuickPromptChips(true);
+      const input = document.getElementById('tutor-input');
+      input.focus();
+      input.placeholder = `针对引用的步骤向老师提问...`;
+    }
+
+    function clearQuote() {
+      currentQuote = "";
+      document.getElementById('quote-preview-box').classList.add('hidden');
+      document.getElementById('quote-preview-text').innerText = "";
+      renderQuickPromptChips(false);
+      document.getElementById('tutor-input').placeholder = "输入你想请教的疑问（Enter 发送）...";
+    }
+
+    function getTutorStorageKey(ch, pid) {
+      return `studyhelp_tutor_hist_${ch}_${pid || '2.1'}`;
+    }
+
+    async function copyTutorReplyFromEncoded(btn, encodedText) {
+      try {
+        const text = decodeURIComponent(encodedText);
+        await navigator.clipboard.writeText(text);
+        const orig = btn.innerHTML;
+        btn.innerHTML = `<svg class="w-3.5 h-3.5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg><span class="text-emerald-600 font-bold">已复制</span>`;
+        setTimeout(() => { btn.innerHTML = orig; }, 1800);
+      } catch (e) {
+        console.error('复制失败', e);
+      }
+    }
+
+    function renderTutorMessageHtml(item) {
+      if (item.role === 'user') {
+        let userHtml = `<div class="p-2.5 bg-purple-100/80 border border-purple-200 rounded-xl text-slate-800 ml-4">`;
+        if (item.quote) {
+          userHtml += `<div class="border-l-2 border-purple-500 pl-2 text-[10px] text-purple-900 bg-white/70 p-1 rounded mb-1.5 font-mono line-clamp-3">${item.quote}</div>`;
+        }
+        userHtml += `<p class="font-medium">${item.content}</p></div>`;
+        return userHtml;
+      } else {
+        const safeAttr = encodeURIComponent(item.content);
+        return `
+          <div class="p-3 bg-white border border-slate-200 rounded-xl text-slate-800 mr-2 shadow-2xs relative group">
+            <div class="tutor-markdown-body">${renderMarkdownWithMath(item.content)}</div>
+            <div class="flex items-center justify-end mt-2 pt-1 border-t border-slate-100">
+              <button onclick="copyTutorReplyFromEncoded(this, '${safeAttr}')" class="text-[10px] text-slate-400 hover:text-purple-600 flex items-center gap-1 transition px-1.5 py-0.5 rounded hover:bg-purple-50 cursor-pointer" title="复制导师回答">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                <span>复制回答</span>
+              </button>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    function loadTutorHistoryForProblem(ch, pid) {
+      if (!pid) return;
+      try {
+        const saved = localStorage.getItem(getTutorStorageKey(ch, pid));
+        tutorHistory = saved ? JSON.parse(saved) : [];
+      } catch(e) {
+        tutorHistory = [];
+      }
+      const container = document.getElementById('tutor-messages');
+      if (!container) return;
+      if (tutorHistory.length === 0) {
+        container.innerHTML = '';
+      } else {
+        container.innerHTML = tutorHistory.map(m => renderTutorMessageHtml(m)).join('');
+        container.scrollTop = container.scrollHeight;
+      }
+    }
+
+    function saveCurrentTutorHistory() {
+      const pid = selectedPid || '2.1';
+      try {
+        localStorage.setItem(getTutorStorageKey(currentChapter, pid), JSON.stringify(tutorHistory));
+      } catch(e) {}
+    }
+
+    function clearTutorHistory() {
+      tutorHistory = [];
+      const pid = selectedPid || '2.1';
+      localStorage.removeItem(getTutorStorageKey(currentChapter, pid));
+      document.getElementById('tutor-messages').innerHTML = "";
+    }
+
+    async function sendTutorMessage() {
+      const input = document.getElementById('tutor-input');
+      const question = input.value.trim();
+      if (!question) return;
+
+      const sendBtn = document.getElementById('btn-tutor-send');
+      input.value = "";
+      sendBtn.disabled = true;
+      sendBtn.innerText = "思考中...";
+
+      const quoteText = currentQuote;
+      clearQuote();
+
+      // 渲染用户提问气泡
+      const container = document.getElementById('tutor-messages');
+      const userItem = { role: 'user', content: question, quote: quoteText };
+      container.innerHTML += renderTutorMessageHtml(userItem);
+      container.scrollTop = container.scrollHeight;
+
+      // 占位回答气泡
+      const aiMsgId = 'tutor-resp-' + Date.now();
+      container.innerHTML += `
+        <div id="${aiMsgId}" class="p-3 bg-white border border-slate-200 rounded-xl text-slate-800 mr-2 shadow-2xs">
+          <div class="flex items-center gap-1.5 text-[11px] text-purple-600 font-bold mb-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-purple-500 animate-ping"></span>
+            名师导师正在深入剖析...
+          </div>
+        </div>
+      `;
+      container.scrollTop = container.scrollHeight;
+
+      try {
+        const res = await fetch('/api/tutor/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chapter: currentChapter,
+            problem_id: selectedPid || '2.1',
+            quote: quoteText,
+            question: question,
+            history: tutorHistory
+          })
+        });
+        const data = await res.json();
+        const aiEl = document.getElementById(aiMsgId);
+        if (data.ok) {
+          tutorHistory.push(userItem);
+          tutorHistory.push({ role: 'assistant', content: data.reply });
+          saveCurrentTutorHistory();
+
+          const safeAttr = encodeURIComponent(data.reply);
+          aiEl.className = "p-3 bg-white border border-slate-200 rounded-xl text-slate-800 mr-2 shadow-2xs relative group";
+          aiEl.innerHTML = `
+            <div class="tutor-markdown-body">${renderMarkdownWithMath(data.reply)}</div>
+            <div class="flex items-center justify-end mt-2 pt-1 border-t border-slate-100">
+              <button onclick="copyTutorReplyFromEncoded(this, '${safeAttr}')" class="text-[10px] text-slate-400 hover:text-purple-600 flex items-center gap-1 transition px-1.5 py-0.5 rounded hover:bg-purple-50 cursor-pointer" title="复制导师回答">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                <span>复制回答</span>
+              </button>
+            </div>
+          `;
+        } else {
+          aiEl.innerHTML = `<span class="text-rose-600">导师回答异常: ${data.error}</span>`;
+        }
+      } catch (e) {
+        document.getElementById(aiMsgId).innerHTML = `<span class="text-rose-600">请求失败: ${e}</span>`;
+      } finally {
+        sendBtn.disabled = false;
+        sendBtn.innerText = "发送";
+        container.scrollTop = container.scrollHeight;
+      }
+    }
+
+    document.getElementById('tutor-input').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendTutorMessage();
+      }
+    });
+
+    // 快捷键支持：按键盘左右方向键（非输入框聚焦时）极速翻阅上一题与下一题
+    document.addEventListener('keydown', function(e) {
+      if (document.activeElement && ['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+      if (e.key === 'ArrowLeft') {
+        goToPrevProblem();
+      } else if (e.key === 'ArrowRight') {
+        goToNextProblem();
+      }
+    });
+
+    // 拖拽手柄左右比例调节 (Draggable Resizers)
+    function initResizers() {
+      const sidebar = document.getElementById('sidebar');
+      const resizerLeft = document.getElementById('resizer-left');
+      const drawer = document.getElementById('tutor-drawer');
+      const resizerRight = document.getElementById('resizer-right');
+      const leftProblemPane = document.getElementById('left-problem-pane');
+      const resizerSplit = document.getElementById('resizer-split');
+      const splitContainer = document.getElementById('split-view-container');
+
+      // 恢复历史记忆宽度与折叠状态
+      const savedSidebarWidth = localStorage.getItem('sidebar_width');
+      if (savedSidebarWidth && sidebar) {
+        sidebar.style.width = `${savedSidebarWidth}px`;
+      }
+      const savedTutorWidth = localStorage.getItem('tutor_width');
+      if (savedTutorWidth && drawer) {
+        drawer.style.width = `${savedTutorWidth}px`;
+      }
+      const savedTutorOpen = localStorage.getItem('tutor_open');
+      if (savedTutorOpen === 'true') {
+        openTutor();
+      }
+
+      const savedProblemWidth = localStorage.getItem('problem_pane_width');
+      if (savedProblemWidth && leftProblemPane) {
+        leftProblemPane.style.width = `${savedProblemWidth}px`;
+      }
+      const savedProblemCollapsed = localStorage.getItem('problem_pane_collapsed');
+      if (savedProblemCollapsed === 'true') {
+        setProblemSplitCollapsed(true);
+      }
+
+      // 1. 左侧边栏手柄拖动
+      if (resizerLeft && sidebar) {
+        resizerLeft.addEventListener('mousedown', function(e) {
+          e.preventDefault();
+          const startX = e.clientX;
+          const startWidth = sidebar.getBoundingClientRect().width;
+          document.body.classList.add('is-resizing');
+          sidebar.classList.add('resizing-active');
+
+          let rafPending = false;
+          let targetWidth = startWidth;
+
+          function onMouseMove(e) {
+            const delta = e.clientX - startX;
+            let newWidth = startWidth + delta;
+            if (newWidth < 180) newWidth = 180;
+            if (newWidth > window.innerWidth * 0.45) newWidth = window.innerWidth * 0.45;
+            targetWidth = newWidth;
+
+            if (!rafPending) {
+              rafPending = true;
+              requestAnimationFrame(() => {
+                sidebar.style.width = `${targetWidth}px`;
+                rafPending = false;
+              });
+            }
+          }
+
+          function onMouseUp() {
+            if (rafPending) {
+              sidebar.style.width = `${targetWidth}px`;
+            }
+            document.body.classList.remove('is-resizing');
+            sidebar.classList.remove('resizing-active');
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', onMouseUp);
+            localStorage.setItem('sidebar_width', Math.round(targetWidth));
+          }
+
+          document.addEventListener('mousemove', onMouseMove);
+          document.addEventListener('mouseup', onMouseUp);
+        });
+      }
+
+      // 2. 右侧私教面板手柄拖动
+      if (resizerRight && drawer) {
+        resizerRight.addEventListener('mousedown', function(e) {
+          e.preventDefault();
+          const startX = e.clientX;
+          const startWidth = drawer.getBoundingClientRect().width;
+          document.body.classList.add('is-resizing');
+          drawer.classList.add('resizing-active');
+
+          let rafPending = false;
+          let targetWidth = startWidth;
+
+          function onMouseMove(e) {
+            const delta = startX - e.clientX; // 向左拖动增加私教面板宽度
+            let newWidth = startWidth + delta;
+            if (newWidth < 300) newWidth = 300;
+            if (newWidth > window.innerWidth * 0.70) newWidth = window.innerWidth * 0.70;
+            targetWidth = newWidth;
+
+            if (!rafPending) {
+              rafPending = true;
+              requestAnimationFrame(() => {
+                drawer.style.width = `${targetWidth}px`;
+                rafPending = false;
+              });
+            }
+          }
+
+          function onMouseUp() {
+            if (rafPending) {
+              drawer.style.width = `${targetWidth}px`;
+            }
+            document.body.classList.remove('is-resizing');
+            drawer.classList.remove('resizing-active');
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', onMouseUp);
+            localStorage.setItem('tutor_width', Math.round(targetWidth));
+          }
+
+          document.addEventListener('mousemove', onMouseMove);
+          document.addEventListener('mouseup', onMouseUp);
+        });
+      }
+
+      // 3. 中间原题与解题分栏手柄拖动 (左右比例自由调节)
+      if (resizerSplit && leftProblemPane && splitContainer) {
+        resizerSplit.addEventListener('mousedown', function(e) {
+          e.preventDefault();
+          const startX = e.clientX;
+          const startWidth = leftProblemPane.getBoundingClientRect().width;
+          document.body.classList.add('is-resizing');
+
+          let rafPending = false;
+          let targetWidth = startWidth;
+
+          function onMouseMove(e) {
+            const delta = e.clientX - startX;
+            let newWidth = startWidth + delta;
+            const minW = 200;
+            const maxW = splitContainer.getBoundingClientRect().width * 0.75;
+            if (newWidth < minW) newWidth = minW;
+            if (newWidth > maxW) newWidth = maxW;
+            targetWidth = newWidth;
+
+            if (!rafPending) {
+              rafPending = true;
+              requestAnimationFrame(() => {
+                leftProblemPane.style.width = `${targetWidth}px`;
+                rafPending = false;
+              });
+            }
+          }
+
+          function onMouseUp() {
+            if (rafPending) {
+              leftProblemPane.style.width = `${targetWidth}px`;
+            }
+            document.body.classList.remove('is-resizing');
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', onMouseUp);
+            localStorage.setItem('problem_pane_width', Math.round(targetWidth));
+          }
+
+          document.addEventListener('mousemove', onMouseMove);
+          document.addEventListener('mouseup', onMouseUp);
+        });
+      }
+    }
+
+    let currentBookProfile = null;
+    window._dynamicChapterNames = {};
+
+    async function initSystemProfile() {
+      try {
+        const res = await fetch('/api/profile');
+        currentBookProfile = await res.json();
+        if (currentBookProfile.title) {
+          document.title = 'StudyHelp · ' + currentBookProfile.title;
+          const sTitle = document.querySelector('#sidebar .truncate.mr-1');
+          if (sTitle) {
+            sTitle.innerText = '📖 ' + currentBookProfile.title;
+            sTitle.title = currentBookProfile.title;
+          }
+          const mTitle = document.querySelector('#modal-book-title') || document.querySelector('#book-modal-backdrop h3');
+          if (mTitle) mTitle.innerText = currentBookProfile.title;
+          const tutTitle = document.querySelector('#tutor-drawer h3');
+          if (tutTitle) tutTitle.innerText = `《${currentBookProfile.title}》私人名师导师`;
+        }
+
+        if (currentBookProfile.chapters && Object.keys(currentBookProfile.chapters).length > 0) {
+          const chBox = document.getElementById('chapter-list-box');
+          chBox.innerHTML = '';
+          window._dynamicChapterNames = {};
+          
+          const keys = Object.keys(currentBookProfile.chapters);
+          keys.forEach(k => {
+            const ch = currentBookProfile.chapters[k];
+            const chNum = parseInt(k) || k;
+            window._dynamicChapterNames[chNum] = ch.name || `第 ${chNum} 部分`;
+            
+            const btn = document.createElement('button');
+            btn.onclick = () => switchChapter(chNum);
+            btn.id = `btn-ch${chNum}`;
+            btn.className = "w-full text-left px-2 py-1 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-50 border border-transparent transition cursor-pointer flex items-center justify-between shrink-0";
+            btn.innerHTML = `
+              <span>${ch.name || '第 ' + chNum + ' 部分'}</span>
+              <span id="badge-ch-${chNum}" class="text-[10px] bg-slate-100 text-slate-500 px-1 py-0.2 rounded font-mono">--/--</span>
+            `;
+            chBox.appendChild(btn);
+          });
+          
+          if (keys.length > 0) {
+            const firstCh = parseInt(keys[0]) || keys[0];
+            await switchChapter(firstCh);
+            return;
+          }
+        }
+      } catch (e) {
+        console.warn('加载 profile 失败，使用默认配置:', e);
+      }
+      switchChapter(1);
+    }
+
+    // ======================= 上传新书/试卷与工程切换 JS 逻辑 =======================
+    function toggleUploadModal(show) {
+      const modal = document.getElementById('upload-modal-backdrop');
+      if (!modal) return;
+      if (show) {
+        modal.classList.remove('hidden');
+        loadExistingProjects();
+      } else {
+        modal.classList.add('hidden');
+        resetUploadForm();
+      }
+    }
+
+    function handleFileSelected(input) {
+      if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const label = document.getElementById('upload-file-label');
+        if (label) {
+          label.innerHTML = `已选择: <span class="text-emerald-700 font-bold">${file.name}</span> (${(file.size / 1024 / 1024).toFixed(2)} MB)`;
+        }
+        const titleInput = document.getElementById('upload-title-input');
+        if (titleInput && !titleInput.value) {
+          titleInput.value = file.name.replace(/\.[^/.]+$/, "");
+        }
+      }
+    }
+
+    function resetUploadForm() {
+      const form = document.getElementById('upload-book-form');
+      if (form) form.reset();
+      const label = document.getElementById('upload-file-label');
+      if (label) label.innerText = "点击或将 PDF 文件拖拽至此处";
+      const tip = document.getElementById('upload-status-tip');
+      if (tip) tip.classList.add('hidden');
+      const submitBtn = document.getElementById('btn-submit-upload');
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = "<span>🚀 开始构建题库</span>";
+      }
+    }
+
+    // ---------- 侧栏书名下拉：output/ 工作项切换 ----------
+    function ask(msg, okText) {   // 页内确认框：浏览器自带弹窗常被拦截，点了没反应
+      return new Promise(res => {
+        const d = document.getElementById('dlg');
+        document.getElementById('dlg-msg').innerText = msg;
+        const ok = document.getElementById('dlg-ok'), no = document.getElementById('dlg-no');
+        ok.innerText = okText || '继续'; no.style.display = 'inline-block'; d.style.display = 'flex';
+        const done = v => { d.style.display = 'none'; ok.onclick = no.onclick = null; res(v); };
+        ok.onclick = () => done(true); no.onclick = () => done(false);
+      });
+    }
+    function say(msg) {
+      const d = document.getElementById('dlg');
+      document.getElementById('dlg-msg').innerText = msg;
+      const ok = document.getElementById('dlg-ok'); ok.innerText = '知道了';
+      document.getElementById('dlg-no').style.display = 'none'; d.style.display = 'flex';
+      ok.onclick = () => { d.style.display = 'none'; ok.onclick = null; };
+    }
+    function escHtml(s) {
+      return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+    async function toggleProjectMenu(force) {
+      const menu = document.getElementById('project-menu');
+      if (!menu) return;
+      const show = force === undefined ? menu.classList.contains('hidden') : force;
+      if (!show) { menu.classList.add('hidden'); return; }
+      const anchor = document.querySelector('#sidebar .truncate.mr-1');
+      const r = anchor ? anchor.getBoundingClientRect() : {left: 8, bottom: 80};
+      menu.style.left = Math.max(8, r.left - 8) + 'px';
+      menu.style.top = (r.bottom + 6) + 'px';
+      menu.classList.remove('hidden');
+      await renderProjectMenu();
+    }
+    async function renderProjectMenu() {
+      const list = document.getElementById('project-menu-list');
+      if (!list) return;
+      list.innerHTML = '<div class="text-xs text-slate-400 p-2">读取中…</div>';
+      try {
+        const projects = (await (await fetch('/api/projects')).json())
+          .sort((a, b) => a.id.localeCompare(b.id, 'zh-Hans-CN'));
+        document.getElementById('project-menu-count').innerText = projects.length;
+        const cur = currentBookProfile && currentBookProfile.project_name;
+        list.innerHTML = projects.map(p => {
+          const isCur = p.id === cur;
+          const done = p.total > 0 && p.solved >= p.total;
+          const prog = p.total ? `${p.solved}/${p.total} 题` : '未切题';
+          const sameName = (p.title || '') === p.id;
+          return `
+            <div class="flex items-stretch gap-1">
+              <button type="button" onclick="switchActiveProject(decodeURIComponent('${encodeURIComponent(p.id)}')); toggleProjectMenu(false)"
+                class="flex-1 min-w-0 text-left px-2 py-1.5 rounded-lg border transition cursor-pointer ${isCur ? 'bg-indigo-50 border-indigo-300' : 'bg-white hover:bg-slate-50 border-slate-200'}">
+                <div class="flex items-center gap-1.5">
+                  <span>${isCur ? '📌' : '📁'}</span>
+                  <span class="text-xs font-bold text-slate-800 truncate">${escHtml(p.id)}</span>
+                  <span class="text-[10px] px-1 rounded ${p.doc_type === 'exam' ? 'bg-amber-50 text-amber-700' : 'bg-sky-50 text-sky-700'}">${p.doc_type === 'exam' ? '试卷' : '教材'}</span>
+                </div>
+                <div class="flex items-center gap-2 text-[10px] text-slate-500 mt-0.5 pl-5">
+                  ${sameName ? '' : `<span class="truncate max-w-[12rem]">《${escHtml(p.title)}》</span>`}
+                  <span class="${done ? 'text-emerald-600 font-bold' : ''}">${prog}${done ? ' ✓' : ''}</span>
+                  <span>${p.has_book_pdf ? 'PDF ✓' : 'PDF —'}</span>
+                  ${p.building ? '<span class="text-indigo-600 font-bold">构建中…</span>' : ''}
+                </div>
+              </button>
+              <button type="button" title="在资源管理器中打开这个 output 文件夹" onclick="openProjectFolder(decodeURIComponent('${encodeURIComponent(p.id)}'))"
+                class="px-2 rounded-lg border border-slate-200 hover:bg-slate-50 text-sm cursor-pointer">📂</button>
+            </div>`;
+        }).join('') || '<div class="text-xs text-slate-400 p-2">output 里还没有工作项，点右上角“上传新书”。</div>';
+      } catch (e) {
+        list.innerHTML = `<div class="text-xs text-rose-500 p-2">读取 output 失败: ${escHtml(e)}</div>`;
+      }
+    }
+    async function openProjectFolder(projId) {
+      try {
+        const res = await fetch('/api/projects/open-folder', {
+          method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({project_id: projId})
+        });
+        const d = await res.json();
+        showToast(d.ok ? `已打开文件夹：${d.path}` : `打开失败：${d.error || ''}`);
+      } catch (e) { showToast(`打开失败：${e}`); }
+    }
+    document.addEventListener('click', (e) => {
+      const menu = document.getElementById('project-menu');
+      if (!menu || menu.classList.contains('hidden')) return;
+      if (menu.contains(e.target) || e.target.closest('button[onclick^="toggleProjectMenu"]')) return;
+      menu.classList.add('hidden');
+    });
+
+    async function loadExistingProjects() {
+      const container = document.getElementById('existing-projects-list');
+      if (!container) return;
+      try {
+        const res = await fetch('/api/projects');
+        const projects = await res.json();
+        if (projects && projects.length > 0) {
+          container.innerHTML = projects.map(p => {
+            const isCur = currentBookProfile && (currentBookProfile.project_name === p.id || currentBookProfile.project_name === p.name);
+            return `
+              <button type="button" onclick="switchActiveProject('${p.id}')" class="px-2.5 py-1 text-xs rounded-lg border transition cursor-pointer flex items-center gap-1.5 ${isCur ? 'bg-indigo-600 text-white font-bold border-indigo-700 shadow-2xs' : 'bg-slate-50 hover:bg-indigo-50 text-slate-700 border-slate-200'}">
+                <span>${isCur ? '📌' : '📖'}</span>
+                <span>${p.name || p.id}</span>
+                <span class="text-[10px] opacity-75">(${p.doc_type === 'exam' ? '试卷' : '教材'})</span>
+              </button>
+            `;
+          }).join('');
+        } else {
+          container.innerHTML = '<span class="text-xs text-slate-400">暂无其他已有工程</span>';
+        }
+      } catch (e) {
+        container.innerHTML = `<span class="text-xs text-rose-500">获取工程列表失败: ${e}</span>`;
+      }
+    }
+
+    async function switchActiveProject(projId) {
+      try {
+        const res = await fetch('/api/projects/switch', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ project_id: projId })
+        });
+        const data = await res.json();
+        if (data.ok) {
+          showToast(`已成功切换到工程: ${projId}`);
+          toggleUploadModal(false);
+          await initSystemProfile();
+        } else {
+          showToast(`切换失败: ${data.error || '未知错误'}`);
+        }
+      } catch (e) {
+        showToast(`切换异常: ${e}`);
+      }
+    }
+
+    async function handleUploadSubmit(e) {
+      e.preventDefault();
+      const fileInput = document.getElementById('upload-file-input');
+      if (!fileInput.files || fileInput.files.length === 0) {
+        say("请先选择或拖入需要构建题库的 PDF 文件！");
+        return;
+      }
+
+      const file = fileInput.files[0];
+      const title = document.getElementById('upload-title-input').value.trim();
+      const docType = document.getElementById('upload-doc-type').value;
+      const subject = document.getElementById('upload-subject').value;
+
+      const tip = document.getElementById('upload-status-tip');
+      const tipText = document.getElementById('upload-status-text');
+      const submitBtn = document.getElementById('btn-submit-upload');
+
+      if (tip) tip.classList.remove('hidden');
+      if (tipText) tipText.innerText = `正在上传《${file.name}》并调用智能嗅探大纲与题目切片... 请稍候...`;
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></span> 正在极速切片构建中...';
+      }
+
+      const formData = new FormData();
+      formData.append('file', file);
+      if (title) formData.append('title', title);
+      formData.append('doc_type', docType);
+      formData.append('subject', subject);
+      const cropOnly = document.getElementById('upload-crop-only').checked;
+      formData.append('auto_solve', cropOnly ? '0' : '1');
+      const timuFile = document.getElementById('upload-timu-file').files[0];
+      if (timuFile) {
+        formData.append('timu_file', timuFile);
+        formData.append('timu_check', document.getElementById('upload-timu-check').checked ? '1' : '0');
+      }
+
+      // 点击后立刻回到工作台（上传和构建都在后台，可以先去做别的，比如准备要导入的 md）
+      showToast(`《${file.name}》正在上传，构建进度见顶部提示条…`);
+      toggleUploadModal(false);
+      if (tip) tip.classList.add('hidden');
+      if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = "<span>🚀 构建题库</span>"; }
+      try {
+        const res = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData
+        });
+        const data = await res.json();
+        if (data.ok) {
+          showToast(cropOnly ? `《${data.title || title || file.name}》已上传，后台正在切题并核对题干…`
+                             : `《${data.title || title || file.name}》已上传，后台正在自动切题、解题、编译 PDF…`);
+          await initSystemProfile();
+          startIngestPolling();
+        } else {
+          say(`上传构建失败: ${data.error || '未知错误'}`);
+          if (tip) tip.classList.add('hidden');
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = "<span>🚀 重新构建</span>";
+          }
+        }
+      } catch (err) {
+        say(`网络异常: ${err}`);
+        if (tip) tip.classList.add('hidden');
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = "<span>🚀 重新构建</span>";
+        }
+      }
+    }
+
+    let ingestTimer = null;
+    const INGEST_STAGE = {crop: '切题', text: '核对题干', solve: '解题', verify: '检验', aggregate: '汇编', pdf: '编译PDF', done: '完成', error: '失败'};
+    // 只切题模式完成后 / 继续未完成的书：后台续跑（不重切，已解的题跳过）-> 检验 -> 汇编 -> PDF
+    async function startSolvingCurrent(projId) {
+      const proj = projId || (currentBookProfile && currentBookProfile.project_name);
+      if (!proj) return;
+      try {
+        const res = await fetch('/api/ingest/resume', {
+          method: 'POST', headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({project_id: proj, solve: true})
+        });
+        const d = await res.json();
+        if (d.ok) { showToast(`《${proj}》开始解题…`); startIngestPolling(); }
+        else showToast(`无法开始：${d.error || ''}`);
+      } catch (e) { showToast(`请求失败：${e}`); }
+    }
+    function toggleBookMenu(force) {
+      const m = document.getElementById('book-menu');
+      const show = force === undefined ? m.classList.contains('hidden') : force;
+      if (!show) { m.classList.add('hidden'); return; }
+      const r = document.getElementById('btn-book-menu').getBoundingClientRect();
+      m.style.top = (r.bottom + 6) + 'px';
+      m.style.left = Math.max(8, Math.min(r.left, window.innerWidth - 300)) + 'px';
+      m.classList.remove('hidden');
+      refreshUsageChip();
+    }
+    document.addEventListener('click', (e) => {
+      const m = document.getElementById('book-menu');
+      if (!m || m.classList.contains('hidden')) return;
+      if (m.contains(e.target) || e.target.closest('#btn-book-menu')) return;
+      m.classList.add('hidden');
+    });
+
+    // ---------- AI 辅助检查切题 ----------
+    let cropCheckTimer = null;
+    async function startCropCheck() {
+      try {
+        const e = await (await fetch('/api/cropcheck/estimate')).json();
+        if (!e.has_boxes) { showToast('这本书没有记录切割位置，请先“继续构建”重新切题'); return; }
+        if (!await ask(`AI 将逐页对照原书检查《${e.project_id}》的切题：共 ${e.pages} 页、${e.problems} 题，预计约 ${fmtTok(e.tokens)} token。继续？`)) return;
+        const r = await (await fetch('/api/cropcheck/start', {method: 'POST'})).json();
+        if (!r.ok) { showToast(`无法开始：${r.error || ''}`); return; }
+        showToast('AI 切题检查已开始，完成后会提示');
+        if (cropCheckTimer) clearInterval(cropCheckTimer);
+        cropCheckTimer = setInterval(async () => {
+          const st = await (await fetch('/api/cropcheck/status')).json();
+          const box = document.getElementById('ingest-banner');
+          box.classList.remove('hidden');
+          document.getElementById('ingest-banner-text').innerText = `《${st.project}》AI 切题检查：${st.message || ''}`;
+          const pct = st.total ? Math.round(st.done / st.total * 100) : 0;
+          document.getElementById('ingest-banner-bar').style.width = pct + '%';
+          document.getElementById('ingest-banner-pct').innerText = pct + '%';
+          if (!st.is_running) {
+            clearInterval(cropCheckTimer); cropCheckTimer = null;
+            await refreshProblemStatuses();
+            if (!st.error && st.flagged) {
+              document.getElementById('ingest-banner-text').innerHTML = escHtml(`《${st.project}》${st.message}`) +
+                ' <a href="/review?ai=1" target="_blank" class="underline font-bold">去切题检查页查看</a>';
+            }
+            setTimeout(() => box.classList.add('hidden'), 30000);
+          }
+        }, 3000);
+      } catch (e) { showToast(`请求失败：${e}`); }
+    }
+
+    // ---------- 接收 md 清洗页发来的结果 ----------
+    function receiveCleanedMd() {
+      let d;
+      try { d = JSON.parse(localStorage.getItem('studyhelp_cleaned_md') || 'null'); localStorage.removeItem('studyhelp_cleaned_md'); } catch (e) { return; }
+      if (!d || !d.text || Date.now() - d.t > 6 * 3600 * 1000) return;
+      if (d.target === 'upload') {
+        toggleUploadModal(true);
+        const dt = new DataTransfer();
+        dt.items.add(new File([d.text], d.name, {type: 'text/markdown'}));
+        document.getElementById('upload-timu-file').files = dt.files;
+        showToast(`已附上清洗后的题目文本《${d.name}》，选好 PDF 后点“构建题库”`);
+      } else {
+        toggleTimuModal(true);
+        document.getElementById('timu-text').value = d.text;
+        showToast('已填入清洗后的题目文本，确认后点“导入”');
+      }
+    }
+    window.addEventListener('storage', e => { if (e.key === 'studyhelp_cleaned_md' && e.newValue) receiveCleanedMd(); });
+    window.addEventListener('load', receiveCleanedMd);
+
+    // ---------- 导入题目文本（大模型对话框导出的全部题目） ----------
+    async function copyTimuPrompt() {
+      try {
+        const d = await (await fetch('/api/timu/prompt')).json();
+        await navigator.clipboard.writeText(d.prompt);
+        showToast('提示词已复制：在大模型对话框上传 PDF 后粘贴发送');
+      } catch (e) { showToast(`复制失败：${e}`); }
+    }
+    async function loadExercisePdfs() {
+      const box = document.getElementById('expdf-list');
+      if (!box) return;
+      box.innerHTML = '<span class="text-slate-400">生成中…</span>';
+      try {
+        const r = await (await fetch('/api/exercise-pdf')).json();
+        if (!r.ready) { box.innerHTML = '<span class="text-amber-700">这本书还没切题。先上传（可选“只切题”），切完题才有习题页 PDF。</span>'; return; }
+        box.innerHTML = r.files.map(f => `<a href="/api/exercise-pdf/file?name=${encodeURIComponent(f.name)}" download
+            class="px-2 py-0.5 rounded border ${f.ch ? 'border-slate-300 text-slate-700 hover:bg-slate-50' : 'border-indigo-400 bg-indigo-50 text-indigo-800 font-bold hover:bg-indigo-100'}"
+            title="${escHtml(f.label)}：${f.pages} 页 ${f.problems} 题 ${f.size_mb} MB">${f.ch ? '第' + f.ch + '章' : '全部'} (${f.pages}页)</a>`).join('') +
+          `<button type="button" onclick="fetch('/api/exercise-pdf/open',{method:'POST'})" class="px-2 py-0.5 rounded border border-slate-300 text-slate-500 hover:bg-slate-50 cursor-pointer">📂 打开文件夹</button>`;
+      } catch (e) { box.innerHTML = `<span class="text-rose-600">生成失败：${escHtml(e)}</span>`; }
+    }
+    function toggleTimuModal(show) {
+      const m = document.getElementById('timu-modal-backdrop');
+      m.classList.toggle('hidden', !show);
+      if (show) loadExercisePdfs();
+      if (show) {
+        document.getElementById('timu-modal-proj').innerText = (currentBookProfile && currentBookProfile.project_name) || '';
+        document.getElementById('timu-result').classList.add('hidden');
+      }
+    }
+    function loadTimuFile(input) {
+      const f = input.files && input.files[0];
+      if (!f) return;
+      const r = new FileReader();
+      r.onload = () => { document.getElementById('timu-text').value = r.result; };
+      r.readAsText(f, 'utf-8');
+    }
+    async function submitTimuImport() {
+      const text = document.getElementById('timu-text').value;
+      const box = document.getElementById('timu-result');
+      const btn = document.getElementById('btn-timu-submit');
+      if (!text.trim()) { box.className = 'text-[11px] p-2 rounded-lg border border-rose-200 bg-rose-50 text-rose-700'; box.innerText = '请先粘贴题目文本或选择文件'; return; }
+      btn.disabled = true; btn.innerText = '导入中…';
+      try {
+        const res = await fetch('/api/timu/import', {
+          method: 'POST', headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({text, check: document.getElementById('timu-check').checked})
+        });
+        const d = await res.json();
+        box.classList.remove('hidden');
+        if (!d.ok) {
+          box.className = 'text-[11px] p-2 rounded-lg border border-rose-200 bg-rose-50 text-rose-700';
+          box.innerText = `导入失败：${d.error || ''}`;
+        } else if (d.deferred) {
+          box.className = 'text-[11px] p-2 rounded-lg border border-emerald-200 bg-emerald-50 text-emerald-800';
+          box.innerText = `已保存 ${d.parsed} 题，切题完成后自动按题号导入。`;
+        } else {
+          const r = d.report;
+          const warn = r.missing_in_crop.length || r.missing_in_text.length || r.duplicated_in_text.length || (r.damaged_in_text || []).length;
+          box.className = 'text-[11px] p-2 rounded-lg border ' + (warn ? 'border-amber-300 bg-amber-50 text-amber-900' : 'border-emerald-200 bg-emerald-50 text-emerald-800');
+          const lines = [`对上 ${r.matched} / 切出 ${r.cropped} 题（文本里共 ${r.parsed} 题）`];
+          if (r.missing_in_crop.length) lines.push(`文本里有、但没切出来（切题可能漏了，请人工看一眼）：${r.missing_in_crop.join('、')}`);
+          if (r.missing_in_text.length) lines.push(`切出来了、但文本里没有（保持原来的题干，没有题干的由系统看图转写）：${r.missing_in_text.join('、')}`);
+          if ((r.damaged_in_text || []).length) lines.push('文本里公式写了一半、已跳过（由系统按原图转写）：' + r.damaged_in_text.join('、'));
+          if (r.duplicated_in_text.length) lines.push(`文本里题号重复（取较完整的一份）：${r.duplicated_in_text.join('、')}`);
+          if (r.replaced_solved.length) lines.push(`已有解答的 ${r.replaced_solved.length} 题换了题干，解答仍基于旧题干，需要时点“重解本题”`);
+          box.innerHTML = lines.map(escHtml).join('<br>');
+          await refreshProblemStatuses();
+          if (selectedPid) await inspectProblem(selectedPid);
+        }
+      } catch (e) {
+        box.classList.remove('hidden'); box.innerText = `请求失败：${e}`;
+      } finally {
+        btn.disabled = false; btn.innerText = '导入';
+      }
+    }
+
+    // 打开一本“已切题、还没解题”的书（如只切题模式完成后重启过服务）：顶部提示“开始解题”
+    async function showSolvePromptIfCropOnly() {
+      try {
+        const st = await (await fetch('/api/ingest/status')).json();
+        if (st.is_running) return;
+        const proj = currentBookProfile && currentBookProfile.project_name;
+        const it = (await (await fetch('/api/projects')).json()).find(p => p.id === proj);
+        const box = document.getElementById('ingest-banner');
+        if (!it || !it.total || it.solved > 0) {   // 切到别的书：收起上一本的提示
+          if (/还没有解题/.test(document.getElementById('ingest-banner-text').innerText)) box.classList.add('hidden');
+          return;
+        }
+        box.classList.remove('hidden');
+        box.className = box.className.replace(/bg-(indigo|emerald|rose)-600/, 'bg-emerald-600');
+        document.getElementById('ingest-banner-text').innerText = `《${proj}》已切题 ${it.total} 题，还没有解题。逐题检查切片没问题后：`;
+        document.getElementById('ingest-banner-bar').style.width = '100%';
+        document.getElementById('ingest-banner-pct').innerText = '';
+        document.getElementById('ingest-banner-action').classList.remove('hidden');
+      } catch (e) {}
+    }
+    function startIngestPolling() {
+      if (ingestTimer) clearInterval(ingestTimer);
+      let lastStage = '';
+      const tick = async () => {
+        try {
+          const st = await (await fetch('/api/ingest/status')).json();
+          const box = document.getElementById('ingest-banner');
+          if (!box || st.stage === 'idle') return;
+          box.classList.remove('hidden');
+          box.className = box.className.replace(/bg-(indigo|emerald|rose)-600/, st.stage === 'error' ? 'bg-rose-600' : (st.stage === 'done' ? 'bg-emerald-600' : 'bg-indigo-600'));
+          document.getElementById('ingest-banner-text').innerText = `《${st.project}》${INGEST_STAGE[st.stage] || st.stage}：${st.message || ''}` + ((st.notes && st.notes.length) ? `　⚠ ${st.notes.length} 条切题提示（见切题检查页顶部）` : '');
+          document.getElementById('ingest-banner-bar').style.width = (st.pct || 0) + '%';
+          document.getElementById('ingest-banner-pct').innerText = (st.pct || 0) + '%';
+          const waitSolve = !st.is_running && st.stage === 'done' && st.crop_only;
+          document.getElementById('ingest-banner-action').classList.toggle('hidden', !waitSolve);
+          if (st.stage !== lastStage) { lastStage = st.stage; try { await initSystemProfile(); } catch (e) {} }
+          else if (st.is_running && st.stage === 'solve') { try { await refreshProblemStatuses(); } catch (e) {} }
+          if (!st.is_running) {
+            clearInterval(ingestTimer); ingestTimer = null;
+            try { await initSystemProfile(); } catch (e) {}
+            refreshUsageChip();
+            // 只切题模式：横幅留着，等用户检查完切片点“开始解题”
+            if (!waitSolve) setTimeout(() => box.classList.add('hidden'), st.stage === 'done' ? 8000 : 60000);
+          }
+        } catch (e) {}
+      };
+      tick();
+      ingestTimer = setInterval(tick, 3000);
+    }
+    // 页面刷新后若后台仍在构建，自动恢复进度条
+    // 构建进度条：页面刷新、切换项目后也要显示——每 5 秒看一眼，有构建在跑就接上轮询
+    setInterval(() => {
+      if (ingestTimer) return;
+      fetch('/api/ingest/status').then(r => r.json()).then(st => { if (st && st.is_running) startIngestPolling(); }).catch(() => {});
+    }, 5000);
+    fetch('/api/ingest/status').then(r => r.json()).then(st => { if (st && st.is_running) startIngestPolling(); }).catch(() => {});
+
+    initResizers();
+    renderQuickPromptChips(false);
+    initSystemProfile();
+    setInterval(fetchStatus, 2000);
+
+    // 全局防死锁兜底：窗口失去焦点或鼠标释放时，强制移除拖拽状态，保证任何元素永远可点击
+    window.addEventListener('mouseup', () => document.body.classList.remove('is-resizing'));
+    window.addEventListener('blur', () => document.body.classList.remove('is-resizing'));
+  </script>
+<div id="dlg" style="display:none;position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:200;align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:14px;padding:18px 20px;width:min(440px,92vw);box-shadow:0 12px 40px rgba(0,0,0,.25)">
+    <div id="dlg-msg" style="font-size:14px;line-height:1.6;white-space:pre-wrap;color:#0f172a"></div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:14px">
+      <button id="dlg-no" style="display:none;padding:4px 12px;border:1px solid #e2e8f0;border-radius:8px;background:#fff">取消</button>
+      <button id="dlg-ok" style="padding:4px 14px;border-radius:8px;background:#4f46e5;color:#fff;border:1px solid #4f46e5">好</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>

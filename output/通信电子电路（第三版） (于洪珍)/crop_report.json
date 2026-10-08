@@ -1,0 +1,189 @@
+{
+  "pdf": "通信电子电路（第三版） (于洪珍) .pdf",
+  "dpi": 150,
+  "chapters": {
+    "1": {
+      "count": 5,
+      "last_index": 5,
+      "missing": [],
+      "first_page": 7,
+      "last_page": 7,
+      "flagged": {}
+    },
+    "2": {
+      "count": 30,
+      "last_index": 30,
+      "missing": [],
+      "first_page": 52,
+      "last_page": 56,
+      "flagged": {
+        "2.3": [
+          "stitched"
+        ],
+        "2.10": [
+          "stitched"
+        ],
+        "2.19": [
+          "stitched"
+        ],
+        "2.26": [
+          "stitched"
+        ]
+      }
+    },
+    "3": {
+      "count": 28,
+      "last_index": 28,
+      "missing": [],
+      "first_page": 88,
+      "last_page": 90,
+      "flagged": {
+        "3.14": [
+          "stitched"
+        ],
+        "3.24": [
+          "stitched"
+        ]
+      }
+    },
+    "4": {
+      "count": 16,
+      "last_index": 16,
+      "missing": [],
+      "first_page": 122,
+      "last_page": 123,
+      "flagged": {
+        "4.10": [
+          "stitched"
+        ]
+      }
+    },
+    "5": {
+      "count": 31,
+      "last_index": 31,
+      "missing": [],
+      "first_page": 161,
+      "last_page": 164,
+      "flagged": {
+        "5.6": [
+          "stitched"
+        ],
+        "5.13": [
+          "stitched"
+        ],
+        "5.26": [
+          "stitched"
+        ]
+      }
+    },
+    "6": {
+      "count": 23,
+      "last_index": 23,
+      "missing": [],
+      "first_page": 213,
+      "last_page": 215,
+      "flagged": {
+        "6.2": [
+          "stitched"
+        ],
+        "6.11": [
+          "stitched"
+        ]
+      }
+    },
+    "7": {
+      "count": 19,
+      "last_index": 19,
+      "missing": [],
+      "first_page": 230,
+      "last_page": 231,
+      "flagged": {
+        "7.6": [
+          "stitched"
+        ]
+      }
+    },
+    "8": {
+      "count": 15,
+      "last_index": 15,
+      "missing": [],
+      "first_page": 255,
+      "last_page": 256,
+      "flagged": {
+        "8.7": [
+          "stitched"
+        ]
+      }
+    },
+    "9": {
+      "count": 17,
+      "last_index": 17,
+      "missing": [],
+      "first_page": 275,
+      "last_page": 276,
+      "flagged": {
+        "9.17": [
+          "stitched_tail"
+        ]
+      }
+    }
+  },
+  "layout": {
+    "profile": {
+      "margin": 36,
+      "parity": {
+        "0": {
+          "ink_l": 401,
+          "ink_r": 1944,
+          "samples": 8
+        },
+        "1": {
+          "ink_l": 291,
+          "ink_r": 1816,
+          "samples": 8
+        }
+      }
+    },
+    "margin": 76,
+    "edge_check": [
+      {
+        "margin": 36,
+        "edge_touching": [
+          "2.19"
+        ]
+      },
+      {
+        "margin": 76,
+        "edge_touching": []
+      }
+    ],
+    "llm_judge_advisory": {
+      "results": [
+        {
+          "slice": "problem_1.1_slice.png",
+          "truncated": false,
+          "extra": false,
+          "detail": "无"
+        },
+        {
+          "slice": "problem_2.1_slice.png",
+          "truncated": false,
+          "extra": false,
+          "detail": "无"
+        },
+        {
+          "slice": "problem_2.3_slice.png",
+          "truncated": true,
+          "extra": true,
+          "detail": "底部混入被截断的水印文字及页眉“第2章 小信号谐振放大器”，左侧混入页码“52”"
+        },
+        {
+          "slice": "problem_9.17_slice.png",
+          "truncated": true,
+          "extra": true,
+          "detail": "底部边缘有黑色横条文字被截断；正文中混入了上一题的插图“图题 9-13”及页码“275”、“276”。"
+        }
+      ]
+    }
+  }
+}

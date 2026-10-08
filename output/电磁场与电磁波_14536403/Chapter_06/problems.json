@@ -1,0 +1,329 @@
+[
+  {
+    "problem_id": "6.1",
+    "text": "已知电磁波的电场强度的瞬时表达式为\n\n$$\n\n\\boldsymbol{E}=\\boldsymbol{a}_x E_0\\cos(\\omega t-\\beta z+\\varphi_0)\n\n$$\n\n问它是否为均匀平面波？其传播方向和磁场强度分别沿什么方向？",
+    "page": 166,
+    "boxes": [
+      [
+        166,
+        925,
+        1043,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "6.2",
+    "text": "自由空间中一均匀平面波的磁场强度为\n\n$$\n\n\\boldsymbol{H}=(\\boldsymbol{a}_y+\\boldsymbol{a}_z)H_0\\cos(\\omega t-\\pi x)\\text{ A/m}\n\n$$\n\n求：(1) 波的传播方向；\n\n(2) 波长和频率；\n\n(3) 电场强度；\n\n(4) 瞬时坡印廷矢量。",
+    "page": 166,
+    "boxes": [
+      [
+        166,
+        1043,
+        1277,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "6.3",
+    "text": "无耗媒质的相对介电常数 $\\varepsilon_r=4$，相对磁导率 $\\mu_r=1$，一平面电磁波\n\n沿 $+z$ 方向传播，其电场强度的表达式为\n\n$$\n\n\\boldsymbol{E}=\\boldsymbol{a}_y E_0\\cos(6\\times 10^8 t-\\beta z)\n\n$$\n\n求：(1) 电磁波的相速；\n\n(2) 波阻抗和 $\\beta$；\n\n(3) 磁场强度的瞬时表达式；\n\n(4) 平均坡印廷矢量。",
+    "page": 166,
+    "boxes": [
+      [
+        166,
+        1278,
+        1551,
+        0,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "6.4",
+    "text": "一均匀平面电磁波从海水表面 $(x=0)$ 沿 $+x$ 方向向海水中传播。\n\n在 $x=0$ 处，电场强度为\n\n$$\n\n\\boldsymbol{E}=\\boldsymbol{a}_y 100\\cos(10^7\\pi t)\\quad\\text{V/m}\n\n$$\n\n若海水的 $\\varepsilon_r=80$，$\\mu_r=1$，$\\sigma=4\\text{ S/m}$。求：\n\n(1) 衰减常数、相位常数、波阻抗、相位速度、波长、趋肤深度；\n\n(2) 写出海水中的电场强度表达式；\n\n(3) 电场强度的振幅衰减到表面值的 $1\\%$ 时，波传播的距离；\n\n(4) 当 $x=0.8\\text{ m}$ 时，电场和磁场的表达式。\n\n(5) 如果电磁波的频率变为 $f=50\\text{ kHz}$，重复(3)的计算。比较两个结果\n\n会得到什么结论？",
+    "page": 166,
+    "boxes": [
+      [
+        166,
+        1551,
+        1667,
+        0,
+        1241
+      ],
+      [
+        167,
+        109,
+        410,
+        155,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "6.5",
+    "text": "判断下面表示的平面波的极化形式：\n\n(1) $\\boldsymbol{E}=\\boldsymbol{a}_x\\cos(\\omega t-\\beta z)+\\boldsymbol{a}_y 2\\sin(\\omega t-\\beta z)$\n\n(2) $\\boldsymbol{E}=\\boldsymbol{a}_x\\sin(\\omega t-\\beta z)+\\boldsymbol{a}_y\\cos(\\omega t-\\beta z)$\n\n(3) $\\boldsymbol{E}=\\boldsymbol{a}_x\\sin(\\omega t-\\beta z)+\\boldsymbol{a}_y 5\\sin(\\omega t-\\beta z)$\n\n(4) $\\boldsymbol{E}=\\boldsymbol{a}_x\\cos\\left(\\omega t-\\beta z-\\frac{\\pi}{4}\\right)+\\boldsymbol{a}_y 2\\sin\\left(\\omega t-\\beta z+\\frac{\\pi}{4}\\right)$",
+    "page": 167,
+    "boxes": [
+      [
+        167,
+        410,
+        629,
+        155,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "6.6",
+    "text": "均匀平面电磁波频率 $f=100\\text{ MHz}$，从空气垂直入射到 $x=0$ 的理\n\n想导体上，设入射波电场沿 $+y$ 方向，振幅 $E_m=6\\text{ mV/m}$，如题 6.6 图所示【见原图】。\n\n试写出：\n\n(1) 入射波电场和磁场表达式；\n\n(2) 反射波电场和磁场表达式；\n\n(3) 空气中合成波的电场和磁场；\n\n(4) 空气中离导体表面最近的第一个波腹点的位置。",
+    "page": 167,
+    "boxes": [
+      [
+        167,
+        631,
+        1304,
+        155,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": true
+  },
+  {
+    "problem_id": "6.7",
+    "text": "一圆极化平面电磁波的电场为\n\n$$\n\n\\boldsymbol{E}=(\\boldsymbol{a}_y+\\text{j}\\boldsymbol{a}_z)E_0\\text{e}^{-\\text{j}\\beta x}\\quad\\text{V/m}\n\n$$\n\n它沿 $+x$ 方向从空气中垂直入射到 $\\varepsilon_r=4$、$\\mu_r=1$ 的理想介质表面上。求：\n\n(1) 反射波和透射波的电场；\n\n(2) 它们分别属于什么极化？",
+    "page": 167,
+    "boxes": [
+      [
+        167,
+        1305,
+        1494,
+        155,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "6.8",
+    "text": "自由空间中一均匀平面电磁波垂直入射到半无限大无耗介质平面\n\n上，已知自由空间与介质分界面上的反射系数为 $0.5$，且分界面为电场波腹\n\n点，介质内透射波的波长是自由空间波长的 $1/6$，求介质的相对磁导率和相\n\n对介电常数。",
+    "page": 167,
+    "boxes": [
+      [
+        167,
+        1496,
+        1650,
+        155,
+        1241
+      ],
+      [
+        168,
+        128,
+        149,
+        2,
+        1096
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "6.9",
+    "text": "均匀平面波的电场强度为 $\\boldsymbol{E}=\\boldsymbol{a}_x 10\\text{e}^{-\\text{j}6z}$，已知其频率为 $\\omega=1.8\\times$\n\n$10^9\\text{ rad/s}$，该波从空气垂直入射到有耗媒质 $\\varepsilon_r=2.5$、损耗角正切为 $0.5$ 的\n\n$z=0$ 的分界面上。求：\n\n(1) 反射波和透射波的电场和磁场的瞬时值表达式；\n\n(2) 空气中及有耗媒质中的平均坡印廷矢量。",
+    "page": 168,
+    "boxes": [
+      [
+        168,
+        159,
+        358,
+        2,
+        1096
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "6.10",
+    "text": "一右旋圆极化波垂直入射到位于 $z=0$ 的理想导体板上，如题\n\n6.10 图所示【见原图】，其电场强度的复数表达式为\n\n$$\n\n\\boldsymbol{E}=(\\boldsymbol{a}_x-\\text{j}\\boldsymbol{a}_y)E_0\\text{e}^{-\\text{j}\\beta z}\\quad\\text{V/m}\n\n$$\n\n(1) 求反射波的表达式并说明其极化形式；\n\n(2) 求导体板上的感应电流；\n\n(3) 写出总电场的瞬时值表达式。",
+    "page": 168,
+    "boxes": [
+      [
+        168,
+        358,
+        589,
+        2,
+        1096
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": true
+  },
+  {
+    "problem_id": "6.11",
+    "text": "有一均匀平面电磁波由空气斜入射到 $z=0$ 的理想导体平面上，\n\n如题 6.11 图所示【见原图】，其电场强度的复数表示式为\n\n$$\n\n\\boldsymbol{E}=\\boldsymbol{a}_y E_0\\text{e}^{-\\text{j}(6x+8z)}\\quad\\text{V/m}\n\n$$\n\n(1) 求波的频率和波长；\n\n(2) 写出入射波电场和磁场的瞬时值表达式；\n\n(3) 确定入射角；\n\n(4) 求反射波电场和磁场的复数表达式；\n\n(5) 求合成波的电场和磁场的复数表达式。",
+    "page": 168,
+    "boxes": [
+      [
+        168,
+        591,
+        1301,
+        2,
+        1096
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": true
+  },
+  {
+    "problem_id": "6.12",
+    "text": "一个线极化平面波从自由空间入射到 $\\varepsilon_r=4$、$\\mu_r=1$ 的理想介质表\n\n面上，如果入射波的电场与入射面的夹角为 $45^\\circ$。试求：\n\n(1) 入射角 $\\theta_i$ 为何值时，反射波只有垂直极化波；\n\n(2) 此时反射波的平均功率是入射波的百分之几？",
+    "page": 168,
+    "boxes": [
+      [
+        168,
+        1316,
+        1471,
+        2,
+        1096
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "6.13",
+    "text": "垂直极化波从水下以入射角 $\\theta_i=20^\\circ$ 投射到水与空气的分界面上，设\n\n水的 $\\varepsilon_r=81$，$\\mu_r=1$，试求：\n\n(1) 临界角 $\\theta_c$；\n\n(2) 反射系数和透射系数。",
+    "page": 168,
+    "boxes": [
+      [
+        168,
+        1471,
+        1628,
+        2,
+        1096
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "6.14",
+    "text": "均匀平面波从自由空间垂直入射到某介质平面时，在自由空间形\n\n成驻波，设反射系数的大小为 $0.46$，介质平面上有驻波最小点，求介质的相\n\n对介电常数。",
+    "page": 168,
+    "boxes": [
+      [
+        168,
+        1628,
+        1669,
+        2,
+        1096
+      ],
+      [
+        169,
+        144,
+        221,
+        151,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "6.15",
+    "text": "在无线电装置中常配有电磁屏蔽罩，屏蔽罩由铜制成，要求铜的\n\n厚度至少为 $5$ 个趋肤深度，为防止 $200\\text{ kHz}\\sim 3\\text{ GHz}$ 的无线电干扰，求铜的\n\n厚度；若要屏蔽 $10\\text{ kHz}\\sim 3\\text{ GHz}$ 的电磁干扰，铜的厚度又是多少？",
+    "page": 169,
+    "boxes": [
+      [
+        169,
+        221,
+        336,
+        151,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  },
+  {
+    "problem_id": "6.16",
+    "text": "一个频率为 $300\\text{ MHz}$ 的平行极化平面波从自由空间（媒质 1）斜入\n\n射到 $\\varepsilon_r=4$、$\\mu_r=1$（媒质 2）的理想介质表面上，如果入射线与分界面法线的夹\n\n角为 $60^\\circ$，入射波电场的振幅为 $E_0$，如题 6.16 图所示【见原图】。试求：\n\n(1) 入射波电场强度的表达式；\n\n(2) 入射波磁场强度的表达式；\n\n(3) 反射系数和透射系数。",
+    "page": 169,
+    "boxes": [
+      [
+        169,
+        337,
+        568,
+        151,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": true
+  },
+  {
+    "problem_id": "6.17",
+    "text": "一均匀平面波从自由空间（媒质 1）沿 $+z$ 方向垂直入射到 $\\varepsilon_r=8$、\n\n$\\mu_r=2$（媒质 2）的理想介质表面上，电磁波的频率为 $100\\text{ MHz}$，入射波电场的\n\n振幅为 $E_0$、极化为 $+x$ 方向，如题 6.17 图所示【见原图】。试求：\n\n(1) 入射波电场强度的表达式；\n\n(2) 入射波磁场强度的表达式；\n\n(3) 反射系数和透射系数；\n\n(4) 媒质 1 中的电场表达式；\n\n(5) 媒质 2 中的电场表达式。",
+    "page": 169,
+    "boxes": [
+      [
+        169,
+        568,
+        1283,
+        151,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": true
+  },
+  {
+    "problem_id": "6.18",
+    "text": "自由空间中一均匀平面波的电场强度为\n\n$$\n\n\\boldsymbol{E}=\\boldsymbol{a}_x E_0\\cos(\\omega t-\\beta z)+\\boldsymbol{a}_y 2E_0\\sin\\left(\\omega t-\\beta z+\\frac{\\pi}{3}\\right)\n\n$$\n\n求其平均坡印廷矢量。",
+    "page": 169,
+    "boxes": [
+      [
+        169,
+        1297,
+        1445,
+        151,
+        1241
+      ]
+    ],
+    "masks": [],
+    "text_source": "imported",
+    "has_fig": false
+  }
+]

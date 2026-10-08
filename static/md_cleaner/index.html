@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Markdown 公式清洗</title>
+<link rel="stylesheet" href="/static/katex.min.css">
+<style>
+  :root{--bg:#f6f7f9;--card:#fff;--ink:#1d2430;--mute:#677084;--line:#dde1e8;--acc:#2f6fed;--ok:#1a8a4a;--warn:#b25e00;--bad:#c62828}
+  @media (prefers-color-scheme:dark){:root{--bg:#14171c;--card:#1d222a;--ink:#e6e9ef;--mute:#98a1b3;--line:#2e3541;--acc:#6b9bff;--ok:#4cc884;--warn:#f0a030;--bad:#ff7b72}}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 system-ui,"Microsoft YaHei",sans-serif}
+  main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
+  h1{font-size:20px;margin:0 0 4px} .sub{color:var(--mute);margin:0 0 16px;font-size:13px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:14px}
+  #drop{border:2px dashed var(--line);border-radius:10px;padding:26px;text-align:center;color:var(--mute);cursor:pointer}
+  #drop.over{border-color:var(--acc);color:var(--acc)}
+  .opts{display:flex;flex-wrap:wrap;gap:6px 18px;margin:10px 0 0;font-size:14px}
+  .bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px}
+  button{font:inherit;padding:7px 16px;border-radius:7px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+  button.primary{background:var(--acc);border-color:var(--acc);color:#fff}
+  button:disabled{opacity:.45;cursor:default}
+  textarea{width:100%;height:260px;font:13px/1.5 Consolas,monospace;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:10px;resize:vertical}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px} @media(max-width:800px){.grid{grid-template-columns:1fr}}
+  h2{font-size:15px;margin:0 0 8px}
+  .stat{display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px dashed var(--line)}
+  .stat b{font-variant-numeric:tabular-nums}
+  ul{margin:4px 0 0;padding-left:20px} li{margin:2px 0;word-break:break-all}
+  .ok{color:var(--ok)} .warn{color:var(--warn)} .bad{color:var(--bad)}
+  #prev{max-height:640px;overflow:auto;border:1px solid var(--line);border-radius:8px;padding:10px 14px;background:var(--bg)}
+  #prev .q{margin:0 0 14px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+  #prev .q h3{margin:0 0 4px;font-size:15px}
+  #prev p{margin:4px 0;white-space:pre-wrap}
+  .hint{color:var(--mute);font-size:13px}
+</style>
+</head>
+<body>
+<main>
+  <h1>Markdown 公式清洗 <a href="/" style="font-size:13px;font-weight:400;margin-left:10px">← 返回 StudyHelp</a></h1>
+  <p class="sub">所有清洗都在本页的浏览器里完成。清洗完点「发送到 StudyHelp」，即可直接作为题目文本导入。</p>
+
+  <div class="card">
+    <div id="drop">把 .md 文件拖到这里，或点击选择文件<br><span class="hint">也可以直接把文本粘贴到下面左边的框里</span></div>
+    <input id="file" type="file" accept=".md,.markdown,.txt" hidden>
+    <div class="opts">
+      <label><input type="checkbox" id="oReorder" checked> 重排颠倒的小问 (a)(b)(c)</label>
+      <label><input type="checkbox" id="oNoise" checked> 删除模型草稿 (Note: / Let's… / 占位图)</label>
+      <label title="解决 Pandoc 等工具报 Duplicate identifier 'section'；其它预览器可能把 {#q1-1} 原样显示出来"><input type="checkbox" id="oIds"> 题号标题加唯一 ID <code>{#q1-1}</code></label>
+      <label><input type="checkbox" id="oTag" checked> \tag 改写成 \qquad\text{()}</label>
+    </div>
+    <div class="bar">
+      <button class="primary" id="run">清洗</button>
+      <button id="dl" disabled>下载清洗结果</button>
+      <button id="copy" disabled>复制结果</button>
+      <button id="toUpload" class="primary" disabled title="作为“题目文本”附到上传新书弹窗里">发送到「上传新书」</button>
+      <button id="toTimu" class="primary" disabled title="填进“导入题目文本”弹窗，导入当前这本书">发送到「导入当前书」</button>
+      <span id="fname" class="hint"></span>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card"><h2>原文</h2><textarea id="src" spellcheck="false" placeholder="在这里粘贴 Markdown，或拖入文件"></textarea></div>
+    <div class="card"><h2>清洗后</h2><textarea id="dst" spellcheck="false" readonly></textarea></div>
+  </div>
+
+  <div class="grid">
+    <div class="card"><h2>修复统计</h2><div id="stats" class="hint">尚未运行</div></div>
+    <div class="card"><h2>需要你看一眼</h2><div id="todo" class="hint">尚未运行</div></div>
+  </div>
+
+  <div class="card">
+    <h2>渲染预览 <span class="hint">(用 KaTeX 渲染清洗后的全部题目，红字表示公式仍然渲染不了)</span> <span id="pstatus" class="hint"></span></h2>
+    <div id="prev" class="hint">尚未运行</div>
+  </div>
+</main>
+
+<script src="/static/katex.min.js"></script>
+<script>document.write('<script src="cleaner_core.js?t=' + Date.now() + '"><\/script>');</script>
+<script>
+const $ = id => document.getElementById(id);
+let fileName = '清洗结果.md', last = '';
+const esc = s => s.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+
+function loadFile(f){
+  const r = new FileReader();
+  r.onload = () => { $('src').value = r.result; fileName = f.name; $('fname').textContent = f.name + '（' + (f.size/1024).toFixed(0) + ' KB）'; run(); };
+  r.readAsText(f, 'utf-8');
+}
+const drop = $('drop');
+drop.onclick = () => $('file').click();
+$('file').onchange = e => e.target.files[0] && loadFile(e.target.files[0]);
+['dragover','dragenter'].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.add('over'); }));
+['dragleave','drop'].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.remove('over'); }));
+drop.addEventListener('drop', e => e.dataTransfer.files[0] && loadFile(e.dataTransfer.files[0]));
+document.addEventListener('dragover', e => e.preventDefault());
+document.addEventListener('drop', e => { e.preventDefault(); if (e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]); });
+
+function run(){
+  const text = $('src').value;
+  if (!text.trim()) { alert('先拖入文件或粘贴文本'); return; }
+  const k = typeof katex !== 'undefined' ? katex : null;
+  const { result, report } = MdCleaner.clean(text, { reorder: $('oReorder').checked, noise: $('oNoise').checked, tag: $('oTag').checked, ids: $('oIds').checked }, k);
+  last = result; $('dst').value = result; $('dl').disabled = $('copy').disabled = $('toUpload').disabled = $('toTimu').disabled = false;
+
+  const fx = Object.entries(report.fixed);
+  $('stats').innerHTML = fx.length ? fx.map(([a,b]) => `<div class="stat"><span>${esc(a)}</span><b>${b}</b></div>`).join('') : '没有需要修复的地方';
+
+  let h = '';
+  const sec = (cls, title, arr) => { if (arr.length) h += `<div class="${cls}"><b>${title}（${arr.length}）</b><ul>${arr.slice(0,40).map(x => '<li>'+esc(x)+'</li>').join('')}</ul></div>`; };
+  sec('bad', '$ 不配对，需手工处理', report.unbalanced);
+  sec('bad', '清洗后仍有问题', report.remaining);
+  sec('warn', '已删除的模型草稿', report.removed);
+  sec('warn', '提示', report.notes);
+  if (!k) h += '<div class="warn">未找到 node_modules/katex，已跳过公式渲染校验。</div>';
+  $('todo').innerHTML = h || '<span class="ok">没有发现问题 ✓</span>';
+
+  preview(result, k);
+}
+
+let previewToken = 0;
+function preview(md, k){
+  if (!k) { $('prev').textContent = '没有 KaTeX，无法预览'; return; }
+  const blocks = md.replace(/\r\n/g,'\n').split(/^(?=### )/m).filter(b => b.startsWith('### '));
+  const box = $('prev'); box.className = ''; box.innerHTML = '';
+  const token = ++previewToken, status = $('pstatus');
+  let done = 0, errs = 0;
+  const tryRender = (src, disp) => { try { return k.renderToString(src, {displayMode: disp, throwOnError: true, strict: 'ignore'}); } catch(e) { return `<span class="bad">[公式错误：${esc(e.message.split('\n')[0].slice(0,60))}]</span>`; } };
+  const renderOne = b => {
+    const nl = b.indexOf('\n'); const title = b.slice(4, nl).trim();
+    const { segs } = MdCleaner.tokenize(b.slice(nl+1));
+    let html = '';
+    for (const s of segs){
+      if (s.t === 'text') html += esc(s.s).replace(/&amp;emsp;/g,'　　');
+      else html += (s.t === 'disp' ? '</p><div style="text-align:center;margin:6px 0">' + tryRender(s.s, true) + '</div><p>' : tryRender(s.s, false));
+    }
+    const d = document.createElement('div'); d.className = 'q';
+    d.id = 'q-' + title; d.innerHTML = `<h3>${esc(title)}</h3><p>${html}</p>`; box.appendChild(d);
+    if (d.querySelector('.bad')) errs++;
+  };
+  if (!blocks.length) { box.textContent = '（没有找到 “### 题号” 格式的题目块，已跳过预览）'; return; }
+  // 分批渲染全部题目，避免页面卡死
+  (function step(){
+    if (token !== previewToken) return;
+    const end = Math.min(done + 25, blocks.length);
+    for (; done < end; done++) renderOne(blocks[done]);
+    status.textContent = done < blocks.length ? `正在渲染 ${done}/${blocks.length}…` : `已渲染全部 ${blocks.length} 题，其中 ${errs} 题有公式错误`;
+    status.className = errs ? 'bad' : 'ok';
+    if (done < blocks.length) setTimeout(step, 0);
+  })();
+}
+
+$('run').onclick = run;
+// 把清洗结果交给 StudyHelp 主页面（同源 localStorage；主页面正开着会立即收到，否则下次打开时收到）
+function sendToApp(target){
+  if (!last) return;
+  const name = fileName.replace(/\.(md|markdown|txt)$/i, '') + '.清洗后.md';
+  try { localStorage.setItem('studyhelp_cleaned_md', JSON.stringify({target, name, text: last, t: Date.now()})); }
+  catch (e) { alert('发送失败：' + e); return; }
+  const hasMain = window.opener && !window.opener.closed;
+  if (hasMain) { try { window.opener.focus(); } catch (e) {} }
+  $('fname').textContent = '已发送 ✓ ' + (hasMain ? '请回到 StudyHelp 页面' : '正在跳转…');
+  if (!hasMain) setTimeout(() => location.href = '/', 600);
+}
+$('toUpload').onclick = () => sendToApp('upload');
+$('toTimu').onclick = () => sendToApp('timu');
+{ const t = new URLSearchParams(location.search).get('target'); if (t === 'upload' || t === 'timu') $(t === 'upload' ? 'toUpload' : 'toTimu').style.outline = '2px solid var(--ok)'; }
+$('dl').onclick = () => {
+  const name = fileName.replace(/\.(md|markdown|txt)$/i, '') + '.清洗后.md';
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([last], {type:'text/markdown;charset=utf-8'})); a.download = name; a.click();
+};
+$('copy').onclick = async () => { await navigator.clipboard.writeText(last); $('copy').textContent = '已复制 ✓'; setTimeout(() => $('copy').textContent = '复制结果', 1500); };
+</script>
+</body>
+</html>

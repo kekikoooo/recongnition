@@ -1,0 +1,9 @@
+{"in": 839, "out": 450, "think": 265, "total": 1554, "t": 1791446976.0, "stage": "profile", "pid": null, "model": "gemini-3.8-flash"}
+{"in": 575, "out": 13, "think": 140, "total": 728, "t": 1791447254.0, "stage": "crop_judge", "pid": null, "model": "gemini-3.8-flash"}
+{"in": 609, "out": 13, "think": 139, "total": 761, "t": 1791447257.4, "stage": "crop_judge", "pid": null, "model": "gemini-3.8-flash"}
+{"in": 651, "out": 13, "think": 175, "total": 839, "t": 1791447261.5, "stage": "crop_judge", "pid": null, "model": "gemini-3.8-flash"}
+{"in": 632, "out": 30, "think": 138, "total": 800, "t": 1791447265.1, "stage": "crop_judge", "pid": null, "model": "gemini-3.8-flash"}
+{"in": 580, "out": 13, "think": 137, "total": 730, "t": 1791447817.9, "stage": "crop_judge", "pid": null, "model": "gemini-3.8-flash"}
+{"in": 644, "out": 13, "think": 148, "total": 805, "t": 1791447820.9, "stage": "crop_judge", "pid": null, "model": "gemini-3.8-flash"}
+{"in": 651, "out": 13, "think": 246, "total": 910, "t": 1791447825.1, "stage": "crop_judge", "pid": null, "model": "gemini-3.8-flash"}
+{"in": 656, "out": 29, "think": 295, "total": 980, "t": 1791447832.9, "stage": "crop_judge", "pid": null, "model": "gemini-3.8-flash"}

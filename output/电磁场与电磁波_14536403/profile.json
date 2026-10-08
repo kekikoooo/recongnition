@@ -1,0 +1,84 @@
+{
+  "book": {
+    "id": "________14536403",
+    "title": "电磁场与电磁波_14536403",
+    "subtitle": "“十二五”普通高等教育本科国家级规划教材",
+    "author": "郭辉萍、刘学观",
+    "doc_type": "book",
+    "subject": "math",
+    "pdf_candidates": [
+      "电磁场与电磁波_14536403.pdf",
+      "output/电磁场与电磁波_14536403/电磁场与电磁波_14536403.pdf"
+    ],
+    "dpi": 150
+  },
+  "chapters_dir": "chapters",
+  "chapters": {
+    "1": {
+      "name": "第1章 天量分析与场论",
+      "start_page": 32,
+      "end_page": 35,
+      "problem_count": 25
+    },
+    "2": {
+      "name": "第2章 静电场和恒定电场",
+      "start_page": 67,
+      "end_page": 70,
+      "problem_count": 20
+    },
+    "3": {
+      "name": "第3章 边值问题的解法",
+      "start_page": 97,
+      "end_page": 100,
+      "problem_count": 17
+    },
+    "4": {
+      "name": "第4章 恒定电流的磁场",
+      "start_page": 117,
+      "end_page": 120,
+      "problem_count": 18
+    },
+    "5": {
+      "name": "第5章 时变电磁场与电磁波",
+      "start_page": 136,
+      "end_page": 139,
+      "problem_count": 16
+    },
+    "6": {
+      "name": "第6章 平面电磁波",
+      "start_page": 166,
+      "end_page": 169,
+      "problem_count": 18
+    },
+    "7": {
+      "name": "第7章 传输线",
+      "start_page": 195,
+      "end_page": 197,
+      "problem_count": 21
+    },
+    "8": {
+      "name": "第8章 波导与谐振器",
+      "start_page": 217,
+      "end_page": 218,
+      "problem_count": 16
+    },
+    "9": {
+      "name": "第9章 电磁波的辐射与接收",
+      "start_page": 246,
+      "end_page": 247,
+      "problem_count": 16
+    },
+    "10": {
+      "name": "第10章 无线信道、电磁干扰与电磁兼容",
+      "start_page": 276,
+      "end_page": 276,
+      "problem_count": 15
+    }
+  },
+  "ai": {
+    "model": "gemini-3.8-flash",
+    "project_id": "citric-biplane-358313",
+    "location": "global",
+    "temperature": 0.2
+  }
+}
